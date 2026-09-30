@@ -1,3 +1,0 @@
-polarization,sample_count,total_valid_pixels,weighted_ENL,weighting
-C11,20,12025,1.9215955398521356,number_of_valid_pixels_per_sample
-C22,20,12025,1.9649813362705166,number_of_valid_pixels_per_sample
