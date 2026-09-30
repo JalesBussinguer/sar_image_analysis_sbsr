@@ -1,0 +1,166 @@
+---
+title: NISAR Data
+
+project:
+  type: manuscript
+
+manuscript:
+  article: index.qmd
+  meca-bundle: true
+
+authors:
+  - name: Alejandro C. Frery
+    affiliation: Victoria University of Wellington
+    roles: writing
+    corresponding: true
+    
+  - name: Jales Bussinguer
+    affiliation: Universidade Federal de Minas Gerais
+    roles: writing
+    corresponding: true
+    
+bibliography: references.bib
+---
+
+
+```{r setup}
+knitr::opts_chunk$set(message=FALSE, warning=FALSE, error=TRUE)
+library(ggplot2)
+library(ggthemes)
+  theme_set(theme_pander() +
+              theme(text=element_text(family="serif")))
+library(readr)
+library(reshape2)
+library(twosamples)
+```
+
+# Análise não-paramétrica
+
+Precisamos verificar se duas amostras foram geradas pela mesma distribuição.
+
+```{r LeituraDeDados}
+Fo_B <- read_csv("Data/Fo_B.csv")
+Fo_R <- read_csv("Data/Fo_R.csv")
+```
+
+Resumo dos dados
+
+```{r DataTransformation}
+Intensities <- data.frame(Fo_B[,-1], 
+                          Image=as.factor(rep("FoB", nrow(Fo_B))))
+Intensities <- rbind(Intensities,
+                     data.frame(Fo_R[,-1], 
+                                Image=as.factor(rep("FoR", nrow(Fo_R)))))
+Intensities.molten <- reshape2::melt(Intensities, variable.name="Band", value.name="Intensity")
+
+summary(Intensities.molten)
+
+Tabela_Intervalo <- aggregate(data = Intensities.molten, 
+                          Intensity ~ Image + Band, 
+                          FUN=summary)
+```
+
+Histogramas suavizados
+
+```{r Histograms}
+ggplot(Intensities.molten, aes(x=Intensity, col=Image)) +
+  geom_density(linewidth=1.2, alpha=.5) +
+  geom_boxplot(notch=TRUE) +
+  ylab("Empirical densities") +
+  facet_grid(~Band)
+```
+
+QQ-plots
+
+```{r QQplots}
+ggplot(Intensities.molten, aes(sample=Intensity, col=Image)) +
+  stat_qq_line() +
+  stat_qq() +
+  ylab("Sample quantiles") +
+  xlab("Theoretical quantiles") +
+  facet_grid(~Band)
+```
+
+Testes de permutações para comparar as amostras
+
+```{r PermutationTests}
+cat("Banda HH")
+dts_test(Fo_B$IHH, Fo_R$IHH)
+
+cat("Banda HV")
+dts_test(Fo_B$IHV, Fo_R$IHV)
+
+```
+
+# Análise paramétrica
+
+Jales reportou que o número equivalente de looks é $1.9216$ para C11 e $1.9650$ 
+para C22.
+
+```{r ENL, echo=FALSE}
+LHH <- 1.9216
+LHV <- 1.9650
+```
+
+Verificaremos os ajustes de modelos gama com esses parâmetros de forma.
+Sob o modelo multiplicativo e em áreas com speckle totalmente desenvolvido,
+o retorno de intensidade segue uma distribuição gama de parâmetro de forma $L$,
+o número equivalente de looks, e média $\mu>$.
+Essa distribuição é caracterizada pela função de densidade de probabilidade
+\begin{equation}
+f_Z(z;L,\mu) 
+=
+\frac{L^L}{\Gamma(L)\mu^L}
+z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big) 
+\mathbb I_{\mathbb R_+}(z).
+\label{eq:dgamaLmu}
+\end{equation}
+Nós já temos estimativas de $L$ para cada banda. Calculamos as médias amostrais
+para usar no lugar de $\mu$:
+
+```{r MediasAmostrais, echo=FALSE}
+
+Tabela_Medias <- aggregate(data = Intensities.molten, 
+                          Intensity ~ Image + Band, 
+                          FUN=mean)
+Tabela_Medias
+```
+
+Vejamos como os modelos ajustam os dados.
+
+Fizemos dois ajustes.
+O primeiro, estimando os dois parâmetros através de `MASS::fitdistr`.
+O segundo, supondo o ENL conhecido e estimando apenas a média.
+Repare que o primeiro ajuste é excelente, enquanto o segundo não é bom.
+
+
+```{r ModelosDados, echo=FALSE}
+
+# pFoBIHH <- 
+dados <- data.frame(dados=subset(Intensities.molten, 
+                                 Image=="FoB" & Band=="IHH")$Intensity)
+estim_gamma <- MASS::fitdistr(dados$dados, densfun="gamma")
+
+ggplot(dados, aes(x=dados)) +
+  geom_histogram(aes(y=after_stat(density)),
+                 bins=nclass.FD(dados$dados),
+                 col="black", fill="white") +
+  labs(title="FoB IHH",
+       x=NULL, y=NULL) +
+  geom_density(linewidth=.3, alpha=.5) +
+  stat_function(fun=dgamma,
+                args=list(shape=unname(estim_gamma$estimate[1]),
+                          rate=unname(estim_gamma$estimate[2])),
+                col="maroon", alpha=.4, linewidth=2) +
+  stat_function(fun=dgamma,
+                args=list(shape=LHH,
+                          scale=LHH*subset(Tabela_Medias, Image=="FoB" & Band=="IHH")$Intensity),
+                col="violet", linewidht=1.2)
+  
+```
+
+Por favor refaça para as outras amostras e confira se a sua estimação do ENL está boa.
+
+Reporte os parâmetros de forma (`shape`) retornados por `MASS::fitdistr`; 
+eles não deveriam ser muito diferentes dos ENL estimados pela recíproca do
+quadrado do coeficiente de variação.
