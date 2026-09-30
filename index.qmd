@@ -1,5 +1,5 @@
 ---
-title: NISAR Data
+title: NISAR Data analysis
 
 project:
   type: manuscript
@@ -14,7 +14,7 @@ authors:
     roles: writing
     corresponding: true
     
-  - name: Jales Bussinguer
+  - name: Jales de F. Bussinguer
     affiliation: Universidade Federal de Minas Gerais
     roles: writing
     corresponding: true
@@ -45,6 +45,16 @@ Fo_U <- read_csv("Data/pnb_samples/nisar/Fo_U.csv")
 Fo_B <- read_csv("Data/pnb_samples/nisar/Fo_B.csv")
 Fo_R <- read_csv("Data/pnb_samples/nisar/Fo_R.csv")
 Fo_G <- read_csv("Data/pnb_samples/nisar/Fo_G.csv")
+Sv_W <- read_csv("Data/pnb_samples/nisar/Sv_W.csv")
+Sv_U <- read_csv("Data/pnb_samples/nisar/Sv_U.csv")
+Sv_B <- read_csv("Data/pnb_samples/nisar/Sv_B.csv")
+Sv_R <- read_csv("Data/pnb_samples/nisar/Sv_R.csv")
+Sv_G <- read_csv("Data/pnb_samples/nisar/Sv_G.csv")
+Gl_W <- read_csv("Data/pnb_samples/nisar/Gl_W.csv")
+Gl_U <- read_csv("Data/pnb_samples/nisar/Gl_U.csv")
+Gl_B <- read_csv("Data/pnb_samples/nisar/Gl_B.csv")
+Gl_R <- read_csv("Data/pnb_samples/nisar/Gl_R.csv")
+Gl_G <- read_csv("Data/pnb_samples/nisar/Gl_G.csv")
 ```
 
 Resumo dos dados
@@ -126,17 +136,8 @@ dts_test(Fo_R$IHV, Fo_G$IHV)
 
 # Análise paramétrica
 
-Jales reportou que o número equivalente de looks é $1.9216$ para C11 e $1.9650$ 
-para C22.
-
-```{r ENL, echo=FALSE}
-LHH <- 1.8
-LHV <- 1.9549
-```
-
 Verificaremos os ajustes de modelos gama com esses parâmetros de forma.
-Sob o modelo multiplicativo e em áreas com speckle totalmente desenvolvido,
-o retorno de intensidade segue uma distribuição gama de parâmetro de forma $L$,
+Sob o modelo multiplicativo e em áreas com speckle totalmente desenvolvido, o retorno de intensidade segue uma distribuição gama de parâmetro de forma $L$,
 o número equivalente de looks, e média $\mu>$.
 Essa distribuição é caracterizada pela função de densidade de probabilidade
 \begin{equation}
@@ -147,103 +148,148 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 \mathbb I_{\mathbb R_+}(z).
 \label{eq:dgamaLmu}
 \end{equation}
-Nós já temos estimativas de $L$ para cada banda. Calculamos as médias amostrais
-para usar no lugar de $\mu$:
 
-```{r MediasAmostrais, echo=FALSE}
+## ENL da cena completa
 
-Tabela_Medias <- aggregate(data = Intensities.molten, 
-                          Intensity ~ Image + Band, 
-                          FUN=mean)
-Tabela_Medias
+Jales reportou que o número equivalente de looks é $1.8944$ para C11 e $1.9549$ 
+para C22.
+Esses valores foram obtidos a partir de amostras extraídas sobre corpos d'água e solo exposto na cena completa.
+Em teoria, esta é uma estimativa global para a cena.
+
+```{r ENL, echo=FALSE}
+LHH <- 1.8944
+LHV <- 1.9549
 ```
 
-Vejamos como os modelos ajustam os dados.
+Para cada classe de cobertura, comparamos três parametrizações: 
+1. Os parâmetros estimados por `MASS::fitdistr`;
+2. ENL da amostra e média da amosta
+3. ENL da cena completa e média da amostra
 
-Fizemos dois ajustes.
-O primeiro, estimando os dois parâmetros através de `MASS::fitdistr`.
-O segundo, supondo o ENL conhecido e estimando apenas a média.
-Repare que o primeiro ajuste é excelente, enquanto o segundo não é bom.
-
-O parâmetro de forma (`shape`) estimado por máxima verossimilhança é comparado
-ao ENL estimado por $1/CV^2$ para cada imagem e banda. O coeficiente de
-variação usa o desvio-padrão amostral.
-Aqui estamos usando o ENL da amostra, partindo do pressuposto que ela é homogênea no domínio espacial.
-
-
-```{r AjustesGamma, echo=FALSE}
-Grupos <- split(Intensities.molten,
-                list(Intensities.molten$Image, Intensities.molten$Band),
-                drop=TRUE)
-Ajustes_Gama <- lapply(Grupos, function(amostra) {
-  MASS::fitdistr(amostra$Intensity, densfun="gamma")
-})
-
-Tabela_Ajustes <- do.call(rbind, lapply(names(Grupos), function(grupo) {
-  amostra <- Grupos[[grupo]]
-  cv <- sd(amostra$Intensity) / mean(amostra$Intensity)
-  data.frame(
-    Image=as.character(amostra$Image[1]),
-    Band=as.character(amostra$Band[1]),
-    shape=unname(Ajustes_Gama[[grupo]]$estimate["shape"]),
-    ENL_CV=1 / cv^2
+```{r FuncoesAnaliseGamma, echo=FALSE}
+ajustar_amostras <- function(amostras) {
+  intensidades <- do.call(rbind, lapply(names(amostras), function(imagem) {
+    data.frame(amostras[[imagem]][, -1], Image=imagem)
+  }))
+  dados <- reshape2::melt(
+    intensidades,
+    id.vars="Image",
+    variable.name="Band",
+    value.name="Intensity"
   )
-}))
+  dados$Image <- factor(dados$Image, levels=names(amostras))
 
-knitr::kable(Tabela_Ajustes, digits=4,
-             col.names=c("Imagem", "Banda", "shape (fitdistr)", "ENL (1/CV^2)"))
-```
+  grupos <- split(dados, list(dados$Image, dados$Band), drop=TRUE)
+  ajustes <- lapply(grupos, function(amostra) {
+    MASS::fitdistr(amostra$Intensity, densfun="gamma")
+  })
+  tabela <- do.call(rbind, lapply(names(grupos), function(grupo) {
+    amostra <- grupos[[grupo]]
+    cv <- sd(amostra$Intensity) / mean(amostra$Intensity)
+    data.frame(
+      Image=as.character(amostra$Image[1]),
+      Band=as.character(amostra$Band[1]),
+      shape=unname(ajustes[[grupo]]$estimate["shape"]),
+      ENL_amostra=1 / cv^2
+    )
+  }))
 
-```{r FuncaoModelosDados, echo=FALSE}
+  list(dados=dados, ajustes=ajustes, tabela=tabela)
+}
 
-plot_gamma_fit <- function(imagem, banda, L) {
-  dados <- data.frame(dados=subset(Intensities.molten,
-                                   Image==imagem & Band==banda)$Intensity)
-  estim_gamma <- Ajustes_Gama[[paste(imagem, banda, sep=".")]]
-  media <- subset(Tabela_Medias, Image==imagem & Band==banda)$Intensity
+plot_gamma_fit <- function(analise, imagem, banda, L_cena) {
+  dados <- data.frame(
+    intensidade=subset(analise$dados, Image==imagem & Band==banda)$Intensity
+  )
+  estim_gamma <- analise$ajustes[[paste(imagem, banda, sep=".")]]
+  media <- mean(dados$intensidade)
+  enl_amostra <- subset(analise$tabela,
+                        Image==imagem & Band==banda)$ENL_amostra
 
-  ggplot(dados, aes(x=dados)) +
+  ggplot(dados, aes(x=intensidade)) +
     geom_histogram(aes(y=after_stat(density)),
-                   bins=nclass.FD(dados$dados),
+                   bins=nclass.FD(dados$intensidade),
                    col="black", fill="white") +
     labs(title=paste(imagem, banda),
          x=NULL, y=NULL, color=NULL) +
     geom_density(aes(color="Densidade empírica"),
-                 linewidth=.3, alpha=.5) +
+                 linewidth=.6, alpha=.9, key_glyph="path") +
     stat_function(fun=dgamma,
                   aes(color="Gamma ajustada"),
                   args=list(shape=unname(estim_gamma$estimate["shape"]),
                             rate=unname(estim_gamma$estimate["rate"])),
-                  alpha=.4, linewidth=2) +
+                  linewidth=1.4) +
     stat_function(fun=dgamma,
-                  aes(color="Gamma com ENL local"),
-                  args=list(shape=L,
-                            scale=media/L),
-                  linewidth=1.2) +
-    scale_color_manual(values=c("Densidade empírica"="black",
-                                "Gamma ajustada"="maroon",
-                                "Gamma com ENL local"="violet"))
-}
-
-Imagens <- levels(Intensities.molten$Image)
-```
-
-```{r ModelosDadosIHH, echo=FALSE}
-
-for (imagem in Imagens) {
-  print(plot_gamma_fit(imagem, "IHH", LHH))
-}
-```
-
-```{r ModelosDadosIHV, echo=FALSE}
-
-for (imagem in Imagens) {
-  print(plot_gamma_fit(imagem, "IHV", LHV))
+                  aes(color="Gamma com ENL da amostra"),
+                  args=list(shape=enl_amostra,
+                            scale=media/enl_amostra),
+                  linewidth=1.3) +
+    stat_function(fun=dgamma,
+                  aes(color="Gamma com ENL da cena completa"),
+                  args=list(shape=L_cena,
+                            scale=media/L_cena),
+                  linewidth=1.3) +
+    scale_color_manual(
+      name="Distribuição",
+      values=c("Densidade empírica"="black",
+               "Gamma ajustada"="#0072B2",
+               "Gamma com ENL da amostra"="#D55E00",
+               "Gamma com ENL da cena completa"="#009E73")
+    )
 }
 ```
 
-Os valores de `shape` e os ENL locais estimados por $1/CV^2$ são próximos, como
-esperado para dados compatíveis com o modelo gama.
+## Amostras de Floresta (Fo)
 
-O que estava dando erro na distribuição antes era utilizar o ENL estimado a partir de amostras de corpos d'água, uma tentativa de estimar o ENL global da cena.
-Ao se utilizar o ENL estimado a partir dos dados da amostra de floresta, este convergiu com os parâmetros ajustados com `MASS::fitdistr`. 
+```{r AnaliseGammaFo, echo=FALSE}
+analise_Fo <- ajustar_amostras(list(
+  FoB=Fo_B, FoR=Fo_R, FoW=Fo_W, FoU=Fo_U, FoG=Fo_G
+))
+knitr::kable(analise_Fo$tabela, digits=4,
+             col.names=c("Imagem", "Banda", "shape (fitdistr)",
+                         "ENL da amostra (1/CV^2)"))
+for (imagem in levels(analise_Fo$dados$Image)) {
+  print(plot_gamma_fit(analise_Fo, imagem, "IHH", LHH))
+  print(plot_gamma_fit(analise_Fo, imagem, "IHV", LHV))
+}
+```
+
+## Amostras de Savana (Sv)
+
+```{r AnaliseGammaSv, echo=FALSE}
+analise_Sv <- ajustar_amostras(list(
+  SvB=Sv_B, SvR=Sv_R, SvW=Sv_W, SvU=Sv_U, SvG=Sv_G
+))
+knitr::kable(analise_Sv$tabela, digits=4,
+             col.names=c("Imagem", "Banda", "shape (fitdistr)",
+                         "ENL da amostra (1/CV^2)"))
+for (imagem in levels(analise_Sv$dados$Image)) {
+  print(plot_gamma_fit(analise_Sv, imagem, "IHH", LHH))
+  print(plot_gamma_fit(analise_Sv, imagem, "IHV", LHV))
+}
+```
+
+## Amostras de Campestre (Gl)
+
+```{r AnaliseGammaGl, echo=FALSE}
+analise_Gl <- ajustar_amostras(list(
+  GlB=Gl_B, GlR=Gl_R, GlW=Gl_W, GlU=Gl_U, GlG=Gl_G
+))
+knitr::kable(analise_Gl$tabela, digits=4,
+             col.names=c("Imagem", "Banda", "shape (fitdistr)",
+                         "ENL da amostra (1/CV^2)"))
+for (imagem in levels(analise_Gl$dados$Image)) {
+  print(plot_gamma_fit(analise_Gl, imagem, "IHH", LHH))
+  print(plot_gamma_fit(analise_Gl, imagem, "IHV", LHV))
+}
+```
+
+Os valores de `shape` e os ENL da amostra estimados por $1/CV^2$ podem ser
+comparados em cada tabela, e os três gráficos por amostra permitem avaliar o
+efeito de fixar o ENL da amostra ou o ENL da cena completa nas classes de floresta,
+savana e campestre.
+
+Para todos os casos, todas as parametrizações apresentaram certa convergência, o que é esperado para o caso de de dados que seguem a distribuição gama.
+No entanto, fica o meu questionamento (Jales): essa suposta similaridade entre as curvas é suficiente para utilizarmos um teste de hipótese paramétricos para esses dados?
+
+Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.

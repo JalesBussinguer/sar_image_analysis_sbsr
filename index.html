@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>NISAR Data</title>
+<title>NISAR Data analysis</title>
 <style>
 /* Default styles provided by pandoc.
 ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
@@ -116,7 +116,7 @@ window.Quarto = {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">NISAR Data</h1>
+<h1 class="title">NISAR Data analysis</h1>
 </div>
 
 
@@ -133,7 +133,7 @@ window.Quarto = {
           </p>
       </div>
     <div class="quarto-title-meta-contents">
-    <p class="author">Jales Bussinguer </p>
+    <p class="author">Jales de F. Bussinguer </p>
   </div>
   <div class="quarto-title-meta-contents">
         <p class="affiliation">
@@ -172,7 +172,17 @@ window.Quarto = {
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Fo_U <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_U.csv"</span>)</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Fo_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_B.csv"</span>)</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Fo_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_R.csv"</span>)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Fo_G <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_G.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Fo_G <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_G.csv"</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>Sv_W <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Sv_W.csv"</span>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>Sv_U <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Sv_U.csv"</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>Sv_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Sv_B.csv"</span>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>Sv_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Sv_R.csv"</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>Sv_G <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Sv_G.csv"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>Gl_W <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Gl_W.csv"</span>)</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>Gl_U <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Gl_U.csv"</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>Gl_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Gl_B.csv"</span>)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>Gl_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Gl_R.csv"</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>Gl_G <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Gl_G.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Resumo dos dados</p>
 <div class="cell">
@@ -247,7 +257,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_U<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 2.827014  0.610000 </code></pre>
+ 2.827014  0.616000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_B<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -257,27 +267,27 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 1.629374  0.238000 </code></pre>
+ 1.629374  0.230500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-  3.46306   0.01600 </code></pre>
+  3.46306   0.01900 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_B<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-  7.02942   0.00050 </code></pre>
+  7.02942   0.00025 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 2.584788  0.938000 </code></pre>
+ 2.584788  0.932500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 4.182089  0.047000 </code></pre>
+ 4.182089  0.047500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -287,12 +297,12 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 3.088899  0.078500 </code></pre>
+ 3.088899  0.089500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_R<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 4.510745  0.000250 </code></pre>
+ 4.510745  0.000500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -301,7 +311,7 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_U<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-0.3931796 0.5665000 </code></pre>
+0.3931796 0.5725000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_B<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -311,12 +321,12 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 1.130737  0.015000 </code></pre>
+ 1.130737  0.020000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 1.007586  0.032500 </code></pre>
+ 1.007586  0.023500 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_B<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -326,33 +336,32 @@ window.Quarto = {
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-0.9036361 0.1040000 </code></pre>
+0.9036361 0.0985000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-0.8086287 0.1240000 </code></pre>
+0.8086287 0.1235000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 1.132456  0.017500 </code></pre>
+ 1.132456  0.017000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-0.9459782 0.0555000 </code></pre>
+0.9459782 0.0535000 </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_R<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
-0.3534095 0.9550000 </code></pre>
+0.3534095 0.9595000 </code></pre>
 </div>
 </div>
 </section>
 <section id="análise-paramétrica" class="level1">
 <h1>Análise paramétrica</h1>
-<p>Jales reportou que o número equivalente de looks é <span class="math inline">\(1.9216\)</span> para C11 e <span class="math inline">\(1.9650\)</span> para C22.</p>
 <p>Verificaremos os ajustes de modelos gama com esses parâmetros de forma. Sob o modelo multiplicativo e em áreas com speckle totalmente desenvolvido, o retorno de intensidade segue uma distribuição gama de parâmetro de forma <span class="math inline">\(L\)</span>, o número equivalente de looks, e média <span class="math inline">\(\mu&gt;\)</span>. Essa distribuição é caracterizada pela função de densidade de probabilidade <span class="math display">\[\begin{equation}
 f_Z(z;L,\mu)
 =
@@ -360,25 +369,14 @@ f_Z(z;L,\mu)
 z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 \mathbb I_{\mathbb R_+}(z).
 \label{eq:dgamaLmu}
-\end{equation}\]</span> Nós já temos estimativas de <span class="math inline">\(L\)</span> para cada banda. Calculamos as médias amostrais para usar no lugar de <span class="math inline">\(\mu\)</span>:</p>
-<div class="cell">
-<div class="cell-output cell-output-stdout">
-<pre><code>   Image Band Intensity
-1    FoB  IHH 0.4071796
-2    FoR  IHH 0.2947184
-3    FoW  IHH 0.3186493
-4    FoU  IHH 0.3021950
-5    FoG  IHH 0.3494229
-6    FoB  IHV 0.1334638
-7    FoR  IHV 0.1134103
-8    FoW  IHV 0.1025803
-9    FoU  IHV 0.1056639
-10   FoG  IHV 0.1153083</code></pre>
-</div>
-</div>
-<p>Vejamos como os modelos ajustam os dados.</p>
-<p>Fizemos dois ajustes. O primeiro, estimando os dois parâmetros através de <code>MASS::fitdistr</code>. O segundo, supondo o ENL conhecido e estimando apenas a média. Repare que o primeiro ajuste é excelente, enquanto o segundo não é bom.</p>
-<p>O parâmetro de forma (<code>shape</code>) estimado por máxima verossimilhança é comparado ao ENL estimado por <span class="math inline">\(1/CV^2\)</span> para cada imagem e banda. O coeficiente de variação usa o desvio-padrão amostral. Aqui estamos usando o ENL da amostra, partindo do pressuposto que ela é homogênea no domínio espacial.</p>
+\end{equation}\]</span></p>
+<section id="enl-da-cena-completa" class="level2">
+<h2 class="anchored" data-anchor-id="enl-da-cena-completa">ENL da cena completa</h2>
+<p>Jales reportou que o número equivalente de looks é <span class="math inline">\(1.8944\)</span> para C11 e <span class="math inline">\(1.9549\)</span> para C22. Esses valores foram obtidos a partir de amostras extraídas sobre corpos d’água e solo exposto na cena completa. Em teoria, esta é uma estimativa global para a cena.</p>
+<p>Para cada classe de cobertura, comparamos três parametrizações: 1. Os parâmetros estimados por <code>MASS::fitdistr</code>; 2. ENL da amostra e média da amosta 3. ENL da cena completa e média da amostra</p>
+</section>
+<section id="amostras-de-floresta-fo" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-floresta-fo">Amostras de Floresta (Fo)</h2>
 <div class="cell">
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
@@ -387,7 +385,7 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <th style="text-align: left;">Imagem</th>
 <th style="text-align: left;">Banda</th>
 <th style="text-align: right;">shape (fitdistr)</th>
-<th style="text-align: right;">ENL (1/CV^2)</th>
+<th style="text-align: right;">ENL da amostra (1/CV^2)</th>
 </tr>
 </thead>
 <tbody>
@@ -454,83 +452,379 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 </tbody>
 </table>
 </div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaFo-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="amostras-de-savana-sv" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-savana-sv">Amostras de Savana (Sv)</h2>
 <div class="cell">
 <div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Imagem</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;">shape (fitdistr)</th>
+<th style="text-align: right;">ENL da amostra (1/CV^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.1263</td>
+<td style="text-align: right;">3.0803</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.1183</td>
+<td style="text-align: right;">3.2074</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.1309</td>
+<td style="text-align: right;">2.9167</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.1468</td>
+<td style="text-align: right;">2.7769</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SvG</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.4278</td>
+<td style="text-align: right;">2.9990</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">3.1586</td>
+<td style="text-align: right;">2.8999</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">3.5027</td>
+<td style="text-align: right;">2.9562</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.9673</td>
+<td style="text-align: right;">2.4120</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.9039</td>
+<td style="text-align: right;">2.7618</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">SvG</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">3.0337</td>
+<td style="text-align: right;">2.8257</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHH-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaSv-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHH-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaSv-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHH-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaSv-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHH-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaSv-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHH-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaSv-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaSv-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaSv-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaSv-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaSv-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaSv-10.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
+</section>
+<section id="amostras-de-campestre-gl" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-campestre-gl">Amostras de Campestre (Gl)</h2>
 <div class="cell">
 <div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Imagem</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;">shape (fitdistr)</th>
+<th style="text-align: right;">ENL da amostra (1/CV^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.6226</td>
+<td style="text-align: right;">1.4164</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">3.3014</td>
+<td style="text-align: right;">3.0694</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.7278</td>
+<td style="text-align: right;">1.8018</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.9922</td>
+<td style="text-align: right;">2.5960</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GlG</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.3792</td>
+<td style="text-align: right;">1.6746</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.5487</td>
+<td style="text-align: right;">1.9600</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">3.6366</td>
+<td style="text-align: right;">3.2888</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">3.1724</td>
+<td style="text-align: right;">2.1008</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.9804</td>
+<td style="text-align: right;">2.5781</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">GlG</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.3782</td>
+<td style="text-align: right;">1.2803</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHV-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaGl-1.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHV-2.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaGl-2.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHV-3.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaGl-3.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHV-4.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaGl-4.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosIHV-5.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/AnaliseGammaGl-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaGl-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaGl-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaGl-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaGl-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/AnaliseGammaGl-10.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
 </div>
-<p>Os valores de <code>shape</code> e os ENL locais estimados por <span class="math inline">\(1/CV^2\)</span> são próximos, como esperado para dados compatíveis com o modelo gama.</p>
-<p>O que estava dando erro na distribuição antes era utilizar o ENL estimado a partir de amostras de corpos d’água, uma tentativa de estimar o ENL global da cena. Ao se utilizar o ENL estimado a partir dos dados da amostra de floresta, este convergiu com os parâmetros ajustados com <code>MASS::fitdistr</code>.</p>
+<p>Os valores de <code>shape</code> e os ENL da amostra estimados por <span class="math inline">\(1/CV^2\)</span> podem ser comparados em cada tabela, e os três gráficos por amostra permitem avaliar o efeito de fixar o ENL da amostra ou o ENL da cena completa nas classes de floresta, savana e campestre.</p>
+<p>Para todos os casos, todas as parametrizações apresentaram certa convergência, o que é esperado para o caso de de dados que seguem a distribuição gama. No entanto, fica o meu questionamento (Jales): essa suposta similaridade entre as curvas é suficiente para utilizarmos um teste de hipótese paramétricos para esses dados?</p>
+<p>Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.</p>
+</section>
 </section>
 
 </main>
