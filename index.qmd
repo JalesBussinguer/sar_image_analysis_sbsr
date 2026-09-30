@@ -342,6 +342,7 @@ for (b in seq_len(B)) {
   xb <- rgamma(n, shape = L_hat, scale = mu_hat / L_hat)
 
   # Re-estimate parameters in each simulated sample
+  # faça-o como acima, não por momentos
   L_b  <- mean(xb)^2 / var(xb)
   mu_b <- mean(xb)
 
