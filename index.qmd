@@ -98,8 +98,8 @@ Jales reportou que o número equivalente de looks é $1.9216$ para C11 e $1.9650
 para C22.
 
 ```{r ENL, echo=FALSE}
-LHH <- 1.9216
-LHV <- 1.9650
+LHH <- 1.8
+LHV <- 1.9549
 ```
 
 Verificaremos os ajustes de modelos gama com esses parâmetros de forma.
@@ -133,13 +133,41 @@ O primeiro, estimando os dois parâmetros através de `MASS::fitdistr`.
 O segundo, supondo o ENL conhecido e estimando apenas a média.
 Repare que o primeiro ajuste é excelente, enquanto o segundo não é bom.
 
+O parâmetro de forma (`shape`) estimado por máxima verossimilhança é comparado
+ao ENL estimado por $1/CV^2$ para cada imagem e banda. O coeficiente de
+variação usa o desvio-padrão amostral.
+Aqui estamos usando o ENL da amostra, partindo do pressuposto que ela é homogênea no domínio espacial.
+
+
+```{r AjustesGamma, echo=FALSE}
+Grupos <- split(Intensities.molten,
+                list(Intensities.molten$Image, Intensities.molten$Band),
+                drop=TRUE)
+Ajustes_Gama <- lapply(Grupos, function(amostra) {
+  MASS::fitdistr(amostra$Intensity, densfun="gamma")
+})
+
+Tabela_Ajustes <- do.call(rbind, lapply(names(Grupos), function(grupo) {
+  amostra <- Grupos[[grupo]]
+  cv <- sd(amostra$Intensity) / mean(amostra$Intensity)
+  data.frame(
+    Image=as.character(amostra$Image[1]),
+    Band=as.character(amostra$Band[1]),
+    shape=unname(Ajustes_Gama[[grupo]]$estimate["shape"]),
+    ENL_CV=1 / cv^2
+  )
+}))
+
+knitr::kable(Tabela_Ajustes, digits=4,
+             col.names=c("Imagem", "Banda", "shape (fitdistr)", "ENL (1/CV^2)"))
+```
 
 ```{r ModelosDados, echo=FALSE}
 
 # pFoBIHH <- 
 dados <- data.frame(dados=subset(Intensities.molten, 
                                  Image=="FoB" & Band=="IHH")$Intensity)
-estim_gamma <- MASS::fitdistr(dados$dados, densfun="gamma")
+estim_gamma <- Ajustes_Gama[["FoB.IHH"]]
 
 ggplot(dados, aes(x=dados)) +
   geom_histogram(aes(y=after_stat(density)),
@@ -149,18 +177,43 @@ ggplot(dados, aes(x=dados)) +
        x=NULL, y=NULL) +
   geom_density(linewidth=.3, alpha=.5) +
   stat_function(fun=dgamma,
-                args=list(shape=unname(estim_gamma$estimate[1]),
-                          rate=unname(estim_gamma$estimate[2])),
+                args=list(shape=unname(estim_gamma$estimate["shape"]),
+                          rate=unname(estim_gamma$estimate["rate"])),
                 col="maroon", alpha=.4, linewidth=2) +
   stat_function(fun=dgamma,
                 args=list(shape=LHH,
-                          scale=LHH*subset(Tabela_Medias, Image=="FoB" & Band=="IHH")$Intensity),
-                col="violet", linewidht=1.2)
+                          scale=subset(Tabela_Medias, Image=="FoB" & Band=="IHH")$Intensity/LHH),
+                col="violet", linewidth=1.2)
   
 ```
 
-Por favor refaça para as outras amostras e confira se a sua estimação do ENL está boa.
+```{r ModelosDadosFoBIHV, echo=FALSE}
 
-Reporte os parâmetros de forma (`shape`) retornados por `MASS::fitdistr`; 
-eles não deveriam ser muito diferentes dos ENL estimados pela recíproca do
-quadrado do coeficiente de variação.
+# FoB IHV
+dados <- data.frame(dados=subset(Intensities.molten, 
+                                 Image=="FoB" & Band=="IHV")$Intensity)
+estim_gamma <- Ajustes_Gama[["FoB.IHV"]]
+
+ggplot(dados, aes(x=dados)) +
+  geom_histogram(aes(y=after_stat(density)),
+                 bins=nclass.FD(dados$dados),
+                 col="black", fill="white") +
+  labs(title="FoB IHV",
+       x=NULL, y=NULL) +
+  geom_density(linewidth=.3, alpha=.5) +
+  stat_function(fun=dgamma,
+                args=list(shape=unname(estim_gamma$estimate["shape"]),
+                          rate=unname(estim_gamma$estimate["rate"])),
+                col="maroon", alpha=.4, linewidth=2) +
+  stat_function(fun=dgamma,
+                args=list(shape=LHV,
+                          scale=subset(Tabela_Medias, Image=="FoB" & Band=="IHV")$Intensity/LHV),
+                col="violet", linewidth=1.2)
+  
+```
+
+Os valores de `shape` e os ENL locais estimados por $1/CV^2$ são próximos, como
+esperado para dados compatíveis com o modelo gama.
+
+O que estava dando erro na distribuição antes era utilizar o ENL estimado a partir de amostras de corpos d'água, uma tentativa de estimar o ENL global da cena.
+Ao se utilizar o ENL estimado a partir dos dados da amostra de floresta, este convergiu com os parâmetros ajustados com `MASS::fitdistr`. 

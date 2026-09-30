@@ -168,96 +168,82 @@ window.Quarto = {
 <h1>Análise não-paramétrica</h1>
 <p>Precisamos verificar se duas amostras foram geradas pela mesma distribuição.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Fo_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_B.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! 'Data/Fo_B.csv' does not exist in current working directory:
-  'C:/Users/jales/Documents/GitHub/sar_image_analysis_sbsr'.</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>Fo_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_R.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! 'Data/Fo_R.csv' does not exist in current working directory:
-  'C:/Users/jales/Documents/GitHub/sar_image_analysis_sbsr'.</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Fo_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_B.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Fo_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_R.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Resumo dos dados</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Fo_B[,<span class="sc">-</span><span class="dv">1</span>], </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoB"</span>, <span class="fu">nrow</span>(Fo_B))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Fo_B' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(Fo_B[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>                          <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoB"</span>, <span class="fu">nrow</span>(Fo_B))))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_R[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoR"</span>, <span class="fu">nrow</span>(Fo_R)))))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Intensities.molten <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">melt</span>(Intensities, <span class="at">variable.name=</span><span class="st">"Band"</span>, <span class="at">value.name=</span><span class="st">"Intensity"</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Intensities.molten)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code> Image      Band       Intensity       
+ FoB:600   IHH:600   Min.   :0.009653  
+ FoR:600   IHV:600   1st Qu.:0.095691  
+                     Median :0.174661  
+                     Mean   :0.237193  
+                     3rd Qu.:0.314686  
+                     Max.   :1.850368  </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_R[,<span class="sc">-</span><span class="dv">1</span>], </span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoR"</span>, <span class="fu">nrow</span>(Fo_R)))))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Intensities.molten <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">melt</span>(Intensities, <span class="at">variable.name=</span><span class="st">"Band"</span>, <span class="at">value.name=</span><span class="st">"Intensity"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Intensities.molten)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>Tabela_Intervalo <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">data =</span> Intensities.molten, </span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>                          Intensity <span class="sc">~</span> Image <span class="sc">+</span> Band, </span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">FUN=</span>summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
-</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Tabela_Intervalo <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">data =</span> Intensities.molten, </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          Intensity <span class="sc">~</span> Image <span class="sc">+</span> Band, </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">FUN=</span>summary)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Histogramas suavizados</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Intensities.molten, <span class="fu">aes</span>(<span class="at">x=</span>Intensity, <span class="at">col=</span>Image)) <span class="sc">+</span></span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth=</span><span class="fl">1.2</span>, <span class="at">alpha=</span>.<span class="dv">5</span>) <span class="sc">+</span></span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Empirical densities"</span>) <span class="sc">+</span></span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>Band)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Intensities.molten, <span class="fu">aes</span>(<span class="at">x=</span>Intensity, <span class="at">col=</span>Image)) <span class="sc">+</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_density</span>(<span class="at">linewidth=</span><span class="fl">1.2</span>, <span class="at">alpha=</span>.<span class="dv">5</span>) <span class="sc">+</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="at">notch=</span><span class="cn">TRUE</span>) <span class="sc">+</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Empirical densities"</span>) <span class="sc">+</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>Band)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/Histograms-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>QQ-plots</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Intensities.molten, <span class="fu">aes</span>(<span class="at">sample=</span>Intensity, <span class="at">col=</span>Image)) <span class="sc">+</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
-<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sample quantiles"</span>) <span class="sc">+</span></span>
-<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Theoretical quantiles"</span>) <span class="sc">+</span></span>
-<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>Band)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(Intensities.molten, <span class="fu">aes</span>(<span class="at">sample=</span>Intensity, <span class="at">col=</span>Image)) <span class="sc">+</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq_line</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stat_qq</span>() <span class="sc">+</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">"Sample quantiles"</span>) <span class="sc">+</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">"Theoretical quantiles"</span>) <span class="sc">+</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_grid</span>(<span class="sc">~</span>Band)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/QQplots-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
 </div>
 </div>
 <p>Testes de permutações para comparar as amostras</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HH"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Banda HH</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Fo_B' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 7.306471  0.000250 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Banda HV</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Fo_B' not found</code></pre>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.132456  0.023500 </code></pre>
 </div>
 </div>
 </section>
@@ -273,33 +259,77 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 \label{eq:dgamaLmu}
 \end{equation}\]</span> Nós já temos estimativas de <span class="math inline">\(L\)</span> para cada banda. Calculamos as médias amostrais para usar no lugar de <span class="math inline">\(\mu\)</span>:</p>
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
-</div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Tabela_Medias' not found</code></pre>
+<div class="cell-output cell-output-stdout">
+<pre><code>  Image Band Intensity
+1   FoB  IHH 0.4071796
+2   FoR  IHH 0.2947184
+3   FoB  IHV 0.1334638
+4   FoR  IHV 0.1134103</code></pre>
 </div>
 </div>
 <p>Vejamos como os modelos ajustam os dados.</p>
 <p>Fizemos dois ajustes. O primeiro, estimando os dois parâmetros através de <code>MASS::fitdistr</code>. O segundo, supondo o ENL conhecido e estimando apenas a média. Repare que o primeiro ajuste é excelente, enquanto o segundo não é bom.</p>
+<p>O parâmetro de forma (<code>shape</code>) estimado por máxima verossimilhança é comparado ao ENL estimado por <span class="math inline">\(1/CV^2\)</span> para cada imagem e banda. O coeficiente de variação usa o desvio-padrão amostral. Aqui estamos usando o ENL da amostra, partindo do pressuposto que ela é homogênea no domínio espacial.</p>
 <div class="cell">
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'Intensities.molten' not found</code></pre>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Imagem</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;">shape (fitdistr)</th>
+<th style="text-align: right;">ENL (1/CV^2)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.7587</td>
+<td style="text-align: right;">2.3169</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.7701</td>
+<td style="text-align: right;">2.6037</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.4711</td>
+<td style="text-align: right;">2.3618</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.1992</td>
+<td style="text-align: right;">1.8205</td>
+</tr>
+</tbody>
+</table>
 </div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'dados' not found</code></pre>
 </div>
-<div class="cell-output cell-output-error">
-<pre><code>Error:
-! object 'dados' not found</code></pre>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDados-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
-<p>Por favor refaça para as outras amostras e confira se a sua estimação do ENL está boa.</p>
-<p>Reporte os parâmetros de forma (<code>shape</code>) retornados por <code>MASS::fitdistr</code>; eles não deveriam ser muito diferentes dos ENL estimados pela recíproca do quadrado do coeficiente de variação.</p>
+</div>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosFoBIHV-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Os valores de <code>shape</code> e os ENL locais estimados por <span class="math inline">\(1/CV^2\)</span> são próximos, como esperado para dados compatíveis com o modelo gama.</p>
+<p>O que estava dando erro na distribuição antes era utilizar o ENL estimado a partir de amostras de corpos d’água, uma tentativa de estimar o ENL global da cena. Ao se utilizar o ENL estimado a partir dos dados da amostra de floresta, este convergiu com os parâmetros ajustados com <code>MASS::fitdistr</code>.</p>
 </section>
 
 </main>
