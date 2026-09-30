@@ -34,6 +34,15 @@ library(reshape2)
 library(twosamples)
 ```
 
+# Introdução
+
+O que queremos verificar e qual é o objetivo?
+
+Brevíssima descrição das amostras:
+tipos de LULC,
+número de amostras por LULC,
+número de observações por amostra.
+
 # Análise não-paramétrica
 
 Precisamos verificar se as amostras foram geradas pela mesma distribuição.
@@ -91,7 +100,7 @@ ggplot(Intensities.molten, aes(x=Intensity, col=Image)) +
   geom_density(linewidth=1.2, alpha=.5) +
   geom_boxplot(notch=TRUE) +
   ylab("Empirical densities") +
-  facet_grid(~Band)
+  facet_grid(~Band, scales="free") # "soltamos" os eixos para promover comparação dentro de cada banda
 ```
 
 QQ-plots
@@ -102,13 +111,18 @@ ggplot(Intensities.molten, aes(sample=Intensity, col=Image)) +
   stat_qq() +
   ylab("Sample quantiles") +
   xlab("Theoretical quantiles") +
-  facet_grid(~Band)
+  facet_grid(~Band, scales="free")
 ```
 
 Testes de permutações para comparar as amostras
 
 ```{r PermutationTests}
-cat("Banda HH")
+cat("Banda HH") 
+# ACF Precisa organizar e mostrar como tabela
+# ACF Talvez, informe por separado os casos que não rejeito o teste a, digamos, 1%,
+# dos casos em que não houve rejeicão
+# ACF Apenas reporte o p-valor, não precisa da estatística de teste
+
 dts_test(Fo_W$IHH, Fo_U$IHH)
 dts_test(Fo_W$IHH, Fo_B$IHH)
 dts_test(Fo_W$IHH, Fo_R$IHH)
@@ -155,6 +169,12 @@ Jales reportou que o número equivalente de looks é $1.8944$ para C11 e $1.9549
 para C22.
 Esses valores foram obtidos a partir de amostras extraídas sobre corpos d'água e solo exposto na cena completa.
 Em teoria, esta é uma estimativa global para a cena.
+
+**ACF:** Não achei na tabela $1.8944$. 
+Esses dois valores iniciais são muito diferentes dos estimados por `fitdistr`. 
+Precisamos ver os casos discrepantes, pois podem ser indicativos de mau ajuste da gama.
+Alternativamente, sugiro agora proceder com testes de ajuste da gama, i.e., 
+*goodness-of-fit tests*.
 
 ```{r ENL, echo=FALSE}
 LHH <- 1.8944
@@ -291,5 +311,48 @@ savana e campestre.
 
 Para todos os casos, todas as parametrizações apresentaram certa convergência, o que é esperado para o caso de de dados que seguem a distribuição gama.
 No entanto, fica o meu questionamento (Jales): essa suposta similaridade entre as curvas é suficiente para utilizarmos um teste de hipótese paramétricos para esses dados?
+
+**ACF:** Não é suficiente. Vamos testar a qualidade do ajuste para a lei gama.
+Como estamos estimando os parâmetros, não devemos usar o teste de 
+Kolmogorov-Smirnov.
+Podemos usar bootstrap paramétrico.
+
+
+```{r TesteAderenciaBootstrapParametrico}
+# O p-valor desta amostra é 1/1000
+x <- Fo_W$IHH
+
+n <- length(x)
+
+# Maximum likelihood 
+estimativas <- MASS::fitdistr(x, densfun="gamma")$estimate
+L_hat  <- unname(estimativas[1])
+mu_hat <- unname(estimativas[2])
+
+# KS statistic against the fitted Gamma CDF
+D_obs <- max(abs(
+  ecdf(x)(sort(x)) -
+    pgamma(sort(x), shape = L_hat, scale = mu_hat / L_hat)
+))
+
+B <- 999
+D_sim <- numeric(B)
+
+for (b in seq_len(B)) {
+  xb <- rgamma(n, shape = L_hat, scale = mu_hat / L_hat)
+
+  # Re-estimate parameters in each simulated sample
+  L_b  <- mean(xb)^2 / var(xb)
+  mu_b <- mean(xb)
+
+  D_sim[b] <- max(abs(
+    ecdf(xb)(sort(xb)) -
+      pgamma(sort(xb), shape = L_b, scale = mu_b / L_b)
+  ))
+}
+
+p_value <- (1 + sum(D_sim >= D_obs)) / (B + 1)
+p_value
+```
 
 Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.
