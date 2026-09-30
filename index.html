@@ -166,10 +166,13 @@ window.Quarto = {
 </div>
 <section id="análise-não-paramétrica" class="level1">
 <h1>Análise não-paramétrica</h1>
-<p>Precisamos verificar se duas amostras foram geradas pela mesma distribuição.</p>
+<p>Precisamos verificar se as amostras foram geradas pela mesma distribuição.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Fo_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_B.csv"</span>)</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Fo_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/Fo_R.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>Fo_W <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_W.csv"</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>Fo_U <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_U.csv"</span>)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>Fo_B <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_B.csv"</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>Fo_R <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_R.csv"</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>Fo_G <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">"Data/pnb_samples/nisar/Fo_G.csv"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p>Resumo dos dados</p>
 <div class="cell">
@@ -178,17 +181,27 @@ window.Quarto = {
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_R[,<span class="sc">-</span><span class="dv">1</span>], </span>
 <span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoR"</span>, <span class="fu">nrow</span>(Fo_R)))))</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Intensities.molten <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">melt</span>(Intensities, <span class="at">variable.name=</span><span class="st">"Band"</span>, <span class="at">value.name=</span><span class="st">"Intensity"</span>)</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Intensities.molten)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_W[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoW"</span>, <span class="fu">nrow</span>(Fo_W)))))</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_U[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoU"</span>, <span class="fu">nrow</span>(Fo_U)))))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>Intensities <span class="ot">&lt;-</span> <span class="fu">rbind</span>(Intensities,</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>                     <span class="fu">data.frame</span>(Fo_G[,<span class="sc">-</span><span class="dv">1</span>], </span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                                <span class="at">Image=</span><span class="fu">as.factor</span>(<span class="fu">rep</span>(<span class="st">"FoG"</span>, <span class="fu">nrow</span>(Fo_G)))))                               </span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>Intensities.molten <span class="ot">&lt;-</span> reshape2<span class="sc">::</span><span class="fu">melt</span>(Intensities, <span class="at">variable.name=</span><span class="st">"Band"</span>, <span class="at">value.name=</span><span class="st">"Intensity"</span>)</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(Intensities.molten)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code> Image      Band       Intensity       
- FoB:600   IHH:600   Min.   :0.009653  
- FoR:600   IHV:600   1st Qu.:0.095691  
-                     Median :0.174661  
-                     Mean   :0.237193  
-                     3rd Qu.:0.314686  
-                     Max.   :1.850368  </code></pre>
+<pre><code> Image      Band        Intensity       
+ FoB:600   IHH:1501   Min.   :0.009653  
+ FoR:600   IHV:1501   1st Qu.:0.086975  
+ FoW:600              Median :0.162542  
+ FoU:600              Mean   :0.224265  
+ FoG:602              3rd Qu.:0.295810  
+                      Max.   :2.418744  </code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>Tabela_Intervalo <span class="ot">&lt;-</span> <span class="fu">aggregate</span>(<span class="at">data =</span> Intensities.molten, </span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>                          Intensity <span class="sc">~</span> Image <span class="sc">+</span> Band, </span>
@@ -231,19 +244,109 @@ window.Quarto = {
 <div class="cell-output cell-output-stdout">
 <pre><code>Banda HH</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_U<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 2.827014  0.610000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_B<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 6.166086  0.000250 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.629374  0.238000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+  3.46306   0.01600 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_B<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+  7.02942   0.00050 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 2.584788  0.938000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 4.182089  0.047000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_R<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
  7.306471  0.000250 </code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 3.088899  0.078500 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb28"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_R<span class="sc">$</span>IHH, Fo_G<span class="sc">$</span>IHH)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 4.510745  0.000250 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb30"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">"Banda HV"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Banda HV</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_U<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Test Stat   P-Value 
- 1.132456  0.023500 </code></pre>
+0.3931796 0.5665000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_B<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.767505  0.000250 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.130737  0.015000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb38"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_W<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.007586  0.032500 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb40"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_B<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.621602  0.000250 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb42"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+0.9036361 0.1040000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb44"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_U<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+0.8086287 0.1240000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb46"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_R<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+ 1.132456  0.017500 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb48"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_B<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+0.9459782 0.0555000 </code></pre>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb50"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dts_test</span>(Fo_R<span class="sc">$</span>IHV, Fo_G<span class="sc">$</span>IHV)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Test Stat   P-Value 
+0.3534095 0.9550000 </code></pre>
 </div>
 </div>
 </section>
@@ -260,11 +363,17 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 \end{equation}\]</span> Nós já temos estimativas de <span class="math inline">\(L\)</span> para cada banda. Calculamos as médias amostrais para usar no lugar de <span class="math inline">\(\mu\)</span>:</p>
 <div class="cell">
 <div class="cell-output cell-output-stdout">
-<pre><code>  Image Band Intensity
-1   FoB  IHH 0.4071796
-2   FoR  IHH 0.2947184
-3   FoB  IHV 0.1334638
-4   FoR  IHV 0.1134103</code></pre>
+<pre><code>   Image Band Intensity
+1    FoB  IHH 0.4071796
+2    FoR  IHH 0.2947184
+3    FoW  IHH 0.3186493
+4    FoU  IHH 0.3021950
+5    FoG  IHH 0.3494229
+6    FoB  IHV 0.1334638
+7    FoR  IHV 0.1134103
+8    FoW  IHV 0.1025803
+9    FoU  IHV 0.1056639
+10   FoG  IHV 0.1153083</code></pre>
 </div>
 </div>
 <p>Vejamos como os modelos ajustam os dados.</p>
@@ -295,16 +404,52 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <td style="text-align: right;">2.6037</td>
 </tr>
 <tr class="odd">
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.6964</td>
+<td style="text-align: right;">2.7274</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.4811</td>
+<td style="text-align: right;">1.8651</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FoG</td>
+<td style="text-align: left;">IHH</td>
+<td style="text-align: right;">2.4274</td>
+<td style="text-align: right;">1.9596</td>
+</tr>
+<tr class="even">
 <td style="text-align: left;">FoB</td>
 <td style="text-align: left;">IHV</td>
 <td style="text-align: right;">2.4711</td>
 <td style="text-align: right;">2.3618</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td style="text-align: left;">FoR</td>
 <td style="text-align: left;">IHV</td>
 <td style="text-align: right;">2.1992</td>
 <td style="text-align: right;">1.8205</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.9258</td>
+<td style="text-align: right;">2.5934</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.6862</td>
+<td style="text-align: right;">2.4052</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">FoG</td>
+<td style="text-align: left;">IHV</td>
+<td style="text-align: right;">2.4284</td>
+<td style="text-align: right;">2.1145</td>
 </tr>
 </tbody>
 </table>
@@ -314,7 +459,35 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDados-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/ModelosDadosIHH-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHH-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHH-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHH-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHH-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>
@@ -323,7 +496,35 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <div class="cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/ModelosDadosFoBIHV-1.png" class="img-fluid figure-img" width="672"></p>
+<p><img src="index_files/figure-html/ModelosDadosIHV-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHV-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHV-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHV-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/ModelosDadosIHV-5.png" class="img-fluid figure-img" width="672"></p>
 </figure>
 </div>
 </div>

@@ -36,11 +36,15 @@ library(twosamples)
 
 # Análise não-paramétrica
 
-Precisamos verificar se duas amostras foram geradas pela mesma distribuição.
+Precisamos verificar se as amostras foram geradas pela mesma distribuição.
 
 ```{r LeituraDeDados}
-Fo_B <- read_csv("Data/Fo_B.csv")
-Fo_R <- read_csv("Data/Fo_R.csv")
+
+Fo_W <- read_csv("Data/pnb_samples/nisar/Fo_W.csv")
+Fo_U <- read_csv("Data/pnb_samples/nisar/Fo_U.csv")
+Fo_B <- read_csv("Data/pnb_samples/nisar/Fo_B.csv")
+Fo_R <- read_csv("Data/pnb_samples/nisar/Fo_R.csv")
+Fo_G <- read_csv("Data/pnb_samples/nisar/Fo_G.csv")
 ```
 
 Resumo dos dados
@@ -51,6 +55,16 @@ Intensities <- data.frame(Fo_B[,-1],
 Intensities <- rbind(Intensities,
                      data.frame(Fo_R[,-1], 
                                 Image=as.factor(rep("FoR", nrow(Fo_R)))))
+Intensities <- rbind(Intensities,
+                     data.frame(Fo_W[,-1], 
+                                Image=as.factor(rep("FoW", nrow(Fo_W)))))
+Intensities <- rbind(Intensities,
+                     data.frame(Fo_U[,-1], 
+                                Image=as.factor(rep("FoU", nrow(Fo_U)))))
+Intensities <- rbind(Intensities,
+                     data.frame(Fo_G[,-1], 
+                                Image=as.factor(rep("FoG", nrow(Fo_G)))))                               
+
 Intensities.molten <- reshape2::melt(Intensities, variable.name="Band", value.name="Intensity")
 
 summary(Intensities.molten)
@@ -85,10 +99,28 @@ Testes de permutações para comparar as amostras
 
 ```{r PermutationTests}
 cat("Banda HH")
+dts_test(Fo_W$IHH, Fo_U$IHH)
+dts_test(Fo_W$IHH, Fo_B$IHH)
+dts_test(Fo_W$IHH, Fo_R$IHH)
+dts_test(Fo_W$IHH, Fo_G$IHH)
+dts_test(Fo_U$IHH, Fo_B$IHH)
+dts_test(Fo_U$IHH, Fo_R$IHH)
+dts_test(Fo_U$IHH, Fo_G$IHH)
 dts_test(Fo_B$IHH, Fo_R$IHH)
+dts_test(Fo_B$IHH, Fo_G$IHH)
+dts_test(Fo_R$IHH, Fo_G$IHH)
 
 cat("Banda HV")
+dts_test(Fo_W$IHV, Fo_U$IHV)
+dts_test(Fo_W$IHV, Fo_B$IHV)
+dts_test(Fo_W$IHV, Fo_R$IHV)
+dts_test(Fo_W$IHV, Fo_G$IHV)
+dts_test(Fo_U$IHV, Fo_B$IHV)
+dts_test(Fo_U$IHV, Fo_R$IHV)
+dts_test(Fo_U$IHV, Fo_G$IHV)
 dts_test(Fo_B$IHV, Fo_R$IHV)
+dts_test(Fo_B$IHV, Fo_G$IHV)
+dts_test(Fo_R$IHV, Fo_G$IHV)
 
 ```
 
@@ -162,54 +194,52 @@ knitr::kable(Tabela_Ajustes, digits=4,
              col.names=c("Imagem", "Banda", "shape (fitdistr)", "ENL (1/CV^2)"))
 ```
 
-```{r ModelosDados, echo=FALSE}
+```{r FuncaoModelosDados, echo=FALSE}
 
-# pFoBIHH <- 
-dados <- data.frame(dados=subset(Intensities.molten, 
-                                 Image=="FoB" & Band=="IHH")$Intensity)
-estim_gamma <- Ajustes_Gama[["FoB.IHH"]]
+plot_gamma_fit <- function(imagem, banda, L) {
+  dados <- data.frame(dados=subset(Intensities.molten,
+                                   Image==imagem & Band==banda)$Intensity)
+  estim_gamma <- Ajustes_Gama[[paste(imagem, banda, sep=".")]]
+  media <- subset(Tabela_Medias, Image==imagem & Band==banda)$Intensity
 
-ggplot(dados, aes(x=dados)) +
-  geom_histogram(aes(y=after_stat(density)),
-                 bins=nclass.FD(dados$dados),
-                 col="black", fill="white") +
-  labs(title="FoB IHH",
-       x=NULL, y=NULL) +
-  geom_density(linewidth=.3, alpha=.5) +
-  stat_function(fun=dgamma,
-                args=list(shape=unname(estim_gamma$estimate["shape"]),
-                          rate=unname(estim_gamma$estimate["rate"])),
-                col="maroon", alpha=.4, linewidth=2) +
-  stat_function(fun=dgamma,
-                args=list(shape=LHH,
-                          scale=subset(Tabela_Medias, Image=="FoB" & Band=="IHH")$Intensity/LHH),
-                col="violet", linewidth=1.2)
-  
+  ggplot(dados, aes(x=dados)) +
+    geom_histogram(aes(y=after_stat(density)),
+                   bins=nclass.FD(dados$dados),
+                   col="black", fill="white") +
+    labs(title=paste(imagem, banda),
+         x=NULL, y=NULL, color=NULL) +
+    geom_density(aes(color="Densidade empírica"),
+                 linewidth=.3, alpha=.5) +
+    stat_function(fun=dgamma,
+                  aes(color="Gamma ajustada"),
+                  args=list(shape=unname(estim_gamma$estimate["shape"]),
+                            rate=unname(estim_gamma$estimate["rate"])),
+                  alpha=.4, linewidth=2) +
+    stat_function(fun=dgamma,
+                  aes(color="Gamma com ENL local"),
+                  args=list(shape=L,
+                            scale=media/L),
+                  linewidth=1.2) +
+    scale_color_manual(values=c("Densidade empírica"="black",
+                                "Gamma ajustada"="maroon",
+                                "Gamma com ENL local"="violet"))
+}
+
+Imagens <- levels(Intensities.molten$Image)
 ```
 
-```{r ModelosDadosFoBIHV, echo=FALSE}
+```{r ModelosDadosIHH, echo=FALSE}
 
-# FoB IHV
-dados <- data.frame(dados=subset(Intensities.molten, 
-                                 Image=="FoB" & Band=="IHV")$Intensity)
-estim_gamma <- Ajustes_Gama[["FoB.IHV"]]
+for (imagem in Imagens) {
+  print(plot_gamma_fit(imagem, "IHH", LHH))
+}
+```
 
-ggplot(dados, aes(x=dados)) +
-  geom_histogram(aes(y=after_stat(density)),
-                 bins=nclass.FD(dados$dados),
-                 col="black", fill="white") +
-  labs(title="FoB IHV",
-       x=NULL, y=NULL) +
-  geom_density(linewidth=.3, alpha=.5) +
-  stat_function(fun=dgamma,
-                args=list(shape=unname(estim_gamma$estimate["shape"]),
-                          rate=unname(estim_gamma$estimate["rate"])),
-                col="maroon", alpha=.4, linewidth=2) +
-  stat_function(fun=dgamma,
-                args=list(shape=LHV,
-                          scale=subset(Tabela_Medias, Image=="FoB" & Band=="IHV")$Intensity/LHV),
-                col="violet", linewidth=1.2)
-  
+```{r ModelosDadosIHV, echo=FALSE}
+
+for (imagem in Imagens) {
+  print(plot_gamma_fit(imagem, "IHV", LHV))
+}
 ```
 
 Os valores de `shape` e os ENL locais estimados por $1/CV^2$ são próximos, como
