@@ -79,21 +79,21 @@ Precisamos verificar se as amostras foram geradas pela mesma distribuição.
 
 ```{r LeituraDeDados}
 
-Fo_W <- read_csv("Data/pnb_samples/nisar/Fo_W.csv")
-Fo_U <- read_csv("Data/pnb_samples/nisar/Fo_U.csv")
-Fo_B <- read_csv("Data/pnb_samples/nisar/Fo_B.csv")
-Fo_R <- read_csv("Data/pnb_samples/nisar/Fo_R.csv")
-Fo_G <- read_csv("Data/pnb_samples/nisar/Fo_G.csv")
-Sv_W <- read_csv("Data/pnb_samples/nisar/Sv_W.csv")
-Sv_U <- read_csv("Data/pnb_samples/nisar/Sv_U.csv")
-Sv_B <- read_csv("Data/pnb_samples/nisar/Sv_B.csv")
-Sv_R <- read_csv("Data/pnb_samples/nisar/Sv_R.csv")
-Sv_G <- read_csv("Data/pnb_samples/nisar/Sv_G.csv")
-Gl_W <- read_csv("Data/pnb_samples/nisar/Gl_W.csv")
-Gl_U <- read_csv("Data/pnb_samples/nisar/Gl_U.csv")
-Gl_B <- read_csv("Data/pnb_samples/nisar/Gl_B.csv")
-Gl_R <- read_csv("Data/pnb_samples/nisar/Gl_R.csv")
-Gl_G <- read_csv("Data/pnb_samples/nisar/Gl_G.csv")
+Fo_W <- read_csv("Data/pnb_samples/nisar/n_200/Fo_W.csv")
+Fo_U <- read_csv("Data/pnb_samples/nisar/n_200/Fo_U.csv")
+Fo_B <- read_csv("Data/pnb_samples/nisar/n_200/Fo_B.csv")
+Fo_R <- read_csv("Data/pnb_samples/nisar/n_200/Fo_R.csv")
+Fo_G <- read_csv("Data/pnb_samples/nisar/n_200/Fo_G.csv")
+Sv_W <- read_csv("Data/pnb_samples/nisar/n_200/Sv_W.csv")
+Sv_U <- read_csv("Data/pnb_samples/nisar/n_200/Sv_U.csv")
+Sv_B <- read_csv("Data/pnb_samples/nisar/n_200/Sv_B.csv")
+Sv_R <- read_csv("Data/pnb_samples/nisar/n_200/Sv_R.csv")
+Sv_G <- read_csv("Data/pnb_samples/nisar/n_200/Sv_G.csv")
+Gl_W <- read_csv("Data/pnb_samples/nisar/n_200/Gl_W.csv")
+Gl_U <- read_csv("Data/pnb_samples/nisar/n_200/Gl_U.csv")
+Gl_B <- read_csv("Data/pnb_samples/nisar/n_200/Gl_B.csv")
+Gl_R <- read_csv("Data/pnb_samples/nisar/n_200/Gl_R.csv")
+Gl_G <- read_csv("Data/pnb_samples/nisar/n_200/Gl_G.csv")
 ```
 
 Resumo dos dados
@@ -209,7 +209,7 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 
 ## ENL da cena completa
 
-O número equivalente de looks é $1.8944$ para C11 e $1.9549$ 
+O número equivalente de looks é $3.3795$ para C11 e $3.4487$ 
 para C22.
 Esses valores foram obtidos a partir de amostras extraídas sobre corpos d'água e solo exposto na cena completa.
 Em teoria, esta é uma estimativa global para a cena.
@@ -220,8 +220,8 @@ Alternativamente, sugiro agora proceder com testes de ajuste da gama, i.e.,
 *goodness-of-fit tests*.
 
 ```{r ENL, echo=FALSE}
-LHH <- 1.8944
-LHV <- 1.9549
+LHH <- 3.3795
+LHV <- 3.4487
 ```
 
 Para cada classe de cobertura, comparamos três parametrizações: 
@@ -455,7 +455,6 @@ tabela_aderencia(subset(resultados_aderencia, p_valor < 0.01))
 
 Interessante: para as amostras da classe Floresta na polarização HH não se rejeita o ajuste à gama.
 Este é o único caso onde todas as amostras de uma classe é modelada pela gama.
-A amostra U da classe savana também adere à gama.
 
 Para todo o restante, a gama não é o modelo adequado para caracterizar as amostras.
 
