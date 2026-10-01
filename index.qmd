@@ -20,6 +20,21 @@ authors:
     corresponding: true
     
 bibliography: references.bib
+
+format:
+  html:
+    include-in-header:
+      text: |
+        <style>
+        #quarto-document-content {
+          text-align: justify;
+        }
+
+        #quarto-document-content th,
+        #quarto-document-content td {
+          text-align: justify !important;
+        }
+        </style>
 ---
 
 
@@ -36,12 +51,25 @@ library(twosamples)
 
 # Introdução
 
-O que queremos verificar e qual é o objetivo?
+Este estudo trata de uma análise de dados de intensidade do sinal do NISAR sobre a vegetação nativa do Cerrado.
+As três principais fitofisionomias do Cerrado são os alvos desta investigação: Formação Florestal, Formação Savânica e Formação Campestre.
+Cada fitofisionomia é tratada neste estudo como uma classe temática, e sua extensão é dada pelo mapa de uso e cobertura do solo (Land Use and Land Cover - LULC) de 2025 do MapBiomas, com resolução espacial de 10 m.
+A área estudada compreende o Parque Nacional de Brasília (PNB), Brasil.
 
-Brevíssima descrição das amostras:
-tipos de LULC,
-número de amostras por LULC,
-número de observações por amostra.
+Como fonte de dados SAR, utilizamos os dados do NISAR (banda L), com as polarizações HH e HV e resolução espacial de 10 m após o processamento de multilook com uma janela de 2x1.
+A partir desse dado, extraiu-se as componentes da matriz C2.
+A componente C11 correponde à intensidade do sinal na polarização HH, e a componente C22 corresponde à intensidade do sinal na polatização HV.
+A cena foi obtida através do portal Alaska Satellite Facility (ASF), com identificador NISAR_L2_PR_GSLC_023_146_A_170_4005_DHDH_A_20260624T090126_20260624T090159_P05023_N_F_J_001.h5
+
+A ideia central deste estudo é verificar se amostras de uma mesma classe conhecida a priori são homogêneas no domínio espacial.
+Parte-se do princípio de que caso as amostras sejam homogêneas no espaço, toda a classe pode ser modelada por uma mesma função de distribuição cumulativa.
+Nesse sentido, o objetivo deste estudo é testar a hipótese de homogeneidade no domínio espacial das classes de vegetação nativa do Cerrado.
+Esta é uma iniciativa que visa a compreensão dos dados SAR sobre o Cerrado, de modo a contribuir com o aperfeiçoamento do monitoramento e combate ao desmatamento no Cerrado brasileiro.
+
+Foram definidas 5 amostras espalhadas pelo domínio espacial das classes.
+Cada amostra recebeu um rótulo com uma cor: Branco (W), Azul (U), Preto (B), Vermelho (R) e Verde (G).
+Os polígonos amostrais possuem geometria retangular com 200 m x 150 m, totalizando 300 observações por amostra.
+Cada observação é um vetor contendo as intensidades das duas polarizações $O_{i} = (I_{HH}, I_{HV})$.
 
 # Análise não-paramétrica
 
@@ -117,34 +145,48 @@ ggplot(Intensities.molten, aes(sample=Intensity, col=Image)) +
 Testes de permutações para comparar as amostras
 
 ```{r PermutationTests}
-cat("Banda HH") 
-# ACF Precisa organizar e mostrar como tabela
-# ACF Talvez, informe por separado os casos que não rejeito o teste a, digamos, 1%,
-# dos casos em que não houve rejeicão
-# ACF Apenas reporte o p-valor, não precisa da estatística de teste
+amostras <- list(W = Fo_W, U = Fo_U, B = Fo_B, R = Fo_R, G = Fo_G)
+bandas <- c(HH = "IHH", HV = "IHV")
+pares <- combn(names(amostras), 2, simplify = FALSE)
 
-dts_test(Fo_W$IHH, Fo_U$IHH)
-dts_test(Fo_W$IHH, Fo_B$IHH)
-dts_test(Fo_W$IHH, Fo_R$IHH)
-dts_test(Fo_W$IHH, Fo_G$IHH)
-dts_test(Fo_U$IHH, Fo_B$IHH)
-dts_test(Fo_U$IHH, Fo_R$IHH)
-dts_test(Fo_U$IHH, Fo_G$IHH)
-dts_test(Fo_B$IHH, Fo_R$IHH)
-dts_test(Fo_B$IHH, Fo_G$IHH)
-dts_test(Fo_R$IHH, Fo_G$IHH)
+resultados_permutacao <- do.call(rbind, lapply(names(bandas), function(banda) {
+  variavel <- bandas[[banda]]
+  do.call(rbind, lapply(pares, function(par) {
+    teste <- dts_test(amostras[[par[1]]][[variavel]],
+                      amostras[[par[2]]][[variavel]])
+    data.frame(
+      Banda = banda,
+      Comparacao = paste(par, collapse = " vs. "),
+      p_valor = unname(teste[["P-Value"]])
+    )
+  }))
+}))
 
-cat("Banda HV")
-dts_test(Fo_W$IHV, Fo_U$IHV)
-dts_test(Fo_W$IHV, Fo_B$IHV)
-dts_test(Fo_W$IHV, Fo_R$IHV)
-dts_test(Fo_W$IHV, Fo_G$IHV)
-dts_test(Fo_U$IHV, Fo_B$IHV)
-dts_test(Fo_U$IHV, Fo_R$IHV)
-dts_test(Fo_U$IHV, Fo_G$IHV)
-dts_test(Fo_B$IHV, Fo_R$IHV)
-dts_test(Fo_B$IHV, Fo_G$IHV)
-dts_test(Fo_R$IHV, Fo_G$IHV)
+tabela_permutacao <- function(resultados) {
+  resultados <- resultados[order(resultados$Banda, resultados$Comparacao), ]
+  knitr::kable(
+    data.frame(
+      Banda = resultados$Banda,
+      Comparacao = resultados$Comparacao,
+      p_valor = format.pval(resultados$p_valor, digits = 3, eps = 0.001)
+    ),
+    col.names = c("Banda", "Comparação entre amostras", "p-valor")
+  )
+}
+```
+
+Considera-se significância de 1%: não se rejeita a hipótese nula quando $p \geq 0{,}01$ e rejeita-se quando $p < 0{,}01$.
+
+### Casos em que não se rejeita a hipótese nula
+
+```{r PermutationTestsNotRejected}
+tabela_permutacao(subset(resultados_permutacao, p_valor >= 0.01))
+```
+
+### Casos em que se rejeita a hipótese nula
+
+```{r PermutationTestsRejected}
+tabela_permutacao(subset(resultados_permutacao, p_valor < 0.01))
 
 ```
 
@@ -165,13 +207,12 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 
 ## ENL da cena completa
 
-Jales reportou que o número equivalente de looks é $1.8944$ para C11 e $1.9549$ 
+O número equivalente de looks é $1.8944$ para C11 e $1.9549$ 
 para C22.
 Esses valores foram obtidos a partir de amostras extraídas sobre corpos d'água e solo exposto na cena completa.
 Em teoria, esta é uma estimativa global para a cena.
 
-**ACF:** Não achei na tabela $1.8944$. 
-Esses dois valores iniciais são muito diferentes dos estimados por `fitdistr`. 
+**ACF:** Esses dois valores iniciais são muito diferentes dos estimados por `fitdistr`. 
 Precisamos ver os casos discrepantes, pois podem ser indicativos de mau ajuste da gama.
 Alternativamente, sugiro agora proceder com testes de ajuste da gama, i.e., 
 *goodness-of-fit tests*.
@@ -318,42 +359,94 @@ Kolmogorov-Smirnov.
 Podemos usar bootstrap paramétrico.
 
 
-```{r TesteAderenciaBootstrapParametrico}
-# O p-valor desta amostra é 1/1000
-x <- Fo_W$IHH
+```{r FuncaoTesteAderenciaBootstrapParametrico}
+# Teste de aderência à gama via bootstrap paramétrico sobre a estatística de
+# Kolmogorov-Smirnov. Como os parâmetros são estimados a partir da própria
+# amostra, a distribuição nula de D não é a tabelada para KS; por isso os
+# quantis são obtidos por simulação (bootstrap paramétrico), re-estimando os
+# parâmetros por máxima verossimilhança em cada réplica (não por momentos).
+teste_aderencia_gama <- function(x, B = 999) {
+  n <- length(x)
 
-n <- length(x)
+  estimativas <- MASS::fitdistr(x, densfun="gamma")$estimate
+  L_hat  <- unname(estimativas[1])
+  mu_hat <- unname(estimativas[2])
 
-# Maximum likelihood 
-estimativas <- MASS::fitdistr(x, densfun="gamma")$estimate
-L_hat  <- unname(estimativas[1])
-mu_hat <- unname(estimativas[2])
-
-# KS statistic against the fitted Gamma CDF
-D_obs <- max(abs(
-  ecdf(x)(sort(x)) -
-    pgamma(sort(x), shape = L_hat, scale = mu_hat / L_hat)
-))
-
-B <- 999
-D_sim <- numeric(B)
-
-for (b in seq_len(B)) {
-  xb <- rgamma(n, shape = L_hat, scale = mu_hat / L_hat)
-
-  # Re-estimate parameters in each simulated sample
-  # faça-o como acima, não por momentos
-  L_b  <- mean(xb)^2 / var(xb)
-  mu_b <- mean(xb)
-
-  D_sim[b] <- max(abs(
-    ecdf(xb)(sort(xb)) -
-      pgamma(sort(xb), shape = L_b, scale = mu_b / L_b)
+  D_obs <- max(abs(
+    ecdf(x)(sort(x)) -
+      pgamma(sort(x), shape = L_hat, scale = mu_hat / L_hat)
   ))
-}
 
-p_value <- (1 + sum(D_sim >= D_obs)) / (B + 1)
-p_value
+  D_sim <- numeric(B)
+  for (b in seq_len(B)) {
+    xb <- rgamma(n, shape = L_hat, scale = mu_hat / L_hat)
+
+    estimativas_b <- MASS::fitdistr(xb, densfun="gamma")$estimate
+    L_b  <- unname(estimativas_b[1])
+    mu_b <- unname(estimativas_b[2])
+
+    D_sim[b] <- max(abs(
+      ecdf(xb)(sort(xb)) -
+        pgamma(sort(xb), shape = L_b, scale = mu_b / L_b)
+    ))
+  }
+
+  (1 + sum(D_sim >= D_obs)) / (B + 1)
+}
+```
+
+Aplicamos o teste a todas as amostras das três classes (Fo, Sv, Gl) e às duas polarizações (IHH e IHV).
+
+```{r TesteAderenciaBootstrapParametrico}
+amostras_gof <- list(
+  FoB=Fo_B, FoR=Fo_R, FoW=Fo_W, FoU=Fo_U, FoG=Fo_G,
+  SvB=Sv_B, SvR=Sv_R, SvW=Sv_W, SvU=Sv_U, SvG=Sv_G,
+  GlB=Gl_B, GlR=Gl_R, GlW=Gl_W, GlU=Gl_U, GlG=Gl_G
+)
+classes_gof <- c(Fo="Floresta", Sv="Savana", Gl="Campestre")
+bandas_gof <- c(HH="IHH", HV="IHV")
+
+set.seed(2024)
+resultados_aderencia <- do.call(rbind, lapply(names(amostras_gof), function(imagem) {
+  classe <- classes_gof[[substr(imagem, 1, 2)]]
+  do.call(rbind, lapply(names(bandas_gof), function(banda) {
+    variavel <- bandas_gof[[banda]]
+    x <- amostras_gof[[imagem]][[variavel]]
+    data.frame(
+      Classe = classe,
+      Imagem = imagem,
+      Banda = banda,
+      p_valor = teste_aderencia_gama(x)
+    )
+  }))
+}))
+
+tabela_aderencia <- function(resultados) {
+  resultados <- resultados[order(resultados$Classe, resultados$Imagem, resultados$Banda), ]
+  knitr::kable(
+    data.frame(
+      Classe = resultados$Classe,
+      Imagem = resultados$Imagem,
+      Banda = resultados$Banda,
+      p_valor = format.pval(resultados$p_valor, digits = 3, eps = 0.001)
+    ),
+    col.names = c("Classe", "Imagem", "Banda", "p-valor")
+  )
+}
+```
+
+Considera-se significância de 1%: não se rejeita a hipótese nula de ajuste à gama quando $p \geq 0{,}01$ e rejeita-se quando $p < 0{,}01$.
+
+### Casos em que não se rejeita o ajuste à gama
+
+```{r TesteAderenciaNotRejected}
+tabela_aderencia(subset(resultados_aderencia, p_valor >= 0.01))
+```
+
+### Casos em que se rejeita o ajuste à gama
+
+```{r TesteAderenciaRejected}
+tabela_aderencia(subset(resultados_aderencia, p_valor < 0.01))
 ```
 
 Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.
