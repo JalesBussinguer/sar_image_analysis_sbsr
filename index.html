@@ -180,6 +180,12 @@ window.Quarto = {
 <p>Como fonte de dados SAR, utilizamos os dados do NISAR (banda L), com as polarizações HH e HV e resolução espacial de 10 m após o processamento de multilook com uma janela de 2x1. A partir desse dado, extraiu-se as componentes da matriz C2. A componente C11 correponde à intensidade do sinal na polarização HH, e a componente C22 corresponde à intensidade do sinal na polatização HV. A cena foi obtida através do portal Alaska Satellite Facility (ASF), com identificador NISAR_L2_PR_GSLC_023_146_A_170_4005_DHDH_A_20260624T090126_20260624T090159_P05023_N_F_J_001.h5</p>
 <p>A ideia central deste estudo é verificar se amostras de uma mesma classe conhecida a priori são homogêneas no domínio espacial. Parte-se do princípio de que caso as amostras sejam homogêneas no espaço, toda a classe pode ser modelada por uma mesma função de distribuição cumulativa. Nesse sentido, o objetivo deste estudo é testar a hipótese de homogeneidade no domínio espacial das classes de vegetação nativa do Cerrado. Esta é uma iniciativa que visa a compreensão dos dados SAR sobre o Cerrado, de modo a contribuir com o aperfeiçoamento do monitoramento e combate ao desmatamento no Cerrado brasileiro.</p>
 <p>Foram definidas 5 amostras espalhadas pelo domínio espacial das classes. Cada amostra recebeu um rótulo com uma cor: Branco (W), Azul (U), Preto (B), Vermelho (R) e Verde (G). Os polígonos amostrais possuem geometria retangular com 200 m x 150 m, totalizando 300 observações por amostra. Cada observação é um vetor contendo as intensidades das duas polarizações <span class="math inline">\(O_{i} = (I_{HH}, I_{HV})\)</span>.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="Figures/sketch_samples_sbsr.png" class="img-fluid figure-img"></p>
+<figcaption>Ilutração básica da distribuição das amostras no domínio espacial das classes estudadas.</figcaption>
+</figure>
+</div>
 </section>
 <section id="análise-não-paramétrica" class="level1">
 <h1>Análise não-paramétrica</h1>
@@ -314,42 +320,42 @@ window.Quarto = {
 <tr class="odd">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">B vs.&nbsp;G</td>
-<td style="text-align: left;">0.0920</td>
+<td style="text-align: left;">0.0825</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">U vs.&nbsp;G</td>
-<td style="text-align: left;">0.0415</td>
+<td style="text-align: left;">0.0500</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">U vs.&nbsp;R</td>
-<td style="text-align: left;">0.9435</td>
+<td style="text-align: left;">0.9450</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">W vs.&nbsp;G</td>
-<td style="text-align: left;">0.0200</td>
+<td style="text-align: left;">0.0245</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">W vs.&nbsp;R</td>
-<td style="text-align: left;">0.2430</td>
+<td style="text-align: left;">0.2620</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">W vs.&nbsp;U</td>
-<td style="text-align: left;">0.6360</td>
+<td style="text-align: left;">0.6175</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">B vs.&nbsp;G</td>
-<td style="text-align: left;">0.0540</td>
+<td style="text-align: left;">0.0495</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">B vs.&nbsp;R</td>
-<td style="text-align: left;">0.0190</td>
+<td style="text-align: left;">0.0165</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HV</td>
@@ -359,27 +365,27 @@ window.Quarto = {
 <tr class="even">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">U vs.&nbsp;G</td>
-<td style="text-align: left;">0.1185</td>
+<td style="text-align: left;">0.1200</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">U vs.&nbsp;R</td>
-<td style="text-align: left;">0.0885</td>
+<td style="text-align: left;">0.1015</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">W vs.&nbsp;G</td>
-<td style="text-align: left;">0.0360</td>
+<td style="text-align: left;">0.0255</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">W vs.&nbsp;R</td>
-<td style="text-align: left;">0.0180</td>
+<td style="text-align: left;">0.0150</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">HV</td>
 <td style="text-align: left;">W vs.&nbsp;U</td>
-<td style="text-align: left;">0.5735</td>
+<td style="text-align: left;">0.5755</td>
 </tr>
 </tbody>
 </table>
@@ -408,7 +414,7 @@ window.Quarto = {
 <tr class="even">
 <td style="text-align: left;">HH</td>
 <td style="text-align: left;">R vs.&nbsp;G</td>
-<td style="text-align: left;">&lt;0.001</td>
+<td style="text-align: left;">0.002</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">HH</td>
@@ -901,6 +907,10 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <p>Os valores de <code>shape</code> e os ENL da amostra estimados por <span class="math inline">\(1/CV^2\)</span> podem ser comparados em cada tabela, e os três gráficos por amostra permitem avaliar o efeito de fixar o ENL da amostra ou o ENL da cena completa nas classes de floresta, savana e campestre.</p>
 <p>Para todos os casos, todas as parametrizações apresentaram certa convergência, o que é esperado para o caso de de dados que seguem a distribuição gama. No entanto, fica o meu questionamento (Jales): essa suposta similaridade entre as curvas é suficiente para utilizarmos um teste de hipótese paramétricos para esses dados?</p>
 <p><strong>ACF:</strong> Não é suficiente. Vamos testar a qualidade do ajuste para a lei gama. Como estamos estimando os parâmetros, não devemos usar o teste de Kolmogorov-Smirnov. Podemos usar bootstrap paramétrico.</p>
+</section>
+</section>
+<section id="teste-de-aderência-à-distribuição-gama-goodness-of-fit" class="level1">
+<h1>Teste de aderência à distribuição gama (goodness-of-fit)</h1>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Teste de aderência à gama via bootstrap paramétrico sobre a estatística de</span></span>
 <span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Kolmogorov-Smirnov. Como os parâmetros são estimados a partir da própria</span></span>
@@ -1194,8 +1204,9 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 </table>
 </div>
 </div>
+<p>Interessante: para as amostras da classe Floresta na polarização HH não se rejeita o ajuste à gama. Este é o único caso onde todas as amostras de uma classe é modelada pela gama.</p>
+<p>A amostra U da classe savana também</p>
 <p>Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.</p>
-</section>
 </section>
 </section>
 

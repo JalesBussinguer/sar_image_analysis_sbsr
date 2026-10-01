@@ -71,6 +71,8 @@ Cada amostra recebeu um rótulo com uma cor: Branco (W), Azul (U), Preto (B), Ve
 Os polígonos amostrais possuem geometria retangular com 200 m x 150 m, totalizando 300 observações por amostra.
 Cada observação é um vetor contendo as intensidades das duas polarizações $O_{i} = (I_{HH}, I_{HV})$.
 
+![Ilutração básica da distribuição das amostras no domínio espacial das classes estudadas.](Figures/sketch_samples_sbsr.png)
+
 # Análise não-paramétrica
 
 Precisamos verificar se as amostras foram geradas pela mesma distribuição.
@@ -358,6 +360,8 @@ Como estamos estimando os parâmetros, não devemos usar o teste de
 Kolmogorov-Smirnov.
 Podemos usar bootstrap paramétrico.
 
+# Teste de aderência à distribuição gama (goodness-of-fit)
+
 
 ```{r FuncaoTesteAderenciaBootstrapParametrico}
 # Teste de aderência à gama via bootstrap paramétrico sobre a estatística de
@@ -448,5 +452,13 @@ tabela_aderencia(subset(resultados_aderencia, p_valor >= 0.01))
 ```{r TesteAderenciaRejected}
 tabela_aderencia(subset(resultados_aderencia, p_valor < 0.01))
 ```
+
+Interessante: para as amostras da classe Floresta na polarização HH não se rejeita o ajuste à gama.
+Este é o único caso onde todas as amostras de uma classe é modelada pela gama.
+A amostra U da classe savana também adere à gama.
+
+Para todo o restante, a gama não é o modelo adequado para caracterizar as amostras.
+
+Qual o próximo passo?
 
 Penso que se isso se confirmar, podemos utilizar o teste sobre distâncias estocásticas (Kullback-Leibler por exemplo) para fazer a verificação da similaridade/separabilidade entre as amostras de mesma classe.
