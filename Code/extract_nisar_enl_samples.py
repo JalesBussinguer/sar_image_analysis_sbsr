@@ -22,9 +22,9 @@ from shapely.validation import make_valid
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 SCENE_DIR = Path(
-    r"E:\nisar_data\output\nisar\NISAR_L2_PR_GSLC_023_146_A_170_4005_DHDH_A_20260624T090126_20260624T090159_P05023_N_F_J_001\00_extracted\C2HX"
+    r"E:\sentinel_data"
 )
-DEFAULT_SAMPLES = ROOT_DIR / "Data" / "ENL_samples" / "ENL_samples_sbsr.geojson"
+DEFAULT_SAMPLES = ROOT_DIR / "Data" / "sentinel1_ENL_samples" / "sentinel1_ENL_samples.geojson"
 LOGGER = logging.getLogger(__name__)
 
 
