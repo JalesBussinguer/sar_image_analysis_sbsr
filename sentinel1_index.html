@@ -1518,7 +1518,20 @@ f_Z(z;\alpha,\gamma,L)=\frac{L^L\Gamma(L-\alpha)}{\gamma^\alpha\Gamma(L)\Gamma(-
 \ell(\alpha,\gamma;\widehat L,\boldsymbol Z)=n\log\frac{\Gamma(\widehat L-\alpha)}{\gamma^\alpha\Gamma(-\alpha)}
 +\widehat L\sum_{i=1}^n\log\frac{Z_i}{\gamma+\widehat LZ_i}+\alpha\sum_{i=1}^n\log(\gamma+\widehat LZ_i),
 \]</span></p>
-<p>O ponto inicial é obtido pelo método dos momentos (<span class="math inline">\(k=1,2\)</span>).</p>
+<p>Os estimadores <span class="math inline">\(\widehat\alpha\)</span> e <span class="math inline">\(\widehat\gamma\)</span> são a solução do sistema de equações de score, <span class="math inline">\(\partial\ell/\partial\alpha=0\)</span> e <span class="math inline">\(\partial\ell/\partial\gamma=0\)</span>: <span class="math display">\[
+\begin{cases}
+\psi^0(\widehat L-\widehat\alpha)-\psi^0(-\widehat\alpha)+\log\widehat\gamma-\dfrac1n\displaystyle\sum_{i=1}^n\log(\widehat\gamma+\widehat LZ_i)=0,\\[2ex]
+-\dfrac{\widehat\alpha}{\widehat\gamma}+\dfrac{\widehat\alpha-\widehat L}{n}\displaystyle\sum_{i=1}^n(\widehat\gamma+\widehat LZ_i)^{-1}=0,
+\end{cases}
+\]</span> em que <span class="math inline">\(\psi^0(\cdot)\)</span> é a função digama. Esse sistema não possui solução em forma fechada, e por isso a estimação é feita por maximização numérica da log-verossimilhança (<code>optim</code>, método quasi-Newton L-BFGS-B).</p>
+<p>Como o método é iterativo, precisa de um ponto inicial, que obtemos pelo método dos momentos. O momento de ordem <span class="math inline">\(r\)</span> de <span class="math inline">\(Z\)</span> é <span class="math display">\[
+\mathbb E[Z^r]=\Big(\frac{\gamma}{L}\Big)^r\frac{\Gamma(-\alpha-r)}{\Gamma(-\alpha)}\frac{\Gamma(L+r)}{\Gamma(L)},
+\qquad -\alpha&gt;r,
+\]</span> e infinito caso contrário. Para <span class="math inline">\(r=1,2\)</span>: <span class="math display">\[
+\mathbb E[Z]=\frac{\gamma}{-\alpha-1},
+\qquad
+\frac{\mathbb E[Z^2]}{\mathbb E[Z]^2}=\frac{L+1}{L}\,\frac{-\alpha-1}{-\alpha-2}.
+\]</span> Substituindo os momentos amostrais, a segunda equação fornece <span class="math inline">\(\alpha\)</span> e a primeira, <span class="math inline">\(\gamma\)</span>. A segunda só tem solução com <span class="math inline">\(-\alpha&gt;2\)</span>.</p>
 <p>Para cada amostra, comparamos o histograma e a densidade empírica com a <span class="math inline">\(\mathcal G^0_I\)</span> ajustada por máxima verossimilhança (com <span class="math inline">\(L\)</span> da cena completa) e, como referência, com a gama ajustada por <code>fitdistr</code>.</p>
 <section id="amostras-de-floresta-fo-1" class="level2">
 <h2 class="anchored" data-anchor-id="amostras-de-floresta-fo-1">Amostras de Floresta (Fo)</h2>
@@ -1870,9 +1883,9 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">Campestre</td>
 <td style="text-align: left;">GlB</td>
 <td style="text-align: left;">VH</td>
-<td style="text-align: right;">-71.714</td>
-<td style="text-align: right;">20840</td>
-<td style="text-align: left;">0.375</td>
+<td style="text-align: right;">-66.788</td>
+<td style="text-align: right;">19390</td>
+<td style="text-align: left;">0.362</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Campestre</td>
@@ -1880,7 +1893,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-8.770</td>
 <td style="text-align: right;">4006</td>
-<td style="text-align: left;">0.034</td>
+<td style="text-align: left;">0.047</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Campestre</td>
@@ -1888,15 +1901,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-30.438</td>
 <td style="text-align: right;">68110</td>
-<td style="text-align: left;">0.408</td>
+<td style="text-align: left;">0.431</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Campestre</td>
 <td style="text-align: left;">GlR</td>
 <td style="text-align: left;">VH</td>
-<td style="text-align: right;">-20.902</td>
-<td style="text-align: right;">12550</td>
-<td style="text-align: left;">0.707</td>
+<td style="text-align: right;">-21.132</td>
+<td style="text-align: right;">12690</td>
+<td style="text-align: left;">0.700</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Campestre</td>
@@ -1904,7 +1917,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">1400000</td>
-<td style="text-align: left;">0.270</td>
+<td style="text-align: left;">0.247</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Campestre</td>
@@ -1912,15 +1925,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-10.836</td>
 <td style="text-align: right;">19650</td>
-<td style="text-align: left;">0.653</td>
+<td style="text-align: left;">0.623</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Campestre</td>
 <td style="text-align: left;">GlW</td>
 <td style="text-align: left;">VH</td>
-<td style="text-align: right;">-19.615</td>
-<td style="text-align: right;">8969</td>
-<td style="text-align: left;">0.628</td>
+<td style="text-align: right;">-19.960</td>
+<td style="text-align: right;">9134</td>
+<td style="text-align: left;">0.642</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Campestre</td>
@@ -1928,15 +1941,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-38.405</td>
 <td style="text-align: right;">88490</td>
-<td style="text-align: left;">0.182</td>
+<td style="text-align: left;">0.179</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Floresta</td>
 <td style="text-align: left;">FoB</td>
 <td style="text-align: left;">VH</td>
-<td style="text-align: right;">-97.585</td>
-<td style="text-align: right;">246200</td>
-<td style="text-align: left;">0.048</td>
+<td style="text-align: right;">-91.849</td>
+<td style="text-align: right;">231600</td>
+<td style="text-align: left;">0.040</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Floresta</td>
@@ -1952,15 +1965,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-12.763</td>
 <td style="text-align: right;">28640</td>
-<td style="text-align: left;">0.204</td>
+<td style="text-align: left;">0.197</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Floresta</td>
 <td style="text-align: left;">FoG</td>
 <td style="text-align: left;">VV</td>
-<td style="text-align: right;">-37.191</td>
-<td style="text-align: right;">334400</td>
-<td style="text-align: left;">0.519</td>
+<td style="text-align: right;">-36.537</td>
+<td style="text-align: right;">328300</td>
+<td style="text-align: left;">0.472</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Floresta</td>
@@ -1968,15 +1981,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-20.917</td>
 <td style="text-align: right;">37460</td>
-<td style="text-align: left;">0.061</td>
+<td style="text-align: left;">0.062</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Floresta</td>
 <td style="text-align: left;">FoR</td>
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-7.418</td>
-<td style="text-align: right;">57170</td>
-<td style="text-align: left;">0.754</td>
+<td style="text-align: right;">57160</td>
+<td style="text-align: left;">0.794</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Floresta</td>
@@ -1984,7 +1997,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">4010000</td>
-<td style="text-align: left;">0.845</td>
+<td style="text-align: left;">0.838</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Floresta</td>
@@ -1992,15 +2005,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-15.038</td>
 <td style="text-align: right;">19600</td>
-<td style="text-align: left;">0.160</td>
+<td style="text-align: left;">0.162</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Floresta</td>
 <td style="text-align: left;">FoW</td>
 <td style="text-align: left;">VV</td>
-<td style="text-align: right;">-24.339</td>
+<td style="text-align: right;">-24.338</td>
 <td style="text-align: right;">154200</td>
-<td style="text-align: left;">0.781</td>
+<td style="text-align: left;">0.782</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Savana</td>
@@ -2008,7 +2021,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-15.065</td>
 <td style="text-align: right;">15210</td>
-<td style="text-align: left;">0.476</td>
+<td style="text-align: left;">0.462</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Savana</td>
@@ -2016,7 +2029,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VV</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">2769000</td>
-<td style="text-align: left;">0.779</td>
+<td style="text-align: left;">0.780</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Savana</td>
@@ -2024,7 +2037,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">763000</td>
-<td style="text-align: left;">0.021</td>
+<td style="text-align: left;">0.016</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Savana</td>
@@ -2036,19 +2049,19 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 </tr>
 <tr class="even">
 <td style="text-align: left;">Savana</td>
-<td style="text-align: left;">SvU</td>
-<td style="text-align: left;">VH</td>
-<td style="text-align: right;">-500.000</td>
-<td style="text-align: right;">679800</td>
-<td style="text-align: left;">0.071</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-9.232</td>
+<td style="text-align: right;">40250</td>
+<td style="text-align: left;">0.012</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Savana</td>
 <td style="text-align: left;">SvU</td>
-<td style="text-align: left;">VV</td>
-<td style="text-align: right;">-27.328</td>
-<td style="text-align: right;">182200</td>
-<td style="text-align: left;">0.015</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">679800</td>
+<td style="text-align: left;">0.070</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Savana</td>
@@ -2056,15 +2069,15 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">680200</td>
-<td style="text-align: left;">0.675</td>
+<td style="text-align: left;">0.649</td>
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Savana</td>
 <td style="text-align: left;">SvW</td>
 <td style="text-align: left;">VV</td>
-<td style="text-align: right;">-41.924</td>
-<td style="text-align: right;">276700</td>
-<td style="text-align: left;">0.028</td>
+<td style="text-align: right;">-41.928</td>
+<td style="text-align: right;">276800</td>
+<td style="text-align: left;">0.031</td>
 </tr>
 </tbody>
 </table>
@@ -2092,7 +2105,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">Campestre</td>
 <td style="text-align: left;">GlB</td>
 <td style="text-align: left;">VV</td>
-<td style="text-align: right;">-34.125</td>
+<td style="text-align: right;">-34.124</td>
 <td style="text-align: right;">44380</td>
 <td style="text-align: left;">0.001</td>
 </tr>
@@ -2100,7 +2113,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">Campestre</td>
 <td style="text-align: left;">GlU</td>
 <td style="text-align: left;">VH</td>
-<td style="text-align: right;">-17.269</td>
+<td style="text-align: right;">-17.268</td>
 <td style="text-align: right;">8070</td>
 <td style="text-align: left;">0.001</td>
 </tr>
@@ -2110,7 +2123,7 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <td style="text-align: left;">VH</td>
 <td style="text-align: right;">-500.000</td>
 <td style="text-align: right;">1035000</td>
-<td style="text-align: left;">0.002</td>
+<td style="text-align: left;">0.001</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">Savana</td>
@@ -2122,11 +2135,742 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 </tr>
 <tr class="odd">
 <td style="text-align: left;">Savana</td>
-<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvU</td>
 <td style="text-align: left;">VV</td>
-<td style="text-align: right;">-9.232</td>
-<td style="text-align: right;">40250</td>
-<td style="text-align: left;">0.007</td>
+<td style="text-align: right;">-27.328</td>
+<td style="text-align: right;">182200</td>
+<td style="text-align: left;">0.009</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+</section>
+<section id="teste-de-homogeneidade-entre-amostras-g0-via-distância-kl" class="level1">
+<h1>Teste de homogeneidade entre amostras G0 via distância KL</h1>
+<p>Para comparar duas amostras independentes, sejam <span class="math inline">\(f_1\)</span> e <span class="math inline">\(f_2\)</span> suas densidades <span class="math inline">\(\mathcal G^0_I\)</span>, com o mesmo número de looks conhecido <span class="math inline">\(L\)</span> e parâmetros <span class="math inline">\((\alpha_i,\gamma_i)\)</span>, <span class="math inline">\(i=1,2\)</span>. A distância KL simetrizada usada por <span class="citation" data-cites="nascimento2010">Nascimento et al. (<a href="#ref-nascimento2010" role="doc-biblioref">2010</a>)</span> é <span class="math display">\[
+d_{\mathrm{KL}}(f_1,f_2)
+=\frac{1}{2}\left\{D_{\mathrm{KL}}(f_1\Vert f_2)+D_{\mathrm{KL}}(f_2\Vert f_1)\right\}
+=\frac{1}{2}\int_0^\infty
+(f_1(z)-f_2(z))\log\frac{f_1(z)}{f_2(z)}\,\mathrm dz.
+\]</span> Escrevendo <span class="math display">\[
+k_i=\frac{L^L\Gamma(L-\alpha_i)}
+{\gamma_i^{\alpha_i}\Gamma(L)\Gamma(-\alpha_i)},
+\qquad
+f_i(z)=k_i\frac{z^{L-1}}{(\gamma_i+Lz)^{L-\alpha_i}},
+\]</span> o logaritmo da razão de densidades fica <span class="math display">\[
+\log\frac{f_1(z)}{f_2(z)}
+=\log\frac{k_1}{k_2}
+-(L-\alpha_1)\log(\gamma_1+Lz)
++(L-\alpha_2)\log(\gamma_2+Lz),
+\]</span> pois o termo <span class="math inline">\((L-1)\log z\)</span> se cancela. Esta forma integral é a expressão final conveniente para o caso deste estudo, em que <span class="math inline">\(L\)</span> é fixo e igual para as duas amostras; ela corresponde à expansão da distância apresentada no anexo, mas não requer avaliar separadamente cada uma das integrais dessa expansão.</p>
+<p>Na metodologia de <span class="citation" data-cites="nascimento2010">Nascimento et al. (<a href="#ref-nascimento2010" role="doc-biblioref">2010</a>)</span>, <span class="math inline">\(d_{\mathrm{KL}}\)</span> corresponde à distância <span class="math inline">\((h,\phi)\)</span> com <span class="math inline">\(h(y)=y/2\)</span> e <span class="math inline">\(\phi(u)=(u-1)\log u\)</span>, de modo que <span class="math inline">\(h'(0)\phi''(1)=1\)</span>. Para tamanhos amostrais <span class="math inline">\(n_1\)</span> e <span class="math inline">\(n_2\)</span>, a estatística <span class="math display">\[
+S_{\mathrm{KL}}=\frac{2n_1n_2}{n_1+n_2}d_{\mathrm{KL}}(\widehat f_1,\widehat f_2)
+\ \xrightarrow[H_0]{}\ \chi^2_2,
+\qquad
+H_0:(\alpha_1,\gamma_1)=(\alpha_2,\gamma_2),
+\]</span> tem dois graus de liberdade porque <span class="math inline">\(L\)</span> é conhecido e os dois parâmetros livres são <span class="math inline">\(\alpha\)</span> e <span class="math inline">\(\gamma\)</span>. O p-valor é <span class="math inline">\(P(\chi^2_2\geq S_{\mathrm{KL}})\)</span>. Como em outras aproximações assintóticas, a calibração pressupõe observações independentes; a dependência espacial entre pixels pode afetar os p-valores. As comparações abaixo usam nível nominal de 1% sem ajuste para multiplicidade.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>distancia_KL_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(alpha1, gamma1, alpha2, gamma2, L) {</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  parametros <span class="ot">&lt;-</span> <span class="fu">c</span>(alpha1, gamma1, alpha2, gamma2, L)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">any</span>(<span class="sc">!</span><span class="fu">is.finite</span>(parametros)) <span class="sc">||</span></span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>      alpha1 <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">||</span> alpha2 <span class="sc">&gt;=</span> <span class="dv">0</span> <span class="sc">||</span></span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>      gamma1 <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">||</span> gamma2 <span class="sc">&lt;=</span> <span class="dv">0</span> <span class="sc">||</span> L <span class="sc">&lt;=</span> <span class="dv">0</span>) {</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Os parâmetros G0 devem ser finitos, alpha &lt; 0, gamma &gt; 0 e L &gt; 0."</span>)</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (alpha1 <span class="sc">==</span> alpha2 <span class="sc">&amp;&amp;</span> gamma1 <span class="sc">==</span> gamma2) <span class="fu">return</span>(<span class="dv">0</span>)</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>  log_densidade <span class="ot">&lt;-</span> <span class="cf">function</span>(t, alpha, gamma) {</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>    log_gamma <span class="ot">&lt;-</span> <span class="fu">log</span>(gamma)</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    log_Lz <span class="ot">&lt;-</span> <span class="fu">log</span>(L) <span class="sc">+</span> t</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>    log_denominador <span class="ot">&lt;-</span> <span class="fu">pmax</span>(log_gamma, log_Lz) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>      <span class="fu">log1p</span>(<span class="fu">exp</span>(<span class="sc">-</span><span class="fu">abs</span>(log_gamma <span class="sc">-</span> log_Lz)))</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    L <span class="sc">*</span> <span class="fu">log</span>(L) <span class="sc">+</span> <span class="fu">lgamma</span>(L <span class="sc">-</span> alpha) <span class="sc">-</span> alpha <span class="sc">*</span> log_gamma <span class="sc">-</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lgamma</span>(L) <span class="sc">-</span> <span class="fu">lgamma</span>(<span class="sc">-</span>alpha) <span class="sc">+</span></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>      (L <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">*</span> t <span class="sc">-</span> (L <span class="sc">-</span> alpha) <span class="sc">*</span> log_denominador</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>  integrando <span class="ot">&lt;-</span> <span class="cf">function</span>(t) {</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    log_f1 <span class="ot">&lt;-</span> <span class="fu">log_densidade</span>(t, alpha1, gamma1)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a>    log_f2 <span class="ot">&lt;-</span> <span class="fu">log_densidade</span>(t, alpha2, gamma2)</span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    log_q1 <span class="ot">&lt;-</span> log_f1 <span class="sc">+</span> t</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    log_q2 <span class="ot">&lt;-</span> log_f2 <span class="sc">+</span> t</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>    diferenca_log <span class="ot">&lt;-</span> log_f1 <span class="sc">-</span> log_f2</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ifelse</span>(</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>      log_q1 <span class="sc">&gt;=</span> log_q2,</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>      <span class="fu">exp</span>(log_q1) <span class="sc">*</span> (<span class="sc">-</span><span class="fu">expm1</span>(log_q2 <span class="sc">-</span> log_q1)) <span class="sc">*</span> diferenca_log,</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a>      <span class="fu">exp</span>(log_q2) <span class="sc">*</span> (<span class="sc">-</span><span class="fu">expm1</span>(log_q1 <span class="sc">-</span> log_q2)) <span class="sc">*</span> (<span class="sc">-</span>diferenca_log)</span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">integrate</span>(integrando, <span class="at">lower =</span> <span class="sc">-</span><span class="cn">Inf</span>, <span class="at">upper =</span> <span class="cn">Inf</span>,</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>            <span class="at">rel.tol =</span> <span class="fl">1e-8</span>, <span class="at">subdivisions =</span> <span class="dv">1000</span>L)<span class="sc">$</span>value</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>teste_KL_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x1, x2, L) {</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">length</span>(x1) <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">||</span> <span class="fu">length</span>(x2) <span class="sc">&lt;</span> <span class="dv">2</span> <span class="sc">||</span></span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">any</span>(<span class="sc">!</span><span class="fu">is.finite</span>(x1)) <span class="sc">||</span> <span class="fu">any</span>(<span class="sc">!</span><span class="fu">is.finite</span>(x2)) <span class="sc">||</span></span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">any</span>(x1 <span class="sc">&lt;=</span> <span class="dv">0</span>) <span class="sc">||</span> <span class="fu">any</span>(x2 <span class="sc">&lt;=</span> <span class="dv">0</span>)) {</span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    <span class="fu">stop</span>(<span class="st">"Cada amostra deve conter ao menos duas intensidades finitas e positivas."</span>)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>  est1 <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(x1, L)</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>  est2 <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(x2, L)</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>  distancia <span class="ot">&lt;-</span> <span class="fu">distancia_KL_G0</span>(est1[[<span class="st">"alpha"</span>]], est1[[<span class="st">"gamma"</span>]],</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>                               est2[[<span class="st">"alpha"</span>]], est2[[<span class="st">"gamma"</span>]], L)</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>  n1 <span class="ot">&lt;-</span> <span class="fu">length</span>(x1)</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>  n2 <span class="ot">&lt;-</span> <span class="fu">length</span>(x2)</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>  estatistica <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> n1 <span class="sc">*</span> n2 <span class="sc">/</span> (n1 <span class="sc">+</span> n2) <span class="sc">*</span> distancia</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha1 =</span> est1[[<span class="st">"alpha"</span>]],</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma1 =</span> est1[[<span class="st">"gamma"</span>]],</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha2 =</span> est2[[<span class="st">"alpha"</span>]],</span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma2 =</span> est2[[<span class="st">"gamma"</span>]],</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>    <span class="at">distancia =</span> distancia,</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>    <span class="at">estatistica =</span> estatistica,</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_valor =</span> <span class="fu">pchisq</span>(estatistica, <span class="at">df =</span> <span class="dv">2</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>distancia_igual <span class="ot">&lt;-</span> <span class="fu">distancia_KL_G0</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">2</span>, <span class="at">L =</span> <span class="dv">3</span>)</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>distancia_diferente <span class="ot">&lt;-</span> <span class="fu">distancia_KL_G0</span>(<span class="sc">-</span><span class="dv">3</span>, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="dv">4</span>, <span class="at">L =</span> <span class="dv">3</span>)</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a>distancia_reversa <span class="ot">&lt;-</span> <span class="fu">distancia_KL_G0</span>(<span class="sc">-</span><span class="dv">5</span>, <span class="dv">4</span>, <span class="sc">-</span><span class="dv">3</span>, <span class="dv">2</span>, <span class="at">L =</span> <span class="dv">3</span>)</span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>  distancia_igual <span class="sc">==</span> <span class="dv">0</span>,</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>  distancia_diferente <span class="sc">&gt;</span> <span class="dv">0</span>,</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">isTRUE</span>(<span class="fu">all.equal</span>(distancia_diferente, distancia_reversa, <span class="at">tolerance =</span> <span class="fl">1e-7</span>))</span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>O teste é aplicado a todos os pares de amostras de cada classe, separadamente por banda.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>resultados_KL_G0 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(classes_gof), <span class="cf">function</span>(prefixo) {</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  imagens <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="fu">paste0</span>(<span class="st">"^"</span>, prefixo), <span class="fu">names</span>(amostras_gof), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  pares_classe <span class="ot">&lt;-</span> <span class="fu">combn</span>(imagens, <span class="dv">2</span>, <span class="at">simplify =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-5"><a href="#cb21-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(bandas_gof), <span class="cf">function</span>(banda) {</span>
+<span id="cb21-6"><a href="#cb21-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(pares_classe, <span class="cf">function</span>(par) {</span>
+<span id="cb21-7"><a href="#cb21-7" aria-hidden="true" tabindex="-1"></a>      resultado <span class="ot">&lt;-</span> <span class="fu">teste_KL_G0</span>(</span>
+<span id="cb21-8"><a href="#cb21-8" aria-hidden="true" tabindex="-1"></a>        amostras_gof[[par[<span class="dv">1</span>]]][[bandas_gof[[banda]]]],</span>
+<span id="cb21-9"><a href="#cb21-9" aria-hidden="true" tabindex="-1"></a>        amostras_gof[[par[<span class="dv">2</span>]]][[bandas_gof[[banda]]]],</span>
+<span id="cb21-10"><a href="#cb21-10" aria-hidden="true" tabindex="-1"></a>        L_banda[[banda]]</span>
+<span id="cb21-11"><a href="#cb21-11" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb21-12"><a href="#cb21-12" aria-hidden="true" tabindex="-1"></a>      <span class="fu">data.frame</span>(</span>
+<span id="cb21-13"><a href="#cb21-13" aria-hidden="true" tabindex="-1"></a>        <span class="at">Classe =</span> classes_gof[[prefixo]],</span>
+<span id="cb21-14"><a href="#cb21-14" aria-hidden="true" tabindex="-1"></a>        <span class="at">Banda =</span> banda,</span>
+<span id="cb21-15"><a href="#cb21-15" aria-hidden="true" tabindex="-1"></a>        <span class="at">Amostra1 =</span> par[<span class="dv">1</span>],</span>
+<span id="cb21-16"><a href="#cb21-16" aria-hidden="true" tabindex="-1"></a>        <span class="at">Amostra2 =</span> par[<span class="dv">2</span>],</span>
+<span id="cb21-17"><a href="#cb21-17" aria-hidden="true" tabindex="-1"></a>        <span class="at">distancia_KL =</span> resultado<span class="sc">$</span>distancia,</span>
+<span id="cb21-18"><a href="#cb21-18" aria-hidden="true" tabindex="-1"></a>        <span class="at">Estatistica =</span> resultado<span class="sc">$</span>estatistica,</span>
+<span id="cb21-19"><a href="#cb21-19" aria-hidden="true" tabindex="-1"></a>        <span class="at">p_valor =</span> resultado<span class="sc">$</span>p_valor</span>
+<span id="cb21-20"><a href="#cb21-20" aria-hidden="true" tabindex="-1"></a>      )</span>
+<span id="cb21-21"><a href="#cb21-21" aria-hidden="true" tabindex="-1"></a>    }))</span>
+<span id="cb21-22"><a href="#cb21-22" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb21-23"><a href="#cb21-23" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb21-24"><a href="#cb21-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-25"><a href="#cb21-25" aria-hidden="true" tabindex="-1"></a>tabela_KL_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(resultados) {</span>
+<span id="cb21-26"><a href="#cb21-26" aria-hidden="true" tabindex="-1"></a>  resultados <span class="ot">&lt;-</span> resultados[</span>
+<span id="cb21-27"><a href="#cb21-27" aria-hidden="true" tabindex="-1"></a>    <span class="fu">order</span>(resultados<span class="sc">$</span>Classe, resultados<span class="sc">$</span>Banda,</span>
+<span id="cb21-28"><a href="#cb21-28" aria-hidden="true" tabindex="-1"></a>          resultados<span class="sc">$</span>Amostra1, resultados<span class="sc">$</span>Amostra2), ]</span>
+<span id="cb21-29"><a href="#cb21-29" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb21-30"><a href="#cb21-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb21-31"><a href="#cb21-31" aria-hidden="true" tabindex="-1"></a>      <span class="at">Classe =</span> resultados<span class="sc">$</span>Classe,</span>
+<span id="cb21-32"><a href="#cb21-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">Banda =</span> resultados<span class="sc">$</span>Banda,</span>
+<span id="cb21-33"><a href="#cb21-33" aria-hidden="true" tabindex="-1"></a>      <span class="at">Amostra1 =</span> resultados<span class="sc">$</span>Amostra1,</span>
+<span id="cb21-34"><a href="#cb21-34" aria-hidden="true" tabindex="-1"></a>      <span class="at">Amostra2 =</span> resultados<span class="sc">$</span>Amostra2,</span>
+<span id="cb21-35"><a href="#cb21-35" aria-hidden="true" tabindex="-1"></a>      <span class="at">distancia_KL =</span> <span class="fu">signif</span>(resultados<span class="sc">$</span>distancia_KL, <span class="dv">4</span>),</span>
+<span id="cb21-36"><a href="#cb21-36" aria-hidden="true" tabindex="-1"></a>      <span class="at">Estatistica =</span> <span class="fu">signif</span>(resultados<span class="sc">$</span>Estatistica, <span class="dv">4</span>),</span>
+<span id="cb21-37"><a href="#cb21-37" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_valor =</span> <span class="fu">format.pval</span>(resultados<span class="sc">$</span>p_valor, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">eps =</span> <span class="fl">0.001</span>)</span>
+<span id="cb21-38"><a href="#cb21-38" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb21-39"><a href="#cb21-39" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Classe"</span>, <span class="st">"Banda"</span>, <span class="st">"Amostra 1"</span>, <span class="st">"Amostra 2"</span>,</span>
+<span id="cb21-40"><a href="#cb21-40" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"$d_{KL}$"</span>, <span class="st">"$S_{KL}$"</span>, <span class="st">"p-valor"</span>),</span>
+<span id="cb21-41"><a href="#cb21-41" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb21-42"><a href="#cb21-42" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb21-43"><a href="#cb21-43" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Com nível nominal de 1%, não se rejeita <span class="math inline">\(H_0\)</span> para comparações com <span class="math inline">\(p\geq0{,}01\)</span>; valores menores que 0,01 fornecem evidência de que as duas amostras não seguem a mesma distribuição <span class="math inline">\(\mathcal G^0_I\)</span>.</p>
+<section id="casos-em-que-não-se-rejeita-h_0" class="level3">
+<h3 class="anchored" data-anchor-id="casos-em-que-não-se-rejeita-h_0">Casos em que não se rejeita <span class="math inline">\(H_0\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabela_KL_G0</span>(<span class="fu">subset</span>(resultados_KL_G0, p_valor <span class="sc">&gt;=</span> <span class="fl">0.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: left;">Amostra 1</th>
+<th style="text-align: left;">Amostra 2</th>
+<th style="text-align: right;"><span class="math inline">\(d_{KL}\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(S_{KL}\)</span></th>
+<th style="text-align: left;">p-valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.0042080</td>
+<td style="text-align: right;">1.2630000</td>
+<td style="text-align: left;">0.5319</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.0072660</td>
+<td style="text-align: right;">2.1800000</td>
+<td style="text-align: left;">0.3363</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.0007775</td>
+<td style="text-align: right;">0.2333000</td>
+<td style="text-align: left;">0.8899</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">0.0299700</td>
+<td style="text-align: right;">8.9900000</td>
+<td style="text-align: left;">0.0112</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.0257900</td>
+<td style="text-align: right;">7.7360000</td>
+<td style="text-align: left;">0.0209</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.0005540</td>
+<td style="text-align: right;">0.1662000</td>
+<td style="text-align: left;">0.9203</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.0089270</td>
+<td style="text-align: right;">2.6780000</td>
+<td style="text-align: left;">0.2621</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.0129500</td>
+<td style="text-align: right;">3.8860000</td>
+<td style="text-align: left;">0.1433</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.0306100</td>
+<td style="text-align: right;">9.1820000</td>
+<td style="text-align: left;">0.0101</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.0168300</td>
+<td style="text-align: right;">5.0500000</td>
+<td style="text-align: left;">0.0800</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.0297300</td>
+<td style="text-align: right;">8.9190000</td>
+<td style="text-align: left;">0.0116</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.0200400</td>
+<td style="text-align: right;">6.0130000</td>
+<td style="text-align: left;">0.0495</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: right;">0.0021400</td>
+<td style="text-align: right;">0.6419000</td>
+<td style="text-align: left;">0.7255</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.0138000</td>
+<td style="text-align: right;">4.1410000</td>
+<td style="text-align: left;">0.1261</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.0136300</td>
+<td style="text-align: right;">4.0900000</td>
+<td style="text-align: left;">0.1294</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.0000005</td>
+<td style="text-align: right;">0.0001586</td>
+<td style="text-align: left;">0.9999</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.0056820</td>
+<td style="text-align: right;">1.7050000</td>
+<td style="text-align: left;">0.4265</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.0189500</td>
+<td style="text-align: right;">5.6850000</td>
+<td style="text-align: left;">0.0583</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.0006827</td>
+<td style="text-align: right;">0.2048000</td>
+<td style="text-align: left;">0.9027</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="casos-em-que-se-rejeita-h_0" class="level3">
+<h3 class="anchored" data-anchor-id="casos-em-que-se-rejeita-h_0">Casos em que se rejeita <span class="math inline">\(H_0\)</span></h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabela_KL_G0</span>(<span class="fu">subset</span>(resultados_KL_G0, p_valor <span class="sc">&lt;</span> <span class="fl">0.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: left;">Amostra 1</th>
+<th style="text-align: left;">Amostra 2</th>
+<th style="text-align: right;"><span class="math inline">\(d_{KL}\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(S_{KL}\)</span></th>
+<th style="text-align: left;">p-valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.29280</td>
+<td style="text-align: right;">87.850</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: right;">0.57950</td>
+<td style="text-align: right;">173.800</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.26280</td>
+<td style="text-align: right;">78.830</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">0.23510</td>
+<td style="text-align: right;">70.530</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.04407</td>
+<td style="text-align: right;">13.220</td>
+<td style="text-align: left;">0.00135</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.05224</td>
+<td style="text-align: right;">15.670</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">0.06569</td>
+<td style="text-align: right;">19.710</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.28460</td>
+<td style="text-align: right;">85.370</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: right;">0.54490</td>
+<td style="text-align: right;">163.500</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.14140</td>
+<td style="text-align: right;">42.420</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">0.31110</td>
+<td style="text-align: right;">93.320</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">0.03832</td>
+<td style="text-align: right;">11.500</td>
+<td style="text-align: left;">0.00319</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.12100</td>
+<td style="text-align: right;">36.300</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">0.03377</td>
+<td style="text-align: right;">10.130</td>
+<td style="text-align: left;">0.00631</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: right;">0.09161</td>
+<td style="text-align: right;">27.480</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.04364</td>
+<td style="text-align: right;">13.090</td>
+<td style="text-align: left;">0.00143</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">0.34350</td>
+<td style="text-align: right;">103.000</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.05729</td>
+<td style="text-align: right;">17.190</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">0.08030</td>
+<td style="text-align: right;">24.090</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.26310</td>
+<td style="text-align: right;">78.940</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.15630</td>
+<td style="text-align: right;">46.900</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.03608</td>
+<td style="text-align: right;">10.820</td>
+<td style="text-align: left;">0.00447</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: right;">0.07454</td>
+<td style="text-align: right;">22.360</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.11070</td>
+<td style="text-align: right;">33.200</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">0.26790</td>
+<td style="text-align: right;">80.370</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">0.07531</td>
+<td style="text-align: right;">22.590</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">0.10600</td>
+<td style="text-align: right;">31.800</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">0.04007</td>
+<td style="text-align: right;">12.020</td>
+<td style="text-align: left;">0.00245</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.12180</td>
+<td style="text-align: right;">36.530</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.05843</td>
+<td style="text-align: right;">17.530</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">0.05875</td>
+<td style="text-align: right;">17.630</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.10160</td>
+<td style="text-align: right;">30.490</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.04835</td>
+<td style="text-align: right;">14.500</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">0.04861</td>
+<td style="text-align: right;">14.580</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: right;">0.03255</td>
+<td style="text-align: right;">9.765</td>
+<td style="text-align: left;">0.00758</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.04928</td>
+<td style="text-align: right;">14.780</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">0.03957</td>
+<td style="text-align: right;">11.870</td>
+<td style="text-align: left;">0.00265</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">0.11550</td>
+<td style="text-align: right;">34.640</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">0.10670</td>
+<td style="text-align: right;">32.010</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.08758</td>
+<td style="text-align: right;">26.270</td>
+<td style="text-align: left;">&lt; 0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">0.07484</td>
+<td style="text-align: right;">22.450</td>
+<td style="text-align: left;">&lt; 0.001</td>
 </tr>
 </tbody>
 </table>
@@ -2139,6 +2883,9 @@ V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
 <div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
 <div id="ref-alpala2026" class="csl-entry" role="listitem">
 Alpala, Janeth, Alejandro C. Frery, Paolo Gamba, Abraão D. C. Nascimento, and Andrea A. Rey. 2026. <span>“Adaptive Model-Free Tsallis Entropy Estimation for Detecting Non-Fully Developed Speckle.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 64: 5211816–16. <a href="https://doi.org/10.1109/TGRS.2026.3708782">https://doi.org/10.1109/TGRS.2026.3708782</a>.
+</div>
+<div id="ref-nascimento2010" class="csl-entry" role="listitem">
+Nascimento, Abraão D. C., Renato J. Cintra, and Alejandro C. Frery. 2010. <span>“<span class="nocase">Hypothesis Testing in Speckled Data with Stochastic Distances</span>.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 48 (1): 373–85.
 </div>
 </div></section></div></main>
 <!-- /main column -->

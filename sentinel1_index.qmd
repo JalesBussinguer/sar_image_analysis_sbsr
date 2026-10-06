@@ -489,7 +489,27 @@ $$
 +\widehat L\sum_{i=1}^n\log\frac{Z_i}{\gamma+\widehat LZ_i}+\alpha\sum_{i=1}^n\log(\gamma+\widehat LZ_i),
 $$
 
-O ponto inicial é obtido pelo método dos momentos ($k=1,2$).
+Os estimadores $\widehat\alpha$ e $\widehat\gamma$ são a solução do sistema de equações de score, $\partial\ell/\partial\alpha=0$ e $\partial\ell/\partial\gamma=0$:
+$$
+\begin{cases}
+\psi^0(\widehat L-\widehat\alpha)-\psi^0(-\widehat\alpha)+\log\widehat\gamma-\dfrac1n\displaystyle\sum_{i=1}^n\log(\widehat\gamma+\widehat LZ_i)=0,\\[2ex]
+-\dfrac{\widehat\alpha}{\widehat\gamma}+\dfrac{\widehat\alpha-\widehat L}{n}\displaystyle\sum_{i=1}^n(\widehat\gamma+\widehat LZ_i)^{-1}=0,
+\end{cases}
+$$
+em que $\psi^0(\cdot)$ é a função digama. Esse sistema não possui solução em forma fechada, e por isso a estimação é feita por maximização numérica da log-verossimilhança (`optim`, método quasi-Newton L-BFGS-B).
+
+Como o método é iterativo, precisa de um ponto inicial, que obtemos pelo método dos momentos. O momento de ordem $r$ de $Z$ é
+$$
+\mathbb E[Z^r]=\Big(\frac{\gamma}{L}\Big)^r\frac{\Gamma(-\alpha-r)}{\Gamma(-\alpha)}\frac{\Gamma(L+r)}{\Gamma(L)},
+\qquad -\alpha>r,
+$$
+e infinito caso contrário. Para $r=1,2$:
+$$
+\mathbb E[Z]=\frac{\gamma}{-\alpha-1},
+\qquad
+\frac{\mathbb E[Z^2]}{\mathbb E[Z]^2}=\frac{L+1}{L}\,\frac{-\alpha-1}{-\alpha-2}.
+$$
+Substituindo os momentos amostrais, a segunda equação fornece $\alpha$ e a primeira, $\gamma$. A segunda só tem solução com $-\alpha>2$.
 
 Para cada amostra, comparamos o histograma e a densidade empírica com a $\mathcal G^0_I$ ajustada por máxima verossimilhança (com $L$ da cena completa) e, como referência, com a gama ajustada por `fitdistr`.
 
@@ -509,14 +529,14 @@ loglik_G0 <- function(alpha, gamma, L, z) {
 }
 
 # Estimativa inicial por momentos (k = 1, 2):
-# E Z = gamma / (L(-alpha-1)); E Z^2 / (E Z)^2 = (L+1)/L * (-alpha-1)/(-alpha-2)
+# E Z = gamma / (-alpha-1); E Z^2 / (E Z)^2 = (L+1)/L * (-alpha-1)/(-alpha-2)
 inicial_momentos_G0 <- function(z, L) {
   m1 <- mean(z)
   m2 <- mean(z^2)
   cc <- (m2 / m1^2) * L / (L + 1)
   a <- if (cc > 1) (2 * cc - 1) / (cc - 1) else 100
   a <- min(max(a, 2.5), 500)
-  c(alpha = -a, gamma = m1 * L * (a - 1))
+  c(alpha = -a, gamma = m1 * (a - 1))
 }
 
 # Estimação por máxima verossimilhança de (alpha, gamma) com L conhecido.
@@ -745,4 +765,174 @@ tabela_aderencia_G0(subset(resultados_aderencia_G0, p_valor >= 0.01))
 
 ```{r TesteAderenciaG0Rejected}
 tabela_aderencia_G0(subset(resultados_aderencia_G0, p_valor < 0.01))
+```
+
+# Teste de homogeneidade entre amostras G0 via distância KL
+
+Para comparar duas amostras independentes, sejam $f_1$ e $f_2$ suas densidades $\mathcal G^0_I$, com o mesmo número de looks conhecido $L$ e parâmetros $(\alpha_i,\gamma_i)$, $i=1,2$. A distância KL simetrizada usada por @nascimento2010 é
+$$
+d_{\mathrm{KL}}(f_1,f_2)
+=\frac{1}{2}\left\{D_{\mathrm{KL}}(f_1\Vert f_2)+D_{\mathrm{KL}}(f_2\Vert f_1)\right\}
+=\frac{1}{2}\int_0^\infty
+(f_1(z)-f_2(z))\log\frac{f_1(z)}{f_2(z)}\,\mathrm dz.
+$$
+Escrevendo
+$$
+k_i=\frac{L^L\Gamma(L-\alpha_i)}
+{\gamma_i^{\alpha_i}\Gamma(L)\Gamma(-\alpha_i)},
+\qquad
+f_i(z)=k_i\frac{z^{L-1}}{(\gamma_i+Lz)^{L-\alpha_i}},
+$$
+o logaritmo da razão de densidades fica
+$$
+\log\frac{f_1(z)}{f_2(z)}
+=\log\frac{k_1}{k_2}
+-(L-\alpha_1)\log(\gamma_1+Lz)
++(L-\alpha_2)\log(\gamma_2+Lz),
+$$
+pois o termo $(L-1)\log z$ se cancela. Esta forma integral é a expressão final conveniente para o caso deste estudo, em que $L$ é fixo e igual para as duas amostras; ela corresponde à expansão da distância apresentada no anexo, mas não requer avaliar separadamente cada uma das integrais dessa expansão.
+
+Na metodologia de @nascimento2010, $d_{\mathrm{KL}}$ corresponde à distância $(h,\phi)$ com $h(y)=y/2$ e $\phi(u)=(u-1)\log u$, de modo que $h'(0)\phi''(1)=1$. Para tamanhos amostrais $n_1$ e $n_2$, a estatística
+$$
+S_{\mathrm{KL}}=\frac{2n_1n_2}{n_1+n_2}d_{\mathrm{KL}}(\widehat f_1,\widehat f_2)
+\ \xrightarrow[H_0]{}\ \chi^2_2,
+\qquad
+H_0:(\alpha_1,\gamma_1)=(\alpha_2,\gamma_2),
+$$
+tem dois graus de liberdade porque $L$ é conhecido e os dois parâmetros livres são $\alpha$ e $\gamma$. O p-valor é $P(\chi^2_2\geq S_{\mathrm{KL}})$. Como em outras aproximações assintóticas, a calibração pressupõe observações independentes; a dependência espacial entre pixels pode afetar os p-valores. As comparações abaixo usam nível nominal de 1% sem ajuste para multiplicidade.
+
+```{r DistanciaKLG0}
+distancia_KL_G0 <- function(alpha1, gamma1, alpha2, gamma2, L) {
+  parametros <- c(alpha1, gamma1, alpha2, gamma2, L)
+  if (any(!is.finite(parametros)) ||
+      alpha1 >= 0 || alpha2 >= 0 ||
+      gamma1 <= 0 || gamma2 <= 0 || L <= 0) {
+    stop("Os parâmetros G0 devem ser finitos, alpha < 0, gamma > 0 e L > 0.")
+  }
+  if (alpha1 == alpha2 && gamma1 == gamma2) return(0)
+
+  log_densidade <- function(t, alpha, gamma) {
+    log_gamma <- log(gamma)
+    log_Lz <- log(L) + t
+    log_denominador <- pmax(log_gamma, log_Lz) +
+      log1p(exp(-abs(log_gamma - log_Lz)))
+    L * log(L) + lgamma(L - alpha) - alpha * log_gamma -
+      lgamma(L) - lgamma(-alpha) +
+      (L - 1) * t - (L - alpha) * log_denominador
+  }
+
+  integrando <- function(t) {
+    log_f1 <- log_densidade(t, alpha1, gamma1)
+    log_f2 <- log_densidade(t, alpha2, gamma2)
+    log_q1 <- log_f1 + t
+    log_q2 <- log_f2 + t
+    diferenca_log <- log_f1 - log_f2
+
+    ifelse(
+      log_q1 >= log_q2,
+      exp(log_q1) * (-expm1(log_q2 - log_q1)) * diferenca_log,
+      exp(log_q2) * (-expm1(log_q1 - log_q2)) * (-diferenca_log)
+    ) / 2
+  }
+
+  integrate(integrando, lower = -Inf, upper = Inf,
+            rel.tol = 1e-8, subdivisions = 1000L)$value
+}
+
+teste_KL_G0 <- function(x1, x2, L) {
+  if (length(x1) < 2 || length(x2) < 2 ||
+      any(!is.finite(x1)) || any(!is.finite(x2)) ||
+      any(x1 <= 0) || any(x2 <= 0)) {
+    stop("Cada amostra deve conter ao menos duas intensidades finitas e positivas.")
+  }
+
+  est1 <- ajustar_G0_mv(x1, L)
+  est2 <- ajustar_G0_mv(x2, L)
+  distancia <- distancia_KL_G0(est1[["alpha"]], est1[["gamma"]],
+                               est2[["alpha"]], est2[["gamma"]], L)
+  n1 <- length(x1)
+  n2 <- length(x2)
+  estatistica <- 2 * n1 * n2 / (n1 + n2) * distancia
+
+  list(
+    alpha1 = est1[["alpha"]],
+    gamma1 = est1[["gamma"]],
+    alpha2 = est2[["alpha"]],
+    gamma2 = est2[["gamma"]],
+    distancia = distancia,
+    estatistica = estatistica,
+    p_valor = pchisq(estatistica, df = 2, lower.tail = FALSE)
+  )
+}
+
+distancia_igual <- distancia_KL_G0(-3, 2, -3, 2, L = 3)
+distancia_diferente <- distancia_KL_G0(-3, 2, -5, 4, L = 3)
+distancia_reversa <- distancia_KL_G0(-5, 4, -3, 2, L = 3)
+stopifnot(
+  distancia_igual == 0,
+  distancia_diferente > 0,
+  isTRUE(all.equal(distancia_diferente, distancia_reversa, tolerance = 1e-7))
+)
+```
+
+O teste é aplicado a todos os pares de amostras de cada classe, separadamente por banda.
+
+```{r TesteKLG0}
+resultados_KL_G0 <- do.call(rbind, lapply(names(classes_gof), function(prefixo) {
+  imagens <- grep(paste0("^", prefixo), names(amostras_gof), value = TRUE)
+  pares_classe <- combn(imagens, 2, simplify = FALSE)
+
+  do.call(rbind, lapply(names(bandas_gof), function(banda) {
+    do.call(rbind, lapply(pares_classe, function(par) {
+      resultado <- teste_KL_G0(
+        amostras_gof[[par[1]]][[bandas_gof[[banda]]]],
+        amostras_gof[[par[2]]][[bandas_gof[[banda]]]],
+        L_banda[[banda]]
+      )
+      data.frame(
+        Classe = classes_gof[[prefixo]],
+        Banda = banda,
+        Amostra1 = par[1],
+        Amostra2 = par[2],
+        distancia_KL = resultado$distancia,
+        Estatistica = resultado$estatistica,
+        p_valor = resultado$p_valor
+      )
+    }))
+  }))
+}))
+
+tabela_KL_G0 <- function(resultados) {
+  resultados <- resultados[
+    order(resultados$Classe, resultados$Banda,
+          resultados$Amostra1, resultados$Amostra2), ]
+  knitr::kable(
+    data.frame(
+      Classe = resultados$Classe,
+      Banda = resultados$Banda,
+      Amostra1 = resultados$Amostra1,
+      Amostra2 = resultados$Amostra2,
+      distancia_KL = signif(resultados$distancia_KL, 4),
+      Estatistica = signif(resultados$Estatistica, 4),
+      p_valor = format.pval(resultados$p_valor, digits = 3, eps = 0.001)
+    ),
+    col.names = c("Classe", "Banda", "Amostra 1", "Amostra 2",
+                  "$d_{KL}$", "$S_{KL}$", "p-valor"),
+    escape = FALSE
+  )
+}
+```
+
+Com nível nominal de 1%, não se rejeita $H_0$ para comparações com $p\geq0{,}01$; valores menores que 0,01 fornecem evidência de que as duas amostras não seguem a mesma distribuição $\mathcal G^0_I$.
+
+### Casos em que não se rejeita $H_0$
+
+```{r TesteKLG0NotRejected}
+tabela_KL_G0(subset(resultados_KL_G0, p_valor >= 0.01))
+```
+
+### Casos em que se rejeita $H_0$
+
+```{r TesteKLG0Rejected}
+tabela_KL_G0(subset(resultados_KL_G0, p_valor < 0.01))
 ```
