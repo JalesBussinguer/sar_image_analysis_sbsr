@@ -61,7 +61,26 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="sentinel1_index_files/libs/clipboard/clipboard.min.js"></script>
@@ -1489,8 +1508,639 @@ z^{L-1}\exp\Big(-\frac{Lz}{\mu}\Big)
 <p>Os resultados devem ser interpretados com cautela: os testes de permutação e aderência assumem observações independentes, enquanto pixels vizinhos podem apresentar autocorrelação espacial.</p>
 </section>
 </section>
+<section id="distribuição-mathcal-g0_i-para-intensidade" class="level1">
+<h1>Distribuição <span class="math inline">\(\mathcal G^0_I\)</span> para Intensidade</h1>
+<p>Segundo <span class="citation" data-cites="alpala2026">Alpala et al. (<a href="#ref-alpala2026" role="doc-biblioref">2026</a>)</span>, a distribuição <span class="math inline">\(\mathcal G^0_I\)</span> é reconhecida por sua capacidade de capturar diferentes níveis de heterogeneidade em imagens SAR. Sob o modelo multiplicativo com retroespalhamento <span class="math inline">\(X\sim\Gamma^{-1}(\alpha,\gamma)\)</span> e speckle <span class="math inline">\(Y\sim\Gamma(L,L)\)</span> independentes, <span class="math inline">\(Z=XY\sim\mathcal G^0_I(\alpha,\gamma,L)\)</span> com densidade <span class="math display">\[
+f_Z(z;\alpha,\gamma,L)=\frac{L^L\Gamma(L-\alpha)}{\gamma^\alpha\Gamma(L)\Gamma(-\alpha)}
+\frac{z^{L-1}}{(\gamma+Lz)^{L-\alpha}}.
+\]</span></p>
+<p>O número de looks é tomado como conhecido (<span class="math inline">\(\widehat L\)</span> = ENL da cena completa, <code>LVV</code> ou <code>LVH</code>) e <span class="math inline">\((\alpha,\gamma)\)</span> são estimados por máxima verossimilhança, maximizando a log-verossimilhança reduzida <span class="math display">\[
+\ell(\alpha,\gamma;\widehat L,\boldsymbol Z)=n\log\frac{\Gamma(\widehat L-\alpha)}{\gamma^\alpha\Gamma(-\alpha)}
++\widehat L\sum_{i=1}^n\log\frac{Z_i}{\gamma+\widehat LZ_i}+\alpha\sum_{i=1}^n\log(\gamma+\widehat LZ_i),
+\]</span></p>
+<p>O ponto inicial é obtido pelo método dos momentos (<span class="math inline">\(k=1,2\)</span>).</p>
+<p>Para cada amostra, comparamos o histograma e a densidade empírica com a <span class="math inline">\(\mathcal G^0_I\)</span> ajustada por máxima verossimilhança (com <span class="math inline">\(L\)</span> da cena completa) e, como referência, com a gama ajustada por <code>fitdistr</code>.</p>
+<section id="amostras-de-floresta-fo-1" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-floresta-fo-1">Amostras de Floresta (Fo)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Fo-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="amostras-de-savana-sv-1" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-savana-sv-1">Amostras de Savana (Sv)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Sv-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="amostras-de-campestre-gl-1" class="level2">
+<h2 class="anchored" data-anchor-id="amostras-de-campestre-gl-1">Amostras de Campestre (Gl)</h2>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-2.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-3.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-4.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-5.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-6.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-7.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-8.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-9.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="sentinel1_index_files/figure-html/VisualizacaoG0Gl-10.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="teste-de-aderência-à-distribuição-mathcal-g0_i-goodness-of-fit" class="level1">
+<h1>Teste de aderência à distribuição <span class="math inline">\(\mathcal G^0_I\)</span> (goodness-of-fit)</h1>
+<p>O teste de aderência utiliza a estatística de Kolmogorov-Smirnov, <span class="math inline">\(D=\max_z|\hat F_n(z)-F(z)|\)</span>, e por isso é necessária a função de distribuição acumulada <span class="math inline">\(F\)</span> da <span class="math inline">\(\mathcal G^0_I\)</span>, para compará-la com a CDF empírica <span class="math inline">\(\hat F_n\)</span>. Além disso, como os parâmetros são estimados a partir da própria amostra, a distribuição nula de <span class="math inline">\(D\)</span> não é a tabelada, e a obtemos por bootstrap paramétrico, o que exige simular amostras da <span class="math inline">\(\mathcal G^0_I\)</span> ajustada. Ambos os ingredientes (CDF e gerador de amostras) são obtidos a seguir diretamente do modelo multiplicativo <span class="math inline">\(Z=XY\)</span>.</p>
+<p><strong>Derivação a partir do modelo multiplicativo.</strong></p>
+<ol type="1">
+<li><p><em>Representação por gamas padrão.</em> Dizer que <span class="math inline">\(Y\sim\Gamma(L,L)\)</span> (média 1) equivale a <span class="math inline">\(Y=H/L\)</span>, com <span class="math inline">\(H\sim\Gamma(L,1)\)</span>. Dizer que <span class="math inline">\(X\sim\Gamma^{-1}(\alpha,\gamma)\)</span> equivale a <span class="math inline">\(X=\gamma/G\)</span>, com <span class="math inline">\(G\sim\Gamma(-\alpha,1)\)</span> (lembre que <span class="math inline">\(\alpha&lt;0\)</span>, logo <span class="math inline">\(-\alpha&gt;0\)</span> é o parâmetro de forma). Como <span class="math inline">\(X\)</span> e <span class="math inline">\(Y\)</span> são independentes, <span class="math inline">\(G\)</span> e <span class="math inline">\(H\)</span> também são.</p></li>
+<li><p><em>O produto.</em> <span class="math display">\[
+Z=XY=\frac{\gamma}{G}\cdot\frac{H}{L}=\frac{\gamma}{L}\,\frac{H}{G}
+\quad\Longrightarrow\quad
+\frac{LZ}{\gamma}=\frac{H}{G}.
+\]</span></p></li>
+<li><p><em>Levando a razão para <span class="math inline">\((0,1)\)</span>.</em> Dividindo numerador e denominador por <span class="math inline">\(G\)</span>, <span class="math display">\[
+\frac{LZ}{\gamma+LZ}
+=\frac{LZ/\gamma}{1+LZ/\gamma}
+=\frac{H/G}{1+H/G}
+=\frac{H}{H+G}.
+\]</span></p></li>
+<li><p><em>Resultado clássico.</em> Se <span class="math inline">\(H\sim\Gamma(a,1)\)</span> e <span class="math inline">\(G\sim\Gamma(b,1)\)</span> são independentes, então <span class="math inline">\(H/(H+G)\sim\text{Beta}(a,b)\)</span>. Com <span class="math inline">\(a=L\)</span> e <span class="math inline">\(b=-\alpha\)</span>: <span class="math display">\[
+V=\frac{LZ}{\gamma+LZ}\sim\text{Beta}(L,-\alpha).
+\]</span></p></li>
+</ol>
+<p>Consequências:</p>
+<ul>
+<li><em>CDF:</em> <span class="math inline">\(F_Z(z)=P\big(V\le Lz/(\gamma+Lz)\big)=F_{\text{Beta}(L,-\alpha)}\big(Lz/(\gamma+Lz)\big)\)</span>, pois <span class="math inline">\(v\mapsto \gamma v/(L(1-v))\)</span> é crescente.</li>
+<li><em>Gerador:</em> sorteia-se <span class="math inline">\(V\sim\text{Beta}(L,-\alpha)\)</span> e toma-se <span class="math inline">\(Z=\gamma V/\big(L(1-V)\big)\)</span>, que é a inversão do passo 3.</li>
+</ul>
+<p>O procedimento (bootstrap paramétrico sobre a estatística de Kolmogorov-Smirnov, com reestimação por máxima verossimilhança em cada réplica) é o mesmo utilizado para a gama.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pG0 <span class="ot">&lt;-</span> <span class="cf">function</span>(z, alpha, gamma, L) {</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pbeta</span>(L <span class="sc">*</span> z <span class="sc">/</span> (gamma <span class="sc">+</span> L <span class="sc">*</span> z), <span class="at">shape1 =</span> L, <span class="at">shape2 =</span> <span class="sc">-</span>alpha)</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>rG0 <span class="ot">&lt;-</span> <span class="cf">function</span>(n, alpha, gamma, L) {</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> <span class="fu">rbeta</span>(n, <span class="at">shape1 =</span> L, <span class="at">shape2 =</span> <span class="sc">-</span>alpha)</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  gamma <span class="sc">*</span> v <span class="sc">/</span> ((<span class="dv">1</span> <span class="sc">-</span> v) <span class="sc">*</span> L)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>estat_KS_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, alpha, gamma, L) {</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  x <span class="ot">&lt;-</span> <span class="fu">sort</span>(x)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>  f <span class="ot">&lt;-</span> <span class="fu">pG0</span>(x, alpha, gamma, L)</span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>  i_min <span class="ot">&lt;-</span> <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">"min"</span>)</span>
+<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a>  i_max <span class="ot">&lt;-</span> <span class="fu">rank</span>(x, <span class="at">ties.method =</span> <span class="st">"max"</span>)</span>
+<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">max</span>(i_max <span class="sc">/</span> n <span class="sc">-</span> f, f <span class="sc">-</span> (i_min <span class="sc">-</span> <span class="dv">1</span>) <span class="sc">/</span> n)</span>
+<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>teste_aderencia_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, L, <span class="at">B =</span> <span class="dv">999</span>) {</span>
+<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(x)</span>
+<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>  est <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(x, L)</span>
+<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a>  D_obs <span class="ot">&lt;-</span> <span class="fu">estat_KS_G0</span>(x, est[[<span class="st">"alpha"</span>]], est[[<span class="st">"gamma"</span>]], L)</span>
+<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a>  D_sim <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_real_</span>, B)</span>
+<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (b <span class="cf">in</span> <span class="fu">seq_len</span>(B)) {</span>
+<span id="cb16-26"><a href="#cb16-26" aria-hidden="true" tabindex="-1"></a>    xb <span class="ot">&lt;-</span> <span class="fu">rG0</span>(n, est[[<span class="st">"alpha"</span>]], est[[<span class="st">"gamma"</span>]], L)</span>
+<span id="cb16-27"><a href="#cb16-27" aria-hidden="true" tabindex="-1"></a>    est_b <span class="ot">&lt;-</span> <span class="fu">tryCatch</span>(<span class="fu">ajustar_G0_mv</span>(xb, L, <span class="at">inicio =</span> est), <span class="at">error =</span> <span class="cf">function</span>(e) <span class="cn">NULL</span>)</span>
+<span id="cb16-28"><a href="#cb16-28" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.null</span>(est_b)) {</span>
+<span id="cb16-29"><a href="#cb16-29" aria-hidden="true" tabindex="-1"></a>      D_sim[b] <span class="ot">&lt;-</span> <span class="fu">estat_KS_G0</span>(xb, est_b[[<span class="st">"alpha"</span>]], est_b[[<span class="st">"gamma"</span>]], L)</span>
+<span id="cb16-30"><a href="#cb16-30" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb16-31"><a href="#cb16-31" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb16-32"><a href="#cb16-32" aria-hidden="true" tabindex="-1"></a>  D_sim <span class="ot">&lt;-</span> D_sim[<span class="fu">is.finite</span>(D_sim)]</span>
+<span id="cb16-33"><a href="#cb16-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-34"><a href="#cb16-34" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb16-35"><a href="#cb16-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> est[[<span class="st">"alpha"</span>]],</span>
+<span id="cb16-36"><a href="#cb16-36" aria-hidden="true" tabindex="-1"></a>    <span class="at">gamma =</span> est[[<span class="st">"gamma"</span>]],</span>
+<span id="cb16-37"><a href="#cb16-37" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_valor =</span> (<span class="dv">1</span> <span class="sc">+</span> <span class="fu">sum</span>(D_sim <span class="sc">&gt;=</span> D_obs)) <span class="sc">/</span> (<span class="fu">length</span>(D_sim) <span class="sc">+</span> <span class="dv">1</span>)</span>
+<span id="cb16-38"><a href="#cb16-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb16-39"><a href="#cb16-39" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">2024</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>resultados_aderencia_G0 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(amostras_gof), <span class="cf">function</span>(imagem) {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  classe <span class="ot">&lt;-</span> classes_gof[[<span class="fu">substr</span>(imagem, <span class="dv">1</span>, <span class="dv">2</span>)]]</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(bandas_gof), <span class="cf">function</span>(banda) {</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> amostras_gof[[imagem]][[bandas_gof[[banda]]]]</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    res <span class="ot">&lt;-</span> <span class="fu">teste_aderencia_G0</span>(x, L_banda[[banda]])</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">Classe =</span> classe,</span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>      <span class="at">Imagem =</span> imagem,</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>      <span class="at">Banda =</span> banda,</span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> res<span class="sc">$</span>alpha,</span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>      <span class="at">gamma =</span> res<span class="sc">$</span>gamma,</span>
+<span id="cb17-13"><a href="#cb17-13" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_valor =</span> res<span class="sc">$</span>p_valor</span>
+<span id="cb17-14"><a href="#cb17-14" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb17-15"><a href="#cb17-15" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb17-16"><a href="#cb17-16" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb17-17"><a href="#cb17-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-18"><a href="#cb17-18" aria-hidden="true" tabindex="-1"></a>tabela_aderencia_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(resultados) {</span>
+<span id="cb17-19"><a href="#cb17-19" aria-hidden="true" tabindex="-1"></a>  resultados <span class="ot">&lt;-</span> resultados[<span class="fu">order</span>(resultados<span class="sc">$</span>Classe, resultados<span class="sc">$</span>Imagem, resultados<span class="sc">$</span>Banda), ]</span>
+<span id="cb17-20"><a href="#cb17-20" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb17-21"><a href="#cb17-21" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb17-22"><a href="#cb17-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">Classe =</span> resultados<span class="sc">$</span>Classe,</span>
+<span id="cb17-23"><a href="#cb17-23" aria-hidden="true" tabindex="-1"></a>      <span class="at">Imagem =</span> resultados<span class="sc">$</span>Imagem,</span>
+<span id="cb17-24"><a href="#cb17-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">Banda =</span> resultados<span class="sc">$</span>Banda,</span>
+<span id="cb17-25"><a href="#cb17-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha =</span> <span class="fu">round</span>(resultados<span class="sc">$</span>alpha, <span class="dv">3</span>),</span>
+<span id="cb17-26"><a href="#cb17-26" aria-hidden="true" tabindex="-1"></a>      <span class="at">gamma =</span> <span class="fu">signif</span>(resultados<span class="sc">$</span>gamma, <span class="dv">4</span>),</span>
+<span id="cb17-27"><a href="#cb17-27" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_valor =</span> <span class="fu">format.pval</span>(resultados<span class="sc">$</span>p_valor, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">eps =</span> <span class="fl">0.001</span>)</span>
+<span id="cb17-28"><a href="#cb17-28" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb17-29"><a href="#cb17-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Classe"</span>, <span class="st">"Imagem"</span>, <span class="st">"Banda"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">alpha$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">gamma$"</span>, <span class="st">"p-valor"</span>),</span>
+<span id="cb17-30"><a href="#cb17-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb17-31"><a href="#cb17-31" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb17-32"><a href="#cb17-32" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>Com significância de 1%, não se rejeita o ajuste à <span class="math inline">\(\mathcal G^0_I\)</span> quando <span class="math inline">\(p \geq 0{,}01\)</span>.</p>
+<section id="casos-em-que-não-se-rejeita-o-ajuste-à-g0" class="level3">
+<h3 class="anchored" data-anchor-id="casos-em-que-não-se-rejeita-o-ajuste-à-g0">Casos em que não se rejeita o ajuste à G0</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabela_aderencia_G0</span>(<span class="fu">subset</span>(resultados_aderencia_G0, p_valor <span class="sc">&gt;=</span> <span class="fl">0.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Imagem</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\alpha\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\gamma\)</span></th>
+<th style="text-align: left;">p-valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-71.714</td>
+<td style="text-align: right;">20840</td>
+<td style="text-align: left;">0.375</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-8.770</td>
+<td style="text-align: right;">4006</td>
+<td style="text-align: left;">0.034</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-30.438</td>
+<td style="text-align: right;">68110</td>
+<td style="text-align: left;">0.408</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-20.902</td>
+<td style="text-align: right;">12550</td>
+<td style="text-align: left;">0.707</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">1400000</td>
+<td style="text-align: left;">0.270</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-10.836</td>
+<td style="text-align: right;">19650</td>
+<td style="text-align: left;">0.653</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-19.615</td>
+<td style="text-align: right;">8969</td>
+<td style="text-align: left;">0.628</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-38.405</td>
+<td style="text-align: right;">88490</td>
+<td style="text-align: left;">0.182</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-97.585</td>
+<td style="text-align: right;">246200</td>
+<td style="text-align: left;">0.048</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">5564000</td>
+<td style="text-align: left;">0.019</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-12.763</td>
+<td style="text-align: right;">28640</td>
+<td style="text-align: left;">0.204</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-37.191</td>
+<td style="text-align: right;">334400</td>
+<td style="text-align: left;">0.519</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-20.917</td>
+<td style="text-align: right;">37460</td>
+<td style="text-align: left;">0.061</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-7.418</td>
+<td style="text-align: right;">57170</td>
+<td style="text-align: left;">0.754</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">4010000</td>
+<td style="text-align: left;">0.845</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-15.038</td>
+<td style="text-align: right;">19600</td>
+<td style="text-align: left;">0.160</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-24.339</td>
+<td style="text-align: right;">154200</td>
+<td style="text-align: left;">0.781</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-15.065</td>
+<td style="text-align: right;">15210</td>
+<td style="text-align: left;">0.476</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">2769000</td>
+<td style="text-align: left;">0.779</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">763000</td>
+<td style="text-align: left;">0.021</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-10.350</td>
+<td style="text-align: right;">10550</td>
+<td style="text-align: left;">0.594</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">679800</td>
+<td style="text-align: left;">0.071</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-27.328</td>
+<td style="text-align: right;">182200</td>
+<td style="text-align: left;">0.015</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">680200</td>
+<td style="text-align: left;">0.675</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-41.924</td>
+<td style="text-align: right;">276700</td>
+<td style="text-align: left;">0.028</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="casos-em-que-se-rejeita-o-ajuste-à-g0" class="level3">
+<h3 class="anchored" data-anchor-id="casos-em-que-se-rejeita-o-ajuste-à-g0">Casos em que se rejeita o ajuste à G0</h3>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabela_aderencia_G0</span>(<span class="fu">subset</span>(resultados_aderencia_G0, p_valor <span class="sc">&lt;</span> <span class="fl">0.01</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Imagem</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\alpha\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\gamma\)</span></th>
+<th style="text-align: left;">p-valor</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-34.125</td>
+<td style="text-align: right;">44380</td>
+<td style="text-align: left;">0.001</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-17.269</td>
+<td style="text-align: right;">8070</td>
+<td style="text-align: left;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">1035000</td>
+<td style="text-align: left;">0.002</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-500.000</td>
+<td style="text-align: right;">2570000</td>
+<td style="text-align: left;">0.001</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-9.232</td>
+<td style="text-align: right;">40250</td>
+<td style="text-align: left;">0.007</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
-</main>
+</section>
+</section>
+
+<div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-alpala2026" class="csl-entry" role="listitem">
+Alpala, Janeth, Alejandro C. Frery, Paolo Gamba, Abraão D. C. Nascimento, and Andrea A. Rey. 2026. <span>“Adaptive Model-Free Tsallis Entropy Estimation for Detecting Non-Fully Developed Speckle.”</span> <em>IEEE Transactions on Geoscience and Remote Sensing</em> 64: 5211816–16. <a href="https://doi.org/10.1109/TGRS.2026.3708782">https://doi.org/10.1109/TGRS.2026.3708782</a>.
+</div>
+</div></section></div></main>
 <!-- /main column -->
 <script id="quarto-html-after-body" type="application/javascript">
   window.document.addEventListener("DOMContentLoaded", function (event) {
