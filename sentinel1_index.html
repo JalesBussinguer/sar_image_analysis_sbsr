@@ -2876,6 +2876,853 @@ H_0:(\alpha_1,\gamma_1)=(\alpha_2,\gamma_2),
 </table>
 </div>
 </div>
+<p>O teste <span class="math inline">\(S_{\mathrm{KL}}\)</span> apenas indica se as duas amostras diferem, mas não diz por quê. Para qualificar os casos de rejeição, seguimos os cenários de <span class="citation" data-cites="nascimento2010">Nascimento et al. (<a href="#ref-nascimento2010" role="doc-biblioref">2010</a>)</span>, com <span class="math inline">\(\mu=-\gamma/(1+\alpha)\)</span> a média: (i) <span class="math inline">\(\alpha_1=\alpha_2\)</span> e <span class="math inline">\(\mu_1\neq\mu_2\)</span> (só o brilho médio muda); (ii) <span class="math inline">\(\alpha_1\neq\alpha_2\)</span> e <span class="math inline">\(\mu_1=\mu_2\)</span> (só a rugosidade muda); (iii) <span class="math inline">\(\alpha_1&lt;\alpha_2\)</span> e <span class="math inline">\(\mu_1&lt;\mu_2\)</span>; (iv) <span class="math inline">\(\alpha_1&lt;\alpha_2\)</span> e <span class="math inline">\(\mu_1&gt;\mu_2\)</span>. Como as estimativas nunca são exatamente iguais, usamos dois testes da razão de verossimilhanças, cada um com 1 grau de liberdade e nível de 1%: um para <span class="math inline">\(\alpha_1=\alpha_2\)</span> (com <span class="math inline">\(\mu_1,\mu_2\)</span> livres) e outro para <span class="math inline">\(\mu_1=\mu_2\)</span> (com <span class="math inline">\(\alpha_1,\alpha_2\)</span> livres). Nos cenários (iii) e (iv), a amostra 1 é a de menor <span class="math inline">\(\hat\alpha\)</span>. Quando nenhum dos dois testes rejeita, mas <span class="math inline">\(S_{\mathrm{KL}}\)</span> rejeita, a diferença é classificada como efeito conjunto. A classificação é descritiva e herda a mesma hipótese de independência dos pixels.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>motivo_rejeicao_KL_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x1, x2, L, <span class="at">nivel =</span> <span class="fl">0.01</span>) {</span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  escala <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">c</span>(x1, x2))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  z1 <span class="ot">&lt;-</span> x1 <span class="sc">/</span> escala</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>  z2 <span class="ot">&lt;-</span> x2 <span class="sc">/</span> escala</span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>  limites <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fl">1.01</span>), <span class="fu">log</span>(<span class="dv">500</span>))</span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>  gama <span class="ot">&lt;-</span> <span class="cf">function</span>(a, m) m <span class="sc">*</span> (a <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>  ll <span class="ot">&lt;-</span> <span class="cf">function</span>(a1, m1, a2, m2) {</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>    <span class="fu">loglik_G0</span>(<span class="sc">-</span>a1, <span class="fu">gama</span>(a1, m1), L, z1) <span class="sc">+</span> <span class="fu">loglik_G0</span>(<span class="sc">-</span>a2, <span class="fu">gama</span>(a2, m2), L, z2)</span>
+<span id="cb24-10"><a href="#cb24-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-11"><a href="#cb24-11" aria-hidden="true" tabindex="-1"></a>  ajustar <span class="ot">&lt;-</span> <span class="cf">function</span>(f, ini, inferior, superior) {</span>
+<span id="cb24-12"><a href="#cb24-12" aria-hidden="true" tabindex="-1"></a>    fn <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
+<span id="cb24-13"><a href="#cb24-13" aria-hidden="true" tabindex="-1"></a>      v <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">f</span>(p)</span>
+<span id="cb24-14"><a href="#cb24-14" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">is.finite</span>(v)) v <span class="cf">else</span> <span class="fl">1e300</span></span>
+<span id="cb24-15"><a href="#cb24-15" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb24-16"><a href="#cb24-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">optim</span>(ini, fn, <span class="at">method =</span> <span class="st">"L-BFGS-B"</span>, <span class="at">lower =</span> inferior, <span class="at">upper =</span> superior)</span>
+<span id="cb24-17"><a href="#cb24-17" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-18"><a href="#cb24-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-19"><a href="#cb24-19" aria-hidden="true" tabindex="-1"></a>  e1 <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(z1, L)</span>
+<span id="cb24-20"><a href="#cb24-20" aria-hidden="true" tabindex="-1"></a>  e2 <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(z2, L)</span>
+<span id="cb24-21"><a href="#cb24-21" aria-hidden="true" tabindex="-1"></a>  a1 <span class="ot">&lt;-</span> <span class="sc">-</span>e1[[<span class="st">"alpha"</span>]]</span>
+<span id="cb24-22"><a href="#cb24-22" aria-hidden="true" tabindex="-1"></a>  a2 <span class="ot">&lt;-</span> <span class="sc">-</span>e2[[<span class="st">"alpha"</span>]]</span>
+<span id="cb24-23"><a href="#cb24-23" aria-hidden="true" tabindex="-1"></a>  m1 <span class="ot">&lt;-</span> e1[[<span class="st">"gamma"</span>]] <span class="sc">/</span> (a1 <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb24-24"><a href="#cb24-24" aria-hidden="true" tabindex="-1"></a>  m2 <span class="ot">&lt;-</span> e2[[<span class="st">"gamma"</span>]] <span class="sc">/</span> (a2 <span class="sc">-</span> <span class="dv">1</span>)</span>
+<span id="cb24-25"><a href="#cb24-25" aria-hidden="true" tabindex="-1"></a>  ll_cheio <span class="ot">&lt;-</span> <span class="fu">ll</span>(a1, m1, a2, m2)</span>
+<span id="cb24-26"><a href="#cb24-26" aria-hidden="true" tabindex="-1"></a>  lm <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fl">1e-6</span>), <span class="fu">log</span>(<span class="fl">1e6</span>))</span>
+<span id="cb24-27"><a href="#cb24-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-28"><a href="#cb24-28" aria-hidden="true" tabindex="-1"></a>  <span class="co"># H0: alpha igual, mu1 e mu2 livres</span></span>
+<span id="cb24-29"><a href="#cb24-29" aria-hidden="true" tabindex="-1"></a>  r_alfa <span class="ot">&lt;-</span> <span class="fu">ajustar</span>(</span>
+<span id="cb24-30"><a href="#cb24-30" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(p) <span class="fu">ll</span>(<span class="fu">exp</span>(p[<span class="dv">1</span>]), <span class="fu">exp</span>(p[<span class="dv">2</span>]), <span class="fu">exp</span>(p[<span class="dv">1</span>]), <span class="fu">exp</span>(p[<span class="dv">3</span>])),</span>
+<span id="cb24-31"><a href="#cb24-31" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(<span class="fu">c</span>((a1 <span class="sc">+</span> a2) <span class="sc">/</span> <span class="dv">2</span>, m1, m2)),</span>
+<span id="cb24-32"><a href="#cb24-32" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(limites[<span class="dv">1</span>], lm[<span class="dv">1</span>], lm[<span class="dv">1</span>]), <span class="fu">c</span>(limites[<span class="dv">2</span>], lm[<span class="dv">2</span>], lm[<span class="dv">2</span>])</span>
+<span id="cb24-33"><a href="#cb24-33" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-34"><a href="#cb24-34" aria-hidden="true" tabindex="-1"></a>  <span class="co"># H0: mu igual, alpha1 e alpha2 livres</span></span>
+<span id="cb24-35"><a href="#cb24-35" aria-hidden="true" tabindex="-1"></a>  r_mu <span class="ot">&lt;-</span> <span class="fu">ajustar</span>(</span>
+<span id="cb24-36"><a href="#cb24-36" aria-hidden="true" tabindex="-1"></a>    <span class="cf">function</span>(p) <span class="fu">ll</span>(<span class="fu">exp</span>(p[<span class="dv">1</span>]), <span class="fu">exp</span>(p[<span class="dv">3</span>]), <span class="fu">exp</span>(p[<span class="dv">2</span>]), <span class="fu">exp</span>(p[<span class="dv">3</span>])),</span>
+<span id="cb24-37"><a href="#cb24-37" aria-hidden="true" tabindex="-1"></a>    <span class="fu">log</span>(<span class="fu">c</span>(a1, a2, (m1 <span class="sc">+</span> m2) <span class="sc">/</span> <span class="dv">2</span>)),</span>
+<span id="cb24-38"><a href="#cb24-38" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(limites[<span class="dv">1</span>], limites[<span class="dv">1</span>], lm[<span class="dv">1</span>]), <span class="fu">c</span>(limites[<span class="dv">2</span>], limites[<span class="dv">2</span>], lm[<span class="dv">2</span>])</span>
+<span id="cb24-39"><a href="#cb24-39" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-40"><a href="#cb24-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-41"><a href="#cb24-41" aria-hidden="true" tabindex="-1"></a>  p_alfa <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(<span class="fu">max</span>(<span class="dv">2</span> <span class="sc">*</span> (ll_cheio <span class="sc">+</span> r_alfa<span class="sc">$</span>value), <span class="dv">0</span>), <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-42"><a href="#cb24-42" aria-hidden="true" tabindex="-1"></a>  p_mu <span class="ot">&lt;-</span> <span class="fu">pchisq</span>(<span class="fu">max</span>(<span class="dv">2</span> <span class="sc">*</span> (ll_cheio <span class="sc">+</span> r_mu<span class="sc">$</span>value), <span class="dv">0</span>), <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb24-43"><a href="#cb24-43" aria-hidden="true" tabindex="-1"></a>  alfa_difere <span class="ot">&lt;-</span> p_alfa <span class="sc">&lt;</span> nivel</span>
+<span id="cb24-44"><a href="#cb24-44" aria-hidden="true" tabindex="-1"></a>  mu_difere <span class="ot">&lt;-</span> p_mu <span class="sc">&lt;</span> nivel</span>
+<span id="cb24-45"><a href="#cb24-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-46"><a href="#cb24-46" aria-hidden="true" tabindex="-1"></a>  motivo <span class="ot">&lt;-</span> <span class="cf">if</span> (alfa_difere <span class="sc">&amp;&amp;</span> mu_difere) {</span>
+<span id="cb24-47"><a href="#cb24-47" aria-hidden="true" tabindex="-1"></a>    <span class="co"># alpha = -a: menor alpha corresponde a maior a</span></span>
+<span id="cb24-48"><a href="#cb24-48" aria-hidden="true" tabindex="-1"></a>    mu_menor_na_amostra_alpha_menor <span class="ot">&lt;-</span> <span class="cf">if</span> (a1 <span class="sc">&gt;=</span> a2) m1 <span class="sc">&lt;</span> m2 <span class="cf">else</span> m2 <span class="sc">&lt;</span> m1</span>
+<span id="cb24-49"><a href="#cb24-49" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (mu_menor_na_amostra_alpha_menor) <span class="st">"(iii) rugosidade e média, mesma direção"</span></span>
+<span id="cb24-50"><a href="#cb24-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="st">"(iv) rugosidade e média, direções opostas"</span></span>
+<span id="cb24-51"><a href="#cb24-51" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (mu_difere) {</span>
+<span id="cb24-52"><a href="#cb24-52" aria-hidden="true" tabindex="-1"></a>    <span class="st">"(i) média (escala)"</span></span>
+<span id="cb24-53"><a href="#cb24-53" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> <span class="cf">if</span> (alfa_difere) {</span>
+<span id="cb24-54"><a href="#cb24-54" aria-hidden="true" tabindex="-1"></a>    <span class="st">"(ii) rugosidade"</span></span>
+<span id="cb24-55"><a href="#cb24-55" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb24-56"><a href="#cb24-56" aria-hidden="true" tabindex="-1"></a>    <span class="st">"efeito conjunto"</span></span>
+<span id="cb24-57"><a href="#cb24-57" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb24-58"><a href="#cb24-58" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">alpha1 =</span> <span class="sc">-</span>a1, <span class="at">alpha2 =</span> <span class="sc">-</span>a2,</span>
+<span id="cb24-59"><a href="#cb24-59" aria-hidden="true" tabindex="-1"></a>             <span class="at">mu1 =</span> m1 <span class="sc">*</span> escala, <span class="at">mu2 =</span> m2 <span class="sc">*</span> escala,</span>
+<span id="cb24-60"><a href="#cb24-60" aria-hidden="true" tabindex="-1"></a>             <span class="at">p_alpha =</span> p_alfa, <span class="at">p_mu =</span> p_mu, <span class="at">Motivo =</span> motivo)</span>
+<span id="cb24-61"><a href="#cb24-61" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb24-62"><a href="#cb24-62" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-63"><a href="#cb24-63" aria-hidden="true" tabindex="-1"></a>rejeitados_KL_G0 <span class="ot">&lt;-</span> <span class="fu">subset</span>(resultados_KL_G0, p_valor <span class="sc">&lt;</span> <span class="fl">0.01</span>)</span>
+<span id="cb24-64"><a href="#cb24-64" aria-hidden="true" tabindex="-1"></a>motivos_KL_G0 <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">seq_len</span>(<span class="fu">nrow</span>(rejeitados_KL_G0)), <span class="cf">function</span>(i) {</span>
+<span id="cb24-65"><a href="#cb24-65" aria-hidden="true" tabindex="-1"></a>  r <span class="ot">&lt;-</span> rejeitados_KL_G0[i, ]</span>
+<span id="cb24-66"><a href="#cb24-66" aria-hidden="true" tabindex="-1"></a>  v <span class="ot">&lt;-</span> bandas_gof[[r<span class="sc">$</span>Banda]]</span>
+<span id="cb24-67"><a href="#cb24-67" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cbind</span>(r, <span class="fu">motivo_rejeicao_KL_G0</span>(amostras_gof[[r<span class="sc">$</span>Amostra1]][[v]],</span>
+<span id="cb24-68"><a href="#cb24-68" aria-hidden="true" tabindex="-1"></a>                                 amostras_gof[[r<span class="sc">$</span>Amostra2]][[v]],</span>
+<span id="cb24-69"><a href="#cb24-69" aria-hidden="true" tabindex="-1"></a>                                 L_banda[[r<span class="sc">$</span>Banda]]))</span>
+<span id="cb24-70"><a href="#cb24-70" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb24-71"><a href="#cb24-71" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb24-72"><a href="#cb24-72" aria-hidden="true" tabindex="-1"></a>tabela_motivos_KL_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(m) {</span>
+<span id="cb24-73"><a href="#cb24-73" aria-hidden="true" tabindex="-1"></a>  m <span class="ot">&lt;-</span> m[<span class="fu">order</span>(m<span class="sc">$</span>Classe, m<span class="sc">$</span>Banda, m<span class="sc">$</span>Amostra1, m<span class="sc">$</span>Amostra2), ]</span>
+<span id="cb24-74"><a href="#cb24-74" aria-hidden="true" tabindex="-1"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb24-75"><a href="#cb24-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(</span>
+<span id="cb24-76"><a href="#cb24-76" aria-hidden="true" tabindex="-1"></a>      <span class="at">Classe =</span> m<span class="sc">$</span>Classe, <span class="at">Banda =</span> m<span class="sc">$</span>Banda,</span>
+<span id="cb24-77"><a href="#cb24-77" aria-hidden="true" tabindex="-1"></a>      <span class="at">Amostra1 =</span> m<span class="sc">$</span>Amostra1, <span class="at">Amostra2 =</span> m<span class="sc">$</span>Amostra2,</span>
+<span id="cb24-78"><a href="#cb24-78" aria-hidden="true" tabindex="-1"></a>      <span class="at">alpha1 =</span> <span class="fu">round</span>(m<span class="sc">$</span>alpha1, <span class="dv">2</span>), <span class="at">alpha2 =</span> <span class="fu">round</span>(m<span class="sc">$</span>alpha2, <span class="dv">2</span>),</span>
+<span id="cb24-79"><a href="#cb24-79" aria-hidden="true" tabindex="-1"></a>      <span class="at">mu1 =</span> <span class="fu">signif</span>(m<span class="sc">$</span>mu1, <span class="dv">3</span>), <span class="at">mu2 =</span> <span class="fu">signif</span>(m<span class="sc">$</span>mu2, <span class="dv">3</span>),</span>
+<span id="cb24-80"><a href="#cb24-80" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_alpha =</span> <span class="fu">format.pval</span>(m<span class="sc">$</span>p_alpha, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">eps =</span> <span class="fl">0.001</span>),</span>
+<span id="cb24-81"><a href="#cb24-81" aria-hidden="true" tabindex="-1"></a>      <span class="at">p_mu =</span> <span class="fu">format.pval</span>(m<span class="sc">$</span>p_mu, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">eps =</span> <span class="fl">0.001</span>),</span>
+<span id="cb24-82"><a href="#cb24-82" aria-hidden="true" tabindex="-1"></a>      <span class="at">Motivo =</span> m<span class="sc">$</span>Motivo</span>
+<span id="cb24-83"><a href="#cb24-83" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb24-84"><a href="#cb24-84" aria-hidden="true" tabindex="-1"></a>    <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Classe"</span>, <span class="st">"Banda"</span>, <span class="st">"Amostra 1"</span>, <span class="st">"Amostra 2"</span>,</span>
+<span id="cb24-85"><a href="#cb24-85" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">alpha_1$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">alpha_2$"</span>,</span>
+<span id="cb24-86"><a href="#cb24-86" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">mu_1$"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">mu_2$"</span>,</span>
+<span id="cb24-87"><a href="#cb24-87" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"p ($</span><span class="sc">\\</span><span class="st">alpha$)"</span>, <span class="st">"p ($</span><span class="sc">\\</span><span class="st">mu$)"</span>, <span class="st">"Motivo da rejeição"</span>),</span>
+<span id="cb24-88"><a href="#cb24-88" aria-hidden="true" tabindex="-1"></a>    <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb24-89"><a href="#cb24-89" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb24-90"><a href="#cb24-90" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tabela_motivos_KL_G0</span>(motivos_KL_G0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 6%">
+<col style="width: 3%">
+<col style="width: 6%">
+<col style="width: 6%">
+<col style="width: 9%">
+<col style="width: 9%">
+<col style="width: 7%">
+<col style="width: 7%">
+<col style="width: 8%">
+<col style="width: 6%">
+<col style="width: 27%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: left;">Amostra 1</th>
+<th style="text-align: left;">Amostra 2</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\alpha_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\alpha_2\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu_1\)</span></th>
+<th style="text-align: right;"><span class="math inline">\(\hat\mu_2\)</span></th>
+<th style="text-align: left;">p (<span class="math inline">\(\alpha\)</span>)</th>
+<th style="text-align: left;">p (<span class="math inline">\(\mu\)</span>)</th>
+<th style="text-align: left;">Motivo da rejeição</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">-66.79</td>
+<td style="text-align: right;">-8.77</td>
+<td style="text-align: right;">295</td>
+<td style="text-align: right;">516</td>
+<td style="text-align: left;">0.05090</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: right;">-66.79</td>
+<td style="text-align: right;">-21.13</td>
+<td style="text-align: right;">295</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: left;">0.50040</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">-66.79</td>
+<td style="text-align: right;">-17.27</td>
+<td style="text-align: right;">295</td>
+<td style="text-align: right;">496</td>
+<td style="text-align: left;">0.35242</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">-66.79</td>
+<td style="text-align: right;">-19.96</td>
+<td style="text-align: right;">295</td>
+<td style="text-align: right;">482</td>
+<td style="text-align: left;">0.46462</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">-21.13</td>
+<td style="text-align: right;">-8.77</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">516</td>
+<td style="text-align: left;">0.18704</td>
+<td style="text-align: left;">0.00255</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">-21.13</td>
+<td style="text-align: right;">-17.27</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">496</td>
+<td style="text-align: left;">0.81624</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">-21.13</td>
+<td style="text-align: right;">-19.96</td>
+<td style="text-align: right;">630</td>
+<td style="text-align: right;">482</td>
+<td style="text-align: left;">0.95335</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">-34.12</td>
+<td style="text-align: right;">-30.44</td>
+<td style="text-align: right;">1340</td>
+<td style="text-align: right;">2310</td>
+<td style="text-align: left;">0.93142</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: right;">-34.12</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1340</td>
+<td style="text-align: right;">2810</td>
+<td style="text-align: left;">0.32106</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">-34.12</td>
+<td style="text-align: right;">-10.84</td>
+<td style="text-align: right;">1340</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">0.20022</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlB</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: right;">-34.12</td>
+<td style="text-align: right;">-38.41</td>
+<td style="text-align: right;">1340</td>
+<td style="text-align: right;">2370</td>
+<td style="text-align: left;">0.94359</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlG</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-30.44</td>
+<td style="text-align: right;">2810</td>
+<td style="text-align: right;">2310</td>
+<td style="text-align: left;">0.25107</td>
+<td style="text-align: left;">0.00109</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlR</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-10.84</td>
+<td style="text-align: right;">2810</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">0.01446</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">GlW</td>
+<td style="text-align: left;">GlU</td>
+<td style="text-align: right;">-38.41</td>
+<td style="text-align: right;">-10.84</td>
+<td style="text-align: right;">2370</td>
+<td style="text-align: right;">2000</td>
+<td style="text-align: left;">0.21773</td>
+<td style="text-align: left;">0.00850</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: right;">-91.85</td>
+<td style="text-align: right;">-20.92</td>
+<td style="text-align: right;">2550</td>
+<td style="text-align: right;">1880</td>
+<td style="text-align: left;">0.37925</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">-91.85</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">2550</td>
+<td style="text-align: right;">2070</td>
+<td style="text-align: left;">0.83053</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">-91.85</td>
+<td style="text-align: right;">-15.04</td>
+<td style="text-align: right;">2550</td>
+<td style="text-align: right;">1400</td>
+<td style="text-align: left;">0.19083</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">-20.92</td>
+<td style="text-align: right;">-12.76</td>
+<td style="text-align: right;">1880</td>
+<td style="text-align: right;">2430</td>
+<td style="text-align: left;">0.53451</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">-20.92</td>
+<td style="text-align: right;">-15.04</td>
+<td style="text-align: right;">1880</td>
+<td style="text-align: right;">1400</td>
+<td style="text-align: left;">0.69310</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">-15.04</td>
+<td style="text-align: right;">-12.76</td>
+<td style="text-align: right;">1400</td>
+<td style="text-align: right;">2430</td>
+<td style="text-align: left;">0.80846</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">-15.04</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1400</td>
+<td style="text-align: right;">2070</td>
+<td style="text-align: left;">0.02674</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-36.54</td>
+<td style="text-align: right;">11100</td>
+<td style="text-align: right;">9240</td>
+<td style="text-align: left;">0.48977</td>
+<td style="text-align: left;">0.00142</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-7.42</td>
+<td style="text-align: right;">11100</td>
+<td style="text-align: right;">8910</td>
+<td style="text-align: left;">0.01246</td>
+<td style="text-align: left;">0.00102</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">11100</td>
+<td style="text-align: right;">8040</td>
+<td style="text-align: left;">1.00000</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoB</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-24.34</td>
+<td style="text-align: right;">11100</td>
+<td style="text-align: right;">6610</td>
+<td style="text-align: left;">0.36091</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoR</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: right;">-7.42</td>
+<td style="text-align: right;">-24.34</td>
+<td style="text-align: right;">8910</td>
+<td style="text-align: right;">6610</td>
+<td style="text-align: left;">0.10172</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoG</td>
+<td style="text-align: right;">-24.34</td>
+<td style="text-align: right;">-36.54</td>
+<td style="text-align: right;">6610</td>
+<td style="text-align: right;">9240</td>
+<td style="text-align: left;">0.78497</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">FoW</td>
+<td style="text-align: left;">FoU</td>
+<td style="text-align: right;">-24.34</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">6610</td>
+<td style="text-align: right;">8040</td>
+<td style="text-align: left;">0.42932</td>
+<td style="text-align: left;">0.00112</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">-15.06</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1080</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: left;">0.05385</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">-15.06</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1080</td>
+<td style="text-align: right;">1360</td>
+<td style="text-align: left;">0.06341</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">-15.06</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1080</td>
+<td style="text-align: right;">1360</td>
+<td style="text-align: left;">0.09145</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">-10.35</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1130</td>
+<td style="text-align: right;">1530</td>
+<td style="text-align: left;">0.00823</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(iv) rugosidade e média, direções opostas</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">-10.35</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1130</td>
+<td style="text-align: right;">1360</td>
+<td style="text-align: left;">0.01152</td>
+<td style="text-align: left;">0.00313</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">-10.35</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">1130</td>
+<td style="text-align: right;">1360</td>
+<td style="text-align: left;">0.02332</td>
+<td style="text-align: left;">0.00302</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-9.23</td>
+<td style="text-align: right;">5550</td>
+<td style="text-align: right;">4890</td>
+<td style="text-align: left;">0.01014</td>
+<td style="text-align: left;">0.04707</td>
+<td style="text-align: left;">efeito conjunto</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-27.33</td>
+<td style="text-align: right;">5550</td>
+<td style="text-align: right;">6920</td>
+<td style="text-align: left;">0.29717</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvB</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">-41.93</td>
+<td style="text-align: right;">5550</td>
+<td style="text-align: right;">6760</td>
+<td style="text-align: left;">0.46730</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: right;">-9.23</td>
+<td style="text-align: right;">-27.33</td>
+<td style="text-align: right;">4890</td>
+<td style="text-align: right;">6920</td>
+<td style="text-align: left;">0.12320</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvR</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: right;">-9.23</td>
+<td style="text-align: right;">-41.93</td>
+<td style="text-align: right;">4890</td>
+<td style="text-align: right;">6760</td>
+<td style="text-align: left;">0.06454</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvU</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">-27.33</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">6920</td>
+<td style="text-align: right;">5150</td>
+<td style="text-align: left;">0.29765</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: left;">SvW</td>
+<td style="text-align: left;">SvG</td>
+<td style="text-align: right;">-41.93</td>
+<td style="text-align: right;">-500.00</td>
+<td style="text-align: right;">6760</td>
+<td style="text-align: right;">5150</td>
+<td style="text-align: left;">0.47253</td>
+<td style="text-align: left;">&lt; 0.001</td>
+<td style="text-align: left;">(i) média (escala)</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb26"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="fu">as.data.frame</span>(<span class="fu">table</span>(<span class="at">Motivo =</span> motivos_KL_G0<span class="sc">$</span>Motivo, <span class="at">Banda =</span> motivos_KL_G0<span class="sc">$</span>Banda)),</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Motivo da rejeição"</span>, <span class="st">"Banda"</span>, <span class="st">"Casos"</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<thead>
+<tr class="header">
+<th style="text-align: left;">Motivo da rejeição</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;">Casos</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">(i) média (escala)</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">19</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(iv) rugosidade e média, direções opostas</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">efeito conjunto</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">(i) média (escala)</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">20</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">(iv) rugosidade e média, direções opostas</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">efeito conjunto</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">1</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</section>
+<section id="teste-conjunto-de-rugosidade-comum-à-classe" class="level3">
+<h3 class="anchored" data-anchor-id="teste-conjunto-de-rugosidade-comum-à-classe">Teste conjunto de rugosidade comum à classe</h3>
+<p>As comparações acima são feitas par a par. Para testar diretamente a ideia de que as amostras de uma classe pertencem a uma mesma família de distribuições <span class="math inline">\(\mathcal G^0_I\)</span> em que apenas o brilho médio varia, usamos um teste da razão de verossimilhanças por classe e banda. Com <span class="math inline">\(k=5\)</span> amostras, a hipótese nula é <span class="math inline">\(H_0:\alpha_1=\dots=\alpha_k\)</span>, com <span class="math inline">\(\mu_1,\dots,\mu_k\)</span> livres, contra a alternativa em que todos os <span class="math inline">\(\alpha_j\)</span> e <span class="math inline">\(\mu_j\)</span> são livres. A estatística <span class="math inline">\(-2\log\Lambda\)</span> tem distribuição assintótica <span class="math inline">\(\chi^2_{k-1}\)</span>, aqui com 4 graus de liberdade. Não rejeitar <span class="math inline">\(H_0\)</span> é compatível com a ideia de família, mas não a comprova, pois o teste pode ter pouco poder para diferenças pequenas de <span class="math inline">\(\alpha\)</span> com <span class="math inline">\(n=300\)</span>. Assim como nos testes anteriores, assume-se independência entre pixels.</p>
+<div class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb27"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a>teste_alfa_comum_G0 <span class="ot">&lt;-</span> <span class="cf">function</span>(amostras, L) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  k <span class="ot">&lt;-</span> <span class="fu">length</span>(amostras)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>  zs <span class="ot">&lt;-</span> <span class="fu">lapply</span>(amostras, <span class="cf">function</span>(z) z <span class="sc">/</span> <span class="fu">mean</span>(z))</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  ll_completo <span class="ot">&lt;-</span> <span class="fu">sum</span>(<span class="fu">vapply</span>(zs, <span class="cf">function</span>(z) {</span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>    e <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(z, L)</span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">loglik_G0</span>(e[[<span class="st">"alpha"</span>]], e[[<span class="st">"gamma"</span>]], L, z)</span>
+<span id="cb27-8"><a href="#cb27-8" aria-hidden="true" tabindex="-1"></a>  }, <span class="fu">numeric</span>(<span class="dv">1</span>)))</span>
+<span id="cb27-9"><a href="#cb27-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-10"><a href="#cb27-10" aria-hidden="true" tabindex="-1"></a>  ini <span class="ot">&lt;-</span> <span class="fu">vapply</span>(zs, <span class="cf">function</span>(z) {</span>
+<span id="cb27-11"><a href="#cb27-11" aria-hidden="true" tabindex="-1"></a>    e <span class="ot">&lt;-</span> <span class="fu">ajustar_G0_mv</span>(z, L)</span>
+<span id="cb27-12"><a href="#cb27-12" aria-hidden="true" tabindex="-1"></a>    <span class="fu">c</span>(<span class="at">a =</span> <span class="sc">-</span>e[[<span class="st">"alpha"</span>]], <span class="at">m =</span> e[[<span class="st">"gamma"</span>]] <span class="sc">/</span> (<span class="sc">-</span>e[[<span class="st">"alpha"</span>]] <span class="sc">-</span> <span class="dv">1</span>))</span>
+<span id="cb27-13"><a href="#cb27-13" aria-hidden="true" tabindex="-1"></a>  }, <span class="fu">numeric</span>(<span class="dv">2</span>))</span>
+<span id="cb27-14"><a href="#cb27-14" aria-hidden="true" tabindex="-1"></a>  par0 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fu">mean</span>(ini[<span class="st">"a"</span>, ])), <span class="fu">log</span>(ini[<span class="st">"m"</span>, ]))</span>
+<span id="cb27-15"><a href="#cb27-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-16"><a href="#cb27-16" aria-hidden="true" tabindex="-1"></a>  fn <span class="ot">&lt;-</span> <span class="cf">function</span>(p) {</span>
+<span id="cb27-17"><a href="#cb27-17" aria-hidden="true" tabindex="-1"></a>    a <span class="ot">&lt;-</span> <span class="fu">exp</span>(p[<span class="dv">1</span>])</span>
+<span id="cb27-18"><a href="#cb27-18" aria-hidden="true" tabindex="-1"></a>    v <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">vapply</span>(<span class="fu">seq_len</span>(k), <span class="cf">function</span>(j) {</span>
+<span id="cb27-19"><a href="#cb27-19" aria-hidden="true" tabindex="-1"></a>      <span class="fu">loglik_G0</span>(<span class="sc">-</span>a, <span class="fu">exp</span>(p[<span class="dv">1</span> <span class="sc">+</span> j]) <span class="sc">*</span> (a <span class="sc">-</span> <span class="dv">1</span>), L, zs[[j]])</span>
+<span id="cb27-20"><a href="#cb27-20" aria-hidden="true" tabindex="-1"></a>    }, <span class="fu">numeric</span>(<span class="dv">1</span>)))</span>
+<span id="cb27-21"><a href="#cb27-21" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">is.finite</span>(v)) v <span class="cf">else</span> <span class="fl">1e300</span></span>
+<span id="cb27-22"><a href="#cb27-22" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb27-23"><a href="#cb27-23" aria-hidden="true" tabindex="-1"></a>  restrito <span class="ot">&lt;-</span> <span class="fu">optim</span>(par0, fn, <span class="at">method =</span> <span class="st">"L-BFGS-B"</span>,</span>
+<span id="cb27-24"><a href="#cb27-24" aria-hidden="true" tabindex="-1"></a>                    <span class="at">lower =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="fl">1.01</span>), <span class="fu">rep</span>(<span class="fu">log</span>(<span class="fl">1e-6</span>), k)),</span>
+<span id="cb27-25"><a href="#cb27-25" aria-hidden="true" tabindex="-1"></a>                    <span class="at">upper =</span> <span class="fu">c</span>(<span class="fu">log</span>(<span class="dv">500</span>), <span class="fu">rep</span>(<span class="fu">log</span>(<span class="fl">1e6</span>), k)))</span>
+<span id="cb27-26"><a href="#cb27-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-27"><a href="#cb27-27" aria-hidden="true" tabindex="-1"></a>  estatistica <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="dv">2</span> <span class="sc">*</span> (ll_completo <span class="sc">+</span> restrito<span class="sc">$</span>value), <span class="dv">0</span>)</span>
+<span id="cb27-28"><a href="#cb27-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">estatistica =</span> estatistica,</span>
+<span id="cb27-29"><a href="#cb27-29" aria-hidden="true" tabindex="-1"></a>       <span class="at">p_valor =</span> <span class="fu">pchisq</span>(estatistica, <span class="at">df =</span> k <span class="sc">-</span> <span class="dv">1</span>, <span class="at">lower.tail =</span> <span class="cn">FALSE</span>),</span>
+<span id="cb27-30"><a href="#cb27-30" aria-hidden="true" tabindex="-1"></a>       <span class="at">alpha_comum =</span> <span class="sc">-</span><span class="fu">exp</span>(restrito<span class="sc">$</span>par[<span class="dv">1</span>]))</span>
+<span id="cb27-31"><a href="#cb27-31" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-32"><a href="#cb27-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-33"><a href="#cb27-33" aria-hidden="true" tabindex="-1"></a>resultados_alfa_comum <span class="ot">&lt;-</span> <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(classes_gof), <span class="cf">function</span>(prefixo) {</span>
+<span id="cb27-34"><a href="#cb27-34" aria-hidden="true" tabindex="-1"></a>  imagens <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="fu">paste0</span>(<span class="st">"^"</span>, prefixo), <span class="fu">names</span>(amostras_gof), <span class="at">value =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb27-35"><a href="#cb27-35" aria-hidden="true" tabindex="-1"></a>  <span class="fu">do.call</span>(rbind, <span class="fu">lapply</span>(<span class="fu">names</span>(bandas_gof), <span class="cf">function</span>(banda) {</span>
+<span id="cb27-36"><a href="#cb27-36" aria-hidden="true" tabindex="-1"></a>    r <span class="ot">&lt;-</span> <span class="fu">teste_alfa_comum_G0</span>(</span>
+<span id="cb27-37"><a href="#cb27-37" aria-hidden="true" tabindex="-1"></a>      <span class="fu">lapply</span>(amostras_gof[imagens], <span class="cf">function</span>(d) d[[bandas_gof[[banda]]]]),</span>
+<span id="cb27-38"><a href="#cb27-38" aria-hidden="true" tabindex="-1"></a>      L_banda[[banda]]</span>
+<span id="cb27-39"><a href="#cb27-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb27-40"><a href="#cb27-40" aria-hidden="true" tabindex="-1"></a>    <span class="fu">data.frame</span>(<span class="at">Classe =</span> classes_gof[[prefixo]], <span class="at">Banda =</span> banda,</span>
+<span id="cb27-41"><a href="#cb27-41" aria-hidden="true" tabindex="-1"></a>               <span class="at">alpha_comum =</span> r<span class="sc">$</span>alpha_comum, <span class="at">Estatistica =</span> r<span class="sc">$</span>estatistica,</span>
+<span id="cb27-42"><a href="#cb27-42" aria-hidden="true" tabindex="-1"></a>               <span class="at">p_valor =</span> r<span class="sc">$</span>p_valor,</span>
+<span id="cb27-43"><a href="#cb27-43" aria-hidden="true" tabindex="-1"></a>               <span class="at">Decisao =</span> <span class="fu">ifelse</span>(r<span class="sc">$</span>p_valor <span class="sc">&lt;</span> <span class="fl">0.01</span>, <span class="st">"Rejeita H0"</span>, <span class="st">"Não rejeita H0"</span>))</span>
+<span id="cb27-44"><a href="#cb27-44" aria-hidden="true" tabindex="-1"></a>  }))</span>
+<span id="cb27-45"><a href="#cb27-45" aria-hidden="true" tabindex="-1"></a>}))</span>
+<span id="cb27-46"><a href="#cb27-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-47"><a href="#cb27-47" aria-hidden="true" tabindex="-1"></a>knitr<span class="sc">::</span><span class="fu">kable</span>(</span>
+<span id="cb27-48"><a href="#cb27-48" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb27-49"><a href="#cb27-49" aria-hidden="true" tabindex="-1"></a>    <span class="at">Classe =</span> resultados_alfa_comum<span class="sc">$</span>Classe,</span>
+<span id="cb27-50"><a href="#cb27-50" aria-hidden="true" tabindex="-1"></a>    <span class="at">Banda =</span> resultados_alfa_comum<span class="sc">$</span>Banda,</span>
+<span id="cb27-51"><a href="#cb27-51" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha_comum =</span> <span class="fu">round</span>(resultados_alfa_comum<span class="sc">$</span>alpha_comum, <span class="dv">3</span>),</span>
+<span id="cb27-52"><a href="#cb27-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">Estatistica =</span> <span class="fu">signif</span>(resultados_alfa_comum<span class="sc">$</span>Estatistica, <span class="dv">4</span>),</span>
+<span id="cb27-53"><a href="#cb27-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">p_valor =</span> <span class="fu">format.pval</span>(resultados_alfa_comum<span class="sc">$</span>p_valor, <span class="at">digits =</span> <span class="dv">3</span>, <span class="at">eps =</span> <span class="fl">0.001</span>),</span>
+<span id="cb27-54"><a href="#cb27-54" aria-hidden="true" tabindex="-1"></a>    <span class="at">Decisao =</span> resultados_alfa_comum<span class="sc">$</span>Decisao</span>
+<span id="cb27-55"><a href="#cb27-55" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb27-56"><a href="#cb27-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">col.names =</span> <span class="fu">c</span>(<span class="st">"Classe"</span>, <span class="st">"Banda"</span>, <span class="st">"$</span><span class="sc">\\</span><span class="st">hat</span><span class="sc">\\</span><span class="st">alpha$ comum"</span>, <span class="st">"$-2</span><span class="sc">\\</span><span class="st">log</span><span class="sc">\\</span><span class="st">Lambda$"</span>,</span>
+<span id="cb27-57"><a href="#cb27-57" aria-hidden="true" tabindex="-1"></a>                <span class="st">"p-valor"</span>, <span class="st">"Decisão (1%)"</span>),</span>
+<span id="cb27-58"><a href="#cb27-58" aria-hidden="true" tabindex="-1"></a>  <span class="at">escape =</span> <span class="cn">FALSE</span></span>
+<span id="cb27-59"><a href="#cb27-59" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 13%">
+<col style="width: 8%">
+<col style="width: 25%">
+<col style="width: 21%">
+<col style="width: 10%">
+<col style="width: 20%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Classe</th>
+<th style="text-align: left;">Banda</th>
+<th style="text-align: right;"><span class="math inline">\(\hat\alpha\)</span> comum</th>
+<th style="text-align: right;"><span class="math inline">\(-2\log\Lambda\)</span></th>
+<th style="text-align: left;">p-valor</th>
+<th style="text-align: left;">Decisão (1%)</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-23.080</td>
+<td style="text-align: right;">9.305</td>
+<td style="text-align: left;">0.0539</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Floresta</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-36.176</td>
+<td style="text-align: right;">9.454</td>
+<td style="text-align: left;">0.0507</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-27.552</td>
+<td style="text-align: right;">10.440</td>
+<td style="text-align: left;">0.0336</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Savana</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-89.886</td>
+<td style="text-align: right;">11.240</td>
+<td style="text-align: left;">0.0240</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VV</td>
+<td style="text-align: right;">-37.294</td>
+<td style="text-align: right;">6.094</td>
+<td style="text-align: left;">0.1922</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">Campestre</td>
+<td style="text-align: left;">VH</td>
+<td style="text-align: right;">-16.850</td>
+<td style="text-align: right;">4.221</td>
+<td style="text-align: left;">0.3769</td>
+<td style="text-align: left;">Não rejeita H0</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 
 </section>
 </section>

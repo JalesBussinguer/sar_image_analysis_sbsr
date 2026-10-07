@@ -936,3 +936,173 @@ tabela_KL_G0(subset(resultados_KL_G0, p_valor >= 0.01))
 ```{r TesteKLG0Rejected}
 tabela_KL_G0(subset(resultados_KL_G0, p_valor < 0.01))
 ```
+
+O teste $S_{\mathrm{KL}}$ apenas indica se as duas amostras diferem, mas não diz por quê. Para qualificar os casos de rejeição, seguimos os cenários de @nascimento2010, com $\mu=-\gamma/(1+\alpha)$ a média: (i) $\alpha_1=\alpha_2$ e $\mu_1\neq\mu_2$ (só o brilho médio muda); (ii) $\alpha_1\neq\alpha_2$ e $\mu_1=\mu_2$ (só a rugosidade muda); (iii) $\alpha_1<\alpha_2$ e $\mu_1<\mu_2$; (iv) $\alpha_1<\alpha_2$ e $\mu_1>\mu_2$. Como as estimativas nunca são exatamente iguais, usamos dois testes da razão de verossimilhanças, cada um com 1 grau de liberdade e nível de 1%: um para $\alpha_1=\alpha_2$ (com $\mu_1,\mu_2$ livres) e outro para $\mu_1=\mu_2$ (com $\alpha_1,\alpha_2$ livres). Nos cenários (iii) e (iv), a amostra 1 é a de menor $\hat\alpha$. Quando nenhum dos dois testes rejeita, mas $S_{\mathrm{KL}}$ rejeita, a diferença é classificada como efeito conjunto. A classificação é descritiva e herda a mesma hipótese de independência dos pixels.
+
+```{r MotivoRejeicaoKLG0}
+motivo_rejeicao_KL_G0 <- function(x1, x2, L, nivel = 0.01) {
+  escala <- mean(c(x1, x2))
+  z1 <- x1 / escala
+  z2 <- x2 / escala
+  limites <- c(log(1.01), log(500))
+  gama <- function(a, m) m * (a - 1)
+
+  ll <- function(a1, m1, a2, m2) {
+    loglik_G0(-a1, gama(a1, m1), L, z1) + loglik_G0(-a2, gama(a2, m2), L, z2)
+  }
+  ajustar <- function(f, ini, inferior, superior) {
+    fn <- function(p) {
+      v <- -f(p)
+      if (is.finite(v)) v else 1e300
+    }
+    optim(ini, fn, method = "L-BFGS-B", lower = inferior, upper = superior)
+  }
+
+  e1 <- ajustar_G0_mv(z1, L)
+  e2 <- ajustar_G0_mv(z2, L)
+  a1 <- -e1[["alpha"]]
+  a2 <- -e2[["alpha"]]
+  m1 <- e1[["gamma"]] / (a1 - 1)
+  m2 <- e2[["gamma"]] / (a2 - 1)
+  ll_cheio <- ll(a1, m1, a2, m2)
+  lm <- c(log(1e-6), log(1e6))
+
+  # H0: alpha igual, mu1 e mu2 livres
+  r_alfa <- ajustar(
+    function(p) ll(exp(p[1]), exp(p[2]), exp(p[1]), exp(p[3])),
+    log(c((a1 + a2) / 2, m1, m2)),
+    c(limites[1], lm[1], lm[1]), c(limites[2], lm[2], lm[2])
+  )
+  # H0: mu igual, alpha1 e alpha2 livres
+  r_mu <- ajustar(
+    function(p) ll(exp(p[1]), exp(p[3]), exp(p[2]), exp(p[3])),
+    log(c(a1, a2, (m1 + m2) / 2)),
+    c(limites[1], limites[1], lm[1]), c(limites[2], limites[2], lm[2])
+  )
+
+  p_alfa <- pchisq(max(2 * (ll_cheio + r_alfa$value), 0), 1, lower.tail = FALSE)
+  p_mu <- pchisq(max(2 * (ll_cheio + r_mu$value), 0), 1, lower.tail = FALSE)
+  alfa_difere <- p_alfa < nivel
+  mu_difere <- p_mu < nivel
+
+  motivo <- if (alfa_difere && mu_difere) {
+    # alpha = -a: menor alpha corresponde a maior a
+    mu_menor_na_amostra_alpha_menor <- if (a1 >= a2) m1 < m2 else m2 < m1
+    if (mu_menor_na_amostra_alpha_menor) "(iii) rugosidade e média, mesma direção"
+    else "(iv) rugosidade e média, direções opostas"
+  } else if (mu_difere) {
+    "(i) média (escala)"
+  } else if (alfa_difere) {
+    "(ii) rugosidade"
+  } else {
+    "efeito conjunto"
+  }
+  data.frame(alpha1 = -a1, alpha2 = -a2,
+             mu1 = m1 * escala, mu2 = m2 * escala,
+             p_alpha = p_alfa, p_mu = p_mu, Motivo = motivo)
+}
+
+rejeitados_KL_G0 <- subset(resultados_KL_G0, p_valor < 0.01)
+motivos_KL_G0 <- do.call(rbind, lapply(seq_len(nrow(rejeitados_KL_G0)), function(i) {
+  r <- rejeitados_KL_G0[i, ]
+  v <- bandas_gof[[r$Banda]]
+  cbind(r, motivo_rejeicao_KL_G0(amostras_gof[[r$Amostra1]][[v]],
+                                 amostras_gof[[r$Amostra2]][[v]],
+                                 L_banda[[r$Banda]]))
+}))
+
+tabela_motivos_KL_G0 <- function(m) {
+  m <- m[order(m$Classe, m$Banda, m$Amostra1, m$Amostra2), ]
+  knitr::kable(
+    data.frame(
+      Classe = m$Classe, Banda = m$Banda,
+      Amostra1 = m$Amostra1, Amostra2 = m$Amostra2,
+      alpha1 = round(m$alpha1, 2), alpha2 = round(m$alpha2, 2),
+      mu1 = signif(m$mu1, 3), mu2 = signif(m$mu2, 3),
+      p_alpha = format.pval(m$p_alpha, digits = 3, eps = 0.001),
+      p_mu = format.pval(m$p_mu, digits = 3, eps = 0.001),
+      Motivo = m$Motivo
+    ),
+    col.names = c("Classe", "Banda", "Amostra 1", "Amostra 2",
+                  "$\\hat\\alpha_1$", "$\\hat\\alpha_2$",
+                  "$\\hat\\mu_1$", "$\\hat\\mu_2$",
+                  "p ($\\alpha$)", "p ($\\mu$)", "Motivo da rejeição"),
+    escape = FALSE
+  )
+}
+```
+
+```{r MotivoRejeicaoKLG0Tabela}
+tabela_motivos_KL_G0(motivos_KL_G0)
+```
+
+```{r MotivoRejeicaoKLG0Resumo}
+knitr::kable(as.data.frame(table(Motivo = motivos_KL_G0$Motivo, Banda = motivos_KL_G0$Banda)),
+             col.names = c("Motivo da rejeição", "Banda", "Casos"))
+```
+
+### Teste conjunto de rugosidade comum à classe
+
+As comparações acima são feitas par a par. Para testar diretamente a ideia de que as amostras de uma classe pertencem a uma mesma família de distribuições $\mathcal G^0_I$ em que apenas o brilho médio varia, usamos um teste da razão de verossimilhanças por classe e banda. Com $k=5$ amostras, a hipótese nula é $H_0:\alpha_1=\dots=\alpha_k$, com $\mu_1,\dots,\mu_k$ livres, contra a alternativa em que todos os $\alpha_j$ e $\mu_j$ são livres. A estatística $-2\log\Lambda$ tem distribuição assintótica $\chi^2_{k-1}$, aqui com 4 graus de liberdade. Não rejeitar $H_0$ é compatível com a ideia de família, mas não a comprova, pois o teste pode ter pouco poder para diferenças pequenas de $\alpha$ com $n=300$. Assim como nos testes anteriores, assume-se independência entre pixels.
+
+```{r AlfaComumG0}
+teste_alfa_comum_G0 <- function(amostras, L) {
+  k <- length(amostras)
+  zs <- lapply(amostras, function(z) z / mean(z))
+
+  ll_completo <- sum(vapply(zs, function(z) {
+    e <- ajustar_G0_mv(z, L)
+    loglik_G0(e[["alpha"]], e[["gamma"]], L, z)
+  }, numeric(1)))
+
+  ini <- vapply(zs, function(z) {
+    e <- ajustar_G0_mv(z, L)
+    c(a = -e[["alpha"]], m = e[["gamma"]] / (-e[["alpha"]] - 1))
+  }, numeric(2))
+  par0 <- c(log(mean(ini["a", ])), log(ini["m", ]))
+
+  fn <- function(p) {
+    a <- exp(p[1])
+    v <- -sum(vapply(seq_len(k), function(j) {
+      loglik_G0(-a, exp(p[1 + j]) * (a - 1), L, zs[[j]])
+    }, numeric(1)))
+    if (is.finite(v)) v else 1e300
+  }
+  restrito <- optim(par0, fn, method = "L-BFGS-B",
+                    lower = c(log(1.01), rep(log(1e-6), k)),
+                    upper = c(log(500), rep(log(1e6), k)))
+
+  estatistica <- max(2 * (ll_completo + restrito$value), 0)
+  list(estatistica = estatistica,
+       p_valor = pchisq(estatistica, df = k - 1, lower.tail = FALSE),
+       alpha_comum = -exp(restrito$par[1]))
+}
+
+resultados_alfa_comum <- do.call(rbind, lapply(names(classes_gof), function(prefixo) {
+  imagens <- grep(paste0("^", prefixo), names(amostras_gof), value = TRUE)
+  do.call(rbind, lapply(names(bandas_gof), function(banda) {
+    r <- teste_alfa_comum_G0(
+      lapply(amostras_gof[imagens], function(d) d[[bandas_gof[[banda]]]]),
+      L_banda[[banda]]
+    )
+    data.frame(Classe = classes_gof[[prefixo]], Banda = banda,
+               alpha_comum = r$alpha_comum, Estatistica = r$estatistica,
+               p_valor = r$p_valor,
+               Decisao = ifelse(r$p_valor < 0.01, "Rejeita H0", "Não rejeita H0"))
+  }))
+}))
+
+knitr::kable(
+  data.frame(
+    Classe = resultados_alfa_comum$Classe,
+    Banda = resultados_alfa_comum$Banda,
+    alpha_comum = round(resultados_alfa_comum$alpha_comum, 3),
+    Estatistica = signif(resultados_alfa_comum$Estatistica, 4),
+    p_valor = format.pval(resultados_alfa_comum$p_valor, digits = 3, eps = 0.001),
+    Decisao = resultados_alfa_comum$Decisao
+  ),
+  col.names = c("Classe", "Banda", "$\\hat\\alpha$ comum", "$-2\\log\\Lambda$",
+                "p-valor", "Decisão (1%)"),
+  escape = FALSE
+)
+```
