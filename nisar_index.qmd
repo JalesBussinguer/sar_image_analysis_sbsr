@@ -772,7 +772,8 @@ $$
 $$
 pois o termo $(L-1)\log z$ se cancela. Esta forma integral é a expressão final conveniente para o caso deste estudo, em que $L$ é fixo e igual para as duas amostras; ela corresponde à expansão da distância apresentada no anexo, mas não requer avaliar separadamente cada uma das integrais dessa expansão.
 
-Na metodologia de @nascimento2010, $d_{\mathrm{KL}}$ corresponde à distância $(h,\phi)$ com $h(y)=y/2$ e $\phi(u)=(u-1)\log u$, de modo que $h'(0)\phi''(1)=1$. Para tamanhos amostrais $n_1$ e $n_2$, a estatística
+Na metodologia de @nascimento2010, $d_{\mathrm{KL}}$ corresponde à distância $(h,\phi)$ com $h(y)=y/2$ e $\phi(u)=(u-1)\log u$, de modo que $h'(0)\phi''(1)=1$. 
+Para tamanhos amostrais $n_1$ e $n_2$, a estatística
 $$
 S_{\mathrm{KL}}=\frac{2n_1n_2}{n_1+n_2}d_{\mathrm{KL}}(\widehat f_1,\widehat f_2)
 \ \xrightarrow[H_0]{}\ \chi^2_2,
