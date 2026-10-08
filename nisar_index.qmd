@@ -359,7 +359,7 @@ Podemos usar bootstrap paramétrico.
 # amostra, a distribuição nula de D não é a tabelada para KS; por isso os
 # quantis são obtidos por simulação (bootstrap paramétrico), re-estimando os
 # parâmetros por máxima verossimilhança em cada réplica (não por momentos).
-teste_aderencia_gama <- function(x, B = 999) {
+teste_aderencia_gama <- function(x, B = 1000) {
   n <- length(x)
 
   estimativas <- MASS::fitdistr(x, densfun="gamma")$estimate
@@ -670,7 +670,7 @@ estat_KS_G0 <- function(x, alpha, gamma, L) {
   max(abs(ecdf(x)(xs) - pG0(xs, alpha, gamma, L)))
 }
 
-teste_aderencia_G0 <- function(x, L, B = 999) {
+teste_aderencia_G0 <- function(x, L, B = 1000) {
   n <- length(x)
   est <- ajustar_G0_mv(x, L)
   D_obs <- estat_KS_G0(x, est[["alpha"]], est[["gamma"]], L)
@@ -917,7 +917,7 @@ tabela_KL_G0(subset(resultados_KL_G0, p_valor >= 0.01))
 tabela_KL_G0(subset(resultados_KL_G0, p_valor < 0.01))
 ```
 
-O teste $S_{\mathrm{KL}}$ apenas indica se as duas amostras diferem, mas não diz por quê. Para qualificar os casos de rejeição, seguimos os cenários de @nascimento2010, com $\mu=-\gamma/(1+\alpha)$ a média: (i) $\alpha_1=\alpha_2$ e $\mu_1\neq\mu_2$ (só o brilho médio muda); (ii) $\alpha_1\neq\alpha_2$ e $\mu_1=\mu_2$ (só a rugosidade muda); (iii) $\alpha_1<\alpha_2$ e $\mu_1<\mu_2$; (iv) $\alpha_1<\alpha_2$ e $\mu_1>\mu_2$. Como as estimativas nunca são exatamente iguais, usamos dois testes da razão de verossimilhanças, cada um com 1 grau de liberdade e nível de 1%: um para $\alpha_1=\alpha_2$ (com $\mu_1,\mu_2$ livres) e outro para $\mu_1=\mu_2$ (com $\alpha_1,\alpha_2$ livres). Nos cenários (iii) e (iv), a amostra 1 é a de menor $\hat\alpha$. Quando nenhum dos dois testes rejeita, mas $S_{\mathrm{KL}}$ rejeita, a diferença é classificada como efeito conjunto. A classificação é descritiva e herda a mesma hipótese de independência dos pixels.
+O teste $S_{\mathrm{KL}}$ apenas indica se as duas amostras diferem, mas não diz por quê. Para qualificar os casos de rejeição, seguimos os cenários de @ , com $\mu=-\gamma/(1+\alpha)$ a média: (i) $\alpha_1=\alpha_2$ e $\mu_1\neq\mu_2$ (só o brilho médio muda); (ii) $\alpha_1\neq\alpha_2$ e $\mu_1=\mu_2$ (só a rugosidade muda); (iii) $\alpha_1<\alpha_2$ e $\mu_1<\mu_2$; (iv) $\alpha_1<\alpha_2$ e $\mu_1>\mu_2$. Como as estimativas nunca são exatamente iguais, usamos dois testes da razão de verossimilhanças, cada um com 1 grau de liberdade e nível de 1%: um para $\alpha_1=\alpha_2$ (com $\mu_1,\mu_2$ livres) e outro para $\mu_1=\mu_2$ (com $\alpha_1,\alpha_2$ livres). Nos cenários (iii) e (iv), a amostra 1 é a de menor $\hat\alpha$. Quando nenhum dos dois testes rejeita, mas $S_{\mathrm{KL}}$ rejeita, a diferença é classificada como efeito conjunto. A classificação é descritiva e herda a mesma hipótese de independência dos pixels.
 
 ```{r MotivoRejeicaoKLG0}
 motivo_rejeicao_KL_G0 <- function(x1, x2, L, nivel = 0.01) {
