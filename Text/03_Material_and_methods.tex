@@ -1,0 +1,76 @@
+\section{Material e methods}
+
+\subsection{Study site and sampling strategy}
+
+The study site is the Brasilia National Park, located in the north-western region of the Federal District of Brazil (Fig.\ref{fig:main_map}a).
+The park is permanently protected and is a relevant research and conservation site \cite{sano2005}.
+Its vegetation cover is representative of three major Cerrado physiognomies, namely Forest, Savanna, and Grasslands (Fig. \ref{fig:main_map}b).
+These physiognomies are referenced in this study as classes, and their spatial extents were extracted from the MapBiomas Collection 11 Land Use and Land Cover map of 2025 [Cite Mapbiomas].
+
+We constructed a set of samples for each of the three Cerrado physiognomies.
+The sample sets are composed of 5 sample polygons labeled after a color: White (W), Blue (U), Black (B), Red (R), and Green (G).
+On a first approach of this study, we verified that a large number of observations ($n > 8000$ per sample) systematically leads to the rejection of the null hypothesis ($H0$), whereas empirical evidence suggests otherwise.
+Consequently, the decision was made to reduce the number of observations per sample to mitigate the effect of large sample sizes on the test statistic's p-value.
+Hence, the sample polygons of each class were plotted as rectangles of \qtyproduct{150 x 200}{\meter} with 300 observations per polygon.
+The polygons were distributed over the study site using the MapBiomas 2025 LULC map as reference (Fig 1b), and were used to extract the observations ($O_{i}$) from the C2 covariant matrix elements.
+For Sentinel-1 images, $O_{i_{S1}} = (I_{VV}, I_{VH})$, and for NISAR images, $O_{i_{NISAR}} = (I_{HH}, I_{HV})$.
+
+\begin{figure}[t]
+    \begin{center}
+    \includegraphics[width=\linewidth]{main_map.png}
+    \caption{a) Study site location within the Cerrado Biome and at the Federal District of Brazil; b) MapBiomas 2025 LULC map and sample polygons overlaid in Google Satellite basemap}
+    \label{fig:main_map}
+    \end{center}
+\end{figure}
+
+\subsection{SAR datasets and preprocessing}
+
+We studied two scenes from two different SAR missions: a L-band NISAR Geocoded Single Look Complex (GSLC) image acquired in 2026-06-24 (Fig.\ref{fig:main_map}c), and a C-band Sentinel-1 Single Look Complex (SLC) image acquired in 2026-06-25 (Fig. \ref{fig:main_map}d).
+The products of both mission were downloaded from the Alaska Satellite Facility (ASF) platform.
+
+For both missions, we used the intensity data represented by the diagonal elements of the C2 matrix ($C_{11}$ and $C_{22})$ expressed in power linear units.
+The Sentinel-1 image contains the VV and VH intensity polarizations and was submitted to TOPSAR Split, orbit file correction, TOPSAR deburst, multilook processing with a 4x1 window, C2 matrix generation and terrain correction with pixel resampling to 10m.
+The NISAR image contains de HH and HV intensity polarizations, and was submitted to a multilook processing with a 2x2 window resulting on a \qtyproduct{10 x 10}{\meter} resolution image, followed by the C2 matrix processing.
+
+\subsection{Experimental Design}
+
+Under a statistical analysis approach, a series of parametric hypothesis tests was employed to  verify whether samples were produced by the same model for both Sentinel-1 and NISAR intensity data over Cerrado physiognomies.
+The study unfolds in five sequential steps, where one step leads to the next one: 1. Estimate the equivalent number of looks (ENL) of both NISAR and Sentinel-1 scenes; 2. Goodness-of-fit tests for two models: $\Gamma_{SAR}$ and $\mathcal G^0_I$; 3. Apply a stochastic distances hypothesis test to verify the separability of the samples; 4. For those samples in which the null hypothesis was rejected, we further verified if this was due to a difference in the means only, or on the roughness only, or on both parameters; 5. Given the main difference between the samples, we further verified if fixing a parameter and freeing the other produces the same distribution.
+For all hypothesis tests, the adopted significance level was $1\%$.
+For the sake of reproducibility, all data and code used in this study is available in the repository on \url{github.com/JalesBussinguer/sar_image_analysis_sbsr}.
+
+To estimate the equivalent number of looks (ENL) of the scenes, we plotted square polygons of \qtyproduct{200 x 200}{\meter} distributed all over water bodies and exposed soil regions around the scenes.
+The ENL was obtained as the reciprocal of the square of the sample variation coefficient.
+For NISAR 40 polygons were used, and the ENL was 3.3795 for C11 and 3.4487 for C22.
+For Sentinel-1, 20 polygons were used, and the ENL was 2.0574 for C11 and 2.0788 for C22.
+
+To assess which model describes better the samples intensity distributions, we proceeded to goodness-of-fit tests for the distributions $\Gamma_{SAR}$ and $\mathcal G^0_I$.
+The $\Gamma_{SAR}$ model is a reparameterization of the classical gamma law that characterizes fully developed speckle \cite[Eq. 1]{alpala2025}.
+The $\mathcal G^0_I$ distribution is well recognized for its capacity to describe different levels of heterogeneity \cite[Eq. 5]{alpala2025}.
+
+To test the goodness-of-fit for both distributions, we used a parametric bootstrap over the Kolmogorov-Smirnov (KS) test statistic $D$.
+Since the parameters are estimated from the sample itself, the null distribution of $D$ is not the one tabulated for KS; therefore, the quantiles are obtained via simulation (parametric bootstrap) with 1000 repetitions, re-estimating the parameters using maximum likelihood in each replicate.
+After the tests, we adopted the $\mathcal G^0_I$ as the model that better characterizes the sample distributions.
+The decision was based on evidences about the adherence to data and its tractability and interpretability of its parameters.
+
+Defined the best model, we then proceeded to the comparison of the same-class samples' distributions, to verify their similarity/separability.
+Given the absence of tests to verify whether two samples originate from the same distribution with an exact distribution under H0, we used the symmetrized Kullback-Leibler (KL) stochastic distance \cite[item i.]{nascimento2010} hypothesis test defined by \cite[Eq. 9]{nascimento2010}: $S_{\mathrm{KL}}$.
+This family of hypothesis tests presents well suited specificity and sensitivity [citação?].
+
+The $S_{\mathrm{KL}}$ test only indicates whether two sample distributions differ, but it does not qualify the rejection of the null hypothesis ($H_0$).
+To achieve this qualification, we followed the methodology described by \cite{nascimento2010}, evaluating the distributions across four distinct scenarios based on their shape ($\alpha$) and scale ($\mu$) parameters:
+(i) the distributions share the same shape parameter but differ in their scale parameter ($\alpha_1=\alpha_2$ and $\mu_1\neq\mu_2$);
+(ii) the scale parameters are identical, whereas the shape parameters vary ($\alpha_1\neq\alpha_2$ and $\mu_1=\mu_2$);
+(iii) both the shape and scale parameters of the first distribution are strictly smaller than those of the second ($\alpha_1<\alpha_2$ and $\mu_1<\mu_2$);
+(iv) the first distribution exhibits a smaller shape parameter but a larger scale parameter compared to the second ($\alpha_1<\alpha_2$ and $\mu_1>\mu_2$).
+
+We used two likelihood ratio tests with 1 degree of freedom: one for $\alpha_1=\alpha_2$ (and $\mu_1,\mu_2$ free), and another for $\mu_1=\mu_2$ (with $\alpha_1,\alpha_2$ free).
+When neither tests rejects $H0$, but $S_{\mathrm{KL}}$ rejects, the difference is classified as combined effect.
+With this framework it is possible to understand the reason behind the $H0$ rejection in the $S_{\mathrm{KL}}$ test.
+
+Based on the results of the previous tests, which points that the differences are mainly related to the mean brightness, the following question arise: it is possible that the sample distributions share the same roughness parameter, where only the mean brightness varies?
+This question seek evidence that supports the idea of a class being characterized by a family of distributions that share the same roughness parameter.
+To do so, we used a likelihood ratio test for each class and polarization.
+With 5 samples per class, the null hypothesis is $H_0:\alpha_1=\dots=\alpha_5$, with $\mu_1,\dots,\mu_5$ free, against the alternative that all $\alpha_j$ and $\mu_j$ are free.
+The test statistic $-2\log\Lambda$ have asymptotic distribution $\chi^2_{k-1}$, with 4 degrees of freedom.
+Rejecting $H0$ at the significance level of $1\%$ supports the idea of a family of distributions that characterize the class under analysis.

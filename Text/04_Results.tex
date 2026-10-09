@@ -1,0 +1,57 @@
+\section{Results and Discussion}
+
+This section presents the results following the same sequence of the experimental design, since the adopted methodology is based in sequential steps.
+The results for both NISAR and Sentinel-1 are presented together.
+
+\subsection{Goodness-of-fit tests}
+
+We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{SAR}$ and the $\mathcal G^0_I$ models.
+Table \ref{tab:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
+
+\begin{table}[htbp]
+\resizebox{\columnwidth}{!}{%
+\begin{tabular}{ccccc}
+\hline
+       &       &      & $\Gamma_{SAR}$ & $\mathcal G^0_I$ \\
+\cline{4-5}
+Mission & Class & Band &  H$_0$ rejections &  H$_0$ rejections \\
+\hline
+\multirow[c]{6}{*}{NISAR}
+  & \multirow[c]{2}{*}{Fo}    & HH & 0 & 0 \\
+  &                               & HV & 5 & 0 \\
+  & \multirow[c]{2}{*}{Sv}   & HH & 5 & 1 \\
+  &                               & HV & 5 & 0 \\
+  & \multirow[c]{2}{*}{Gl} & HH & 5 & 1 \\
+  &                               & HV & 5 & 0 \\
+\hline
+\multirow[c]{6}{*}{Sentinel-1}
+  & \multirow[c]{2}{*}{Fo}    & VV & 1 & 0 \\
+  &                               & VH & 0 & 1 \\
+  & \multirow[c]{2}{*}{Sv}   & VV & 2 & 2 \\
+  &                               & VH & 0 & 0 \\
+  & \multirow[c]{2}{*}{Gl} & VV & 1 & 1 \\
+  &                               & VH & 1 & 1 \\
+\hline
+\end{tabular}%
+}
+\caption{Fit rejections under $\Gamma_{SAR}$ and $\mathcal G^0_I$ models.}
+\label{tab:gof-rejection}
+\end{table}
+
+\vspace{0.3cm}
+
+For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples in 30 tests in total, both on HH polarization.
+On the other hand, almost all classes rejected the fit for $\Gamma_{SAR}$, except the Forest Class in HH polarization.
+This result indicates that these samples are likely to present a full developed speckle.
+In contrast, the results for Sentinel-1 do not show a clear fit, since both models presented almost the same number of fit rejection.
+However, since $\mathcal G^0_I$ presented less rejections in total, and has tractable and interpretable parameters, we adopted the distribution as the model that better characterizes the samples distributions.
+
+\subsection{Kullback-Leibler stochastic distances tests}
+
+
+\subsection{Qualification of the KL tests H0 rejection}
+
+
+\subsection{Qualification of the KL tests H0 rejection}
+
+
