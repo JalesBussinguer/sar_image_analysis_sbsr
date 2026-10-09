@@ -9,32 +9,31 @@ We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{SA
 Table \ref{tab:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
 
 \begin{table}[htbp]
-\resizebox{\columnwidth}{!}{%
-\begin{tabular}{ccccc}
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cc|cc|cc}
 \hline
-       &       &      & $\Gamma_{SAR}$ & $\mathcal G^0_I$ \\
-\cline{4-5}
-Mission & Class & Band &  H$_0$ rejections &  H$_0$ rejections \\
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{SAR}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
 \hline
-\multirow[c]{6}{*}{NISAR}
-  & \multirow[c]{2}{*}{Fo}    & HH & 0 & 0 \\
-  &                               & HV & 5 & 0 \\
-  & \multirow[c]{2}{*}{Sv}   & HH & 5 & 1 \\
-  &                               & HV & 5 & 0 \\
-  & \multirow[c]{2}{*}{Gl} & HH & 5 & 1 \\
-  &                               & HV & 5 & 0 \\
+Mission & Class & HH & HV & HH & HV \\
 \hline
-\multirow[c]{6}{*}{Sentinel-1}
-  & \multirow[c]{2}{*}{Fo}    & VV & 1 & 0 \\
-  &                               & VH & 0 & 1 \\
-  & \multirow[c]{2}{*}{Sv}   & VV & 2 & 2 \\
-  &                               & VH & 0 & 0 \\
-  & \multirow[c]{2}{*}{Gl} & VV & 1 & 1 \\
-  &                               & VH & 1 & 1 \\
+\multirow[c]{3}{*}{NISAR}
+  & Fo & 0/5 & 5/5 & 0/5 & 0/5 \\
+  & Sv & 5/5 & 5/5 & 1/5 & 0/5 \\
+  & Gl & 5/5 & 5/5 & 1/5 & 0/5 \\
+\hline\noalign{\vskip 3pt}\hline
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{SAR}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
 \hline
-\end{tabular}%
-}
-\caption{Fit rejections under $\Gamma_{SAR}$ and $\mathcal G^0_I$ models.}
+Mission & Class & VV & VH & VV & VH \\
+\hline
+\multirow[c]{3}{*}{Sentinel-1}
+  & Fo & 1/5 & 0/5 & 0/5 & 1/5 \\
+  & Sv & 2/5 & 0/5 & 0/5 & 0/5 \\
+  & Gl & 1/5 & 1/5 & 1/5 & 1/5 \\
+\hline
+\end{tabular*}
+\caption{H$_0$ rejections for the goodness-of-fit tests under $\Gamma_{SAR}$ and $\mathcal G^0_I$ ($\alpha=1\%$; 5 samples per class and polarization).}
 \label{tab:gof-rejection}
 \end{table}
 
@@ -48,10 +47,78 @@ However, since $\mathcal G^0_I$ presented less rejections in total, and has trac
 
 \subsection{Kullback-Leibler stochastic distances tests}
 
+\begin{table}[htbp]
+\centering
+\small
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}c|cc|cc}
+\hline
+ & \multicolumn{2}{c}{NISAR} & \multicolumn{2}{c}{Sentinel-1} \\
+\hline
+Class & HH & HV & VV & VH \\
+\hline
+Fo & 3/10 & 2/10 & 7/10 & 7/10 \\
+Sv & 6/10 & 7/10 & 7/10 & 6/10 \\
+Gl & 7/10 & 4/10 & 7/10 & 7/10 \\
+\hline
+\end{tabular*}
+\caption{H$_0$ rejections for the pairwise Kullback-Leibler tests under $\mathcal G^0_I$ ($\alpha=1\%$; 10 sample pairs per class and polarization).}
+\label{tab:kl-rejection}
+\end{table}
 
 \subsection{Qualification of the KL tests H0 rejection}
 
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}p{0.40\columnwidth}|cc|cc}
+\hline
+ & \multicolumn{2}{c}{NISAR} & \multicolumn{2}{c}{Sentinel-1} \\
+\hline
+Cause of rejection & HH & HV & VV & VH \\
+\hline
+(i) Mean (scale)                             & 13 & 10 & 20 & 19 \\
+(ii) Roughness                               & 1  & 1  & 0  & 0  \\
+(iii) Roughness and mean, same direction     & 2  & 2  & 0  & 0  \\
+(iv) Roughness and mean, opposite directions & 0  & 0  & 0  & 1  \\
+Joint effect                                 & 0  & 0  & 1  & 0  \\
+\hline
+Total rejections                             & 16 & 13 & 21 & 20 \\
+\hline
+\end{tabular*}
+\caption{Causes of rejection of the pairwise Kullback-Leibler tests under $\mathcal G^0_I$ ($\alpha=1\%$), following the scenarios of \citet{nascimento2010}.}
+\label{tab:kl-causes}
+\end{table}
 
 \subsection{Qualification of the KL tests H0 rejection}
 
+\begin{table}[htbp]
+\centering
+\footnotesize
+\renewcommand{\arraystretch}{1.15}
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cccccc}
+\hline
+Mission & Class & Band & Common $\hat\alpha$ & $-2\log\Lambda$ & $p$-value \\
+\hline
+\multirow[c]{6}{*}{NISAR}
+  & \multirow[c]{2}{*}{Fo} & HH & $-11.066$ & 11.640 & 0.02028 \\
+  &                        & HV & $-8.062$  & 8.227  & 0.08361 \\
+  & \multirow[c]{2}{*}{Sv} & HH & $-37.573$ & 0.487  & 0.97472 \\
+  &                        & HV & $-34.361$ & 0.211  & 0.99480 \\
+  & \multirow[c]{2}{*}{Gl} & HH & $-16.220$ & 17.160 & \textbf{0.00180} \\
+  &                        & HV & $-16.444$ & 15.180 & \textbf{0.00434} \\
+\hline\noalign{\vskip 3pt}\hline
+\multirow[c]{6}{*}{Sentinel-1}
+  & \multirow[c]{2}{*}{Fo} & VV & $-23.080$ & 9.305  & 0.0539 \\
+  &                        & VH & $-36.176$ & 9.454  & 0.0507 \\
+  & \multirow[c]{2}{*}{Sv} & VV & $-27.552$ & 10.440 & 0.0336 \\
+  &                        & VH & $-89.886$ & 11.240 & 0.0240 \\
+  & \multirow[c]{2}{*}{Gl} & VV & $-37.294$ & 6.094  & 0.1922 \\
+  &                        & VH & $-16.850$ & 4.221  & 0.3769 \\
+\hline
+\end{tabular*}
+\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$ ($\chi^2_4$ reference). Bold: $H_0$ rejected at $\alpha=1\%$.}
+\label{tab:common-alpha}
+\end{table}
 
