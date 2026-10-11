@@ -103,9 +103,14 @@ Total rejections                              & 16 & 13 & 21 & 20 \\
 \end{table}
 \vspace{0.3cm}
 
-The main cause of H$_{0}$ rejection for both missions was the difference in the mean brightness between the pairs of sample distributions.
+The main cause of H$_{0}$ rejection for both missions was found to be the difference in the mean brightness between the pairs of sample distributions.
 The results show that \qtyrange[range-phrase = \text{--}]{76}{95}{\percent} of H$_{0}$ rejection among all classes and polarizations fall within this scenario.
-In perspective with the results from $S_{\mathrm{KL}}$, this result points toward a scenario
+At this points, in perspective with the results from $S_{\mathrm{KL}}$, this result points that a single parameterization of $\mathcal G^0_I$ to describe the entire class in the spatial domain is not sufficient.
+Instead of a single and monolithic distribution with fixed parameters $\alpha$ and $\mu$, the sample distributions might be characterized by multiple parameterizations of the model where the mean brightness is their key difference and the roughness parameter is shared among them.
+We call these multiple parameterizations for the same class a family of distributions.
+
+To verify the hypothesis of multiple parameterizations that characterizes the samples distributions, we executed another hypothesis test of equality between the distributions with a common $\alpha$.
+The results are shown in Table \ref{tab:common-alpha}.
 
 \begin{table}[htbp]
 \centering
@@ -132,7 +137,17 @@ Mission & Class & Band & Common $\hat\alpha$ & $-2\log\Lambda$ & $p$-value \\
   &                        & VH & $-16.850$ & 4.221  & 0.3769 \\
 \hline
 \end{tabular*}
-\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$. Bold: $H_0$ rejected at $\alpha=1\%$.}
+\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$. Bold: H$_0$ rejected at $\alpha=1\%$.}
 \label{tab:common-alpha}
 \end{table}
+\vspace{0.3cm}
+
+These results indicates that in general, it is possible to characterize an entire class by calculating a common roughness that will be shared for all sample distributions.
+This result is especially valuable, since the roughness parameter is closely related to the number of elementary backscatterers in each pixel \cite{gambini2015}.
+Given the missions' frequency, the $\alpha$ parameter is coherent with the expected number of elementary backscatterers for each class.
+
+The only exception was the NISAR Grassland class in both $HH$ and $HV$ polarizations.
+For this specific class, the results indicates that not a single model is capable to explain the class spatial distributions.
+
+
 
