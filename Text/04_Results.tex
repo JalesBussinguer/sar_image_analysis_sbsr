@@ -1,10 +1,5 @@
 \section{Results and Discussion}
 
-This section presents the results following the same sequence of the experimental design, since the adopted methodology is based in sequential steps.
-The results for both NISAR and Sentinel-1 are presented together.
-
-\subsection{Goodness-of-fit tests}
-
 We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{SAR}$ and the $\mathcal G^0_I$ models.
 Table \ref{tab:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
 
@@ -36,16 +31,17 @@ Mission & Class & VV & VH & VV & VH \\
 \caption{H$_0$ rejections for the goodness-of-fit tests under $\Gamma_{SAR}$ and $\mathcal G^0_I$ ($\alpha=1\%$; 5 samples per class and polarization).}
 \label{tab:gof-rejection}
 \end{table}
-
 \vspace{0.3cm}
 
-For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples in 30 tests in total, both on HH polarization.
-On the other hand, almost all classes rejected the fit for $\Gamma_{SAR}$, except the Forest Class in HH polarization.
-This result indicates that these samples are likely to present a full developed speckle.
-In contrast, the results for Sentinel-1 do not show a clear fit, since both models presented almost the same number of fit rejection.
-However, since $\mathcal G^0_I$ presented less rejections in total, and has tractable and interpretable parameters, we adopted the distribution as the model that better characterizes the samples distributions.
+For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples of 30 in total.
+On the other hand, almost all classes rejected the fit for $\Gamma_{SAR}$, except the Forest Class in the HH polarization.
+This result indicates that the samples of this specific class and polarization are likely to present a full developed speckle.
+The $\mathcal G^0_I$ was found the best models to characterize the Sentinel-1 sample distributions, since it presented less rejections to the fit.
+Further than adherence to the data, we also considered the tractability and interpretability of the parameters of this model in its adoption as the model that better characterizes the samples distributions.
 
-\subsection{Kullback-Leibler stochastic distances tests}
+Under the $\mathcal G^0_I$ distribution, we tested the similarity/separability of the classes' samples pairwise using the $S_{\mathrm{KL}}$ hypothesis test.
+For the sake of conciseness, we only report the rate of H$_{0}$ rejection per class and polarization.
+The results of the tests are presented in Table \ref{tab:kl-rejection}.
 
 \begin{table}[htbp]
 \centering
@@ -61,12 +57,27 @@ Fo & 3/10 & 2/10 & 7/10 & 7/10 \\
 Sv & 6/10 & 7/10 & 7/10 & 6/10 \\
 Gl & 7/10 & 4/10 & 7/10 & 7/10 \\
 \hline
+Total rejections                             & 16 & 13 & 21 & 20 \\
+\hline
 \end{tabular*}
 \caption{H$_0$ rejections for the pairwise Kullback-Leibler tests under $\mathcal G^0_I$ ($\alpha=1\%$; 10 sample pairs per class and polarization).}
 \label{tab:kl-rejection}
 \end{table}
+\vspace{0.3cm}
 
-\subsection{Qualification of the KL tests H0 rejection}
+For NISAR, all classes and polarizations had similarity rejections, but in different proportions.
+For the Forest class, both polarizations presented the lowest rates of H$_{0}$ rejection, indicating the highest similarity among all classes.
+This result is directly related to the goodness-of-fit result that points to a fully developed speckle characteristic of the samples.
+At this point, this result indicates that this specific class and polarization can be characterized by a single model in the spatial domain.
+The Savanna and Grassland classes presented higher rates of H$_{0}$ rejection, and thus the least similarity.
+The results for Sentinel-1 present an almost uniform H$_{0}$ rejection at high rates.
+All classes in all polarizations presented more than 60$\%$ of similarity rejection.
+
+The results for NISAR and Sentinel-1 indicates that there is no complete similarity between the classes' samples in the spatial domain in neither polarizations.
+These results indicates a scenario where a single parameterization of the model can not explain the samples distributions in the spatial domain.
+
+Since the $\mathcal G^0_I$ is parameterized in terms of the mean brightness ($\mu$) and roughness ($\alpha$) parameters ($L$ is fixed), we tried to qualify the H$_{0}$ rejections in the $S_{\mathrm{KL}}$ tests.
+We used the scenarios described in \cite{nascimento2010} to understand the cause of H$_{0}$ rejection (Table \ref{tab:kl-causes}).
 
 \begin{table}[htbp]
 \centering
@@ -76,22 +87,25 @@ Gl & 7/10 & 4/10 & 7/10 & 7/10 \\
 \hline
  & \multicolumn{2}{c}{NISAR} & \multicolumn{2}{c}{Sentinel-1} \\
 \hline
-Cause of rejection & HH & HV & VV & VH \\
+Cause of H$_{0}$ rejection & HH & HV & VV & VH \\
 \hline
-(i) Mean (scale)                             & 13 & 10 & 20 & 19 \\
-(ii) Roughness                               & 1  & 1  & 0  & 0  \\
-(iii) Roughness and mean, same direction     & 2  & 2  & 0  & 0  \\
-(iv) Roughness and mean, opposite directions & 0  & 0  & 0  & 1  \\
-Joint effect                                 & 0  & 0  & 1  & 0  \\
+(i) $\alpha_1=\alpha_2$ and $\mu_1\neq\mu_2$  & 13 & 10 & 20 & 19 \\
+(ii) $\alpha_1\neq\alpha_2$ and $\mu_1=\mu_2$ & 1  & 1  & 0  & 0  \\
+(iii) $\alpha_1<\alpha_2$ and $\mu_1<\mu_2$   & 2  & 2  & 0  & 0  \\
+(iv) $\alpha_1<\alpha_2$ and $\mu_1>\mu_2$    & 0  & 0  & 0  & 1  \\
+Joint effect                                  & 0  & 0  & 1  & 0  \\
 \hline
-Total rejections                             & 16 & 13 & 21 & 20 \\
+Total rejections                              & 16 & 13 & 21 & 20 \\
 \hline
 \end{tabular*}
-\caption{Causes of rejection of the pairwise Kullback-Leibler tests under $\mathcal G^0_I$ ($\alpha=1\%$), following the scenarios of \citet{nascimento2010}.}
+\caption{Causes of rejection of the pairwise Kullback-Leibler tests under $\mathcal G^0_I$.}
 \label{tab:kl-causes}
 \end{table}
+\vspace{0.3cm}
 
-\subsection{Qualification of the KL tests H0 rejection}
+The main cause of H$_{0}$ rejection for both missions was the difference in the mean brightness between the pairs of sample distributions.
+The results show that \qtyrange[range-phrase = \text{--}]{76}{95}{\percent} of H$_{0}$ rejection among all classes and polarizations fall within this scenario.
+In perspective with the results from $S_{\mathrm{KL}}$, this result points toward a scenario
 
 \begin{table}[htbp]
 \centering
@@ -118,7 +132,7 @@ Mission & Class & Band & Common $\hat\alpha$ & $-2\log\Lambda$ & $p$-value \\
   &                        & VH & $-16.850$ & 4.221  & 0.3769 \\
 \hline
 \end{tabular*}
-\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$ ($\chi^2_4$ reference). Bold: $H_0$ rejected at $\alpha=1\%$.}
+\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$. Bold: $H_0$ rejected at $\alpha=1\%$.}
 \label{tab:common-alpha}
 \end{table}
 
