@@ -13,6 +13,8 @@ Investigar se amostras de uma mesma classe de cobertura do solo apresentam compo
 - Análises em Quarto/HTML para NISAR e Sentinel-1:
   - `nisar_index.qmd`
   - `sentinel1_index.qmd`
+- Comparação conjunta das taxas de rejeição dos testes de aderência:
+  - `goodness_of_fit_comparison.qmd`
 - Script para extração de pixels por amostra e comparação de pares de intensidade:
   - `Code/extract_tiff_pixel_pairs_to_csv.py`
 - Script para extração de amostras e cálculo de ENL por região:
@@ -72,6 +74,7 @@ python Code/extract_nisar_enl_samples.py
 ```bash
 quarto render nisar_index.qmd
 quarto render sentinel1_index.qmd
+quarto render goodness_of_fit_comparison.qmd
 ```
 
 ## Requisitos
@@ -83,7 +86,7 @@ quarto render sentinel1_index.qmd
 - Shapely
 - tqdm
 - R + Quarto para renderização dos arquivos `.qmd`
-- Pacotes R usados na análise estatística, como `ggplot2`, `ggthemes`, `readr`, `reshape2` e `twosamples`
+- Pacotes R usados na análise estatística, como `ggplot2`, `ggthemes`, `ggtext`, `readr`, `reshape2` e `twosamples`
 
 ## Observações
 

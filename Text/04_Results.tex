@@ -1,41 +1,16 @@
-% !TEX root = R0-StatisticalChangeDetectionCerrado-2027SBSR.tex
 \section{Results and Discussion}
 
-We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{\text{SAR}}$ and the $\mathcal G^0_I$ models.
-Table \ref{tab:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
+We tested the goodness-of-fit of all \qty{5} samples of each class for the $\Gamma_{\text{SAR}}$ and the $\mathcal G^0_I$ models.
+Figure \ref{fig:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
 
-\begin{table}[htbp]
-\centering
-%\small %%% ACF Era a sua escolha? Se sim, não o faça; caso contrário, reative
-%\renewcommand{\arraystretch}{1.15} %%% ACF Era a sua escolha? Se sim, não o faça; caso contrário, reative
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cccccc}
-%%% ACF Repare no uso dos comandos da biblioteca booktabs. Agora, a tabela é mais fácil de ler e ela comunica o que você quer contar
-\toprule
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{\text{SAR}}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
-\cmidrule{3-4}\cmidrule{5-6}
-Mission & Class & HH & HV & HH & HV \\
-\cmidrule(lr){1-1}\cmidrule(lr){2-2}\cmidrule{3-3}\cmidrule{4-4}\cmidrule{5-5}\cmidrule{6-6}
-\multirow[c]{3}{*}{NISAR}
-%%% ACF Todas as entradas numéricas devem estar em modo matemático
-  & Fo & 0/5 & 5/5 & 0/5 & 0/5 \\
-  & Sv & 5/5 & 5/5 & 1/5 & 0/5 \\
-  & Gl & 5/5 & 5/5 & 1/5 & 0/5 \\
-\midrule
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{\text{SAR}}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
-\cmidrule{3-4}\cmidrule{5-6}
-Mission & Class & VV & VH & VV & VH \\
-\cmidrule(lr){1-1}\cmidrule(lr){2-2}\cmidrule{3-3}\cmidrule{4-4}\cmidrule{5-5}\cmidrule{6-6}
-\multirow[c]{3}{*}{Sentinel-1}
-  & Fo & 1/5 & 0/5 & 0/5 & 1/5 \\
-  & Sv & 2/5 & 0/5 & 0/5 & 0/5 \\
-  & Gl & 1/5 & 1/5 & 1/5 & 1/5 \\
-\bottomrule
-\end{tabular*}
-%%% ACF Repare no malabarismo para fazer com que a legenda fique em negrito; replique
-\caption{Number of  rejections of the null hypothesis for the goodness-of-fit tests under $\bm\Gamma_{\text{SAR}}$ and $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{5} samples per class and polarization).}
-\label{tab:gof-rejection}
-\end{table}
-\vspace{0.3cm}
+\begin{figure}[h]
+    \begin{center}
+    \includegraphics[width=\columnwidth]{figures/rejection_rates.png}
+    \caption{Rejection of the goodness-of-fit null hypothesis under $\bm\Gamma_{\text{SAR}}$ and $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{5}{} samples per class and polarization).}
+    \label{fig:gof-rejection}
+    \end{center}
+\end{figure}
+
 
 For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples of 30 in total.
 On the other hand, almost all classes rejected the fit for $\Gamma_{\text{SAR}}$, except the Forest Class in the HH polarization.
@@ -57,14 +32,14 @@ The results of the tests are presented in Table \ref{tab:kl-rejection}.
 \hline
 Class & HH & HV & VV & VH \\
 \hline
-Fo & 3/10 & 2/10 & 7/10 & 7/10 \\
-Sv & 6/10 & 7/10 & 7/10 & 6/10 \\
-Gl & 7/10 & 4/10 & 7/10 & 7/10 \\
+Fo & $30\%$ & $20\%$ & $70\%$ & $70\%$ \\
+Sv & $60\%$ & $70\%$ & $70\%$ & $70\%$ \\
+Gl & $70\%$ & $40\%$ & $70\%$ & $70\%$ \\
 \hline
-Total rejections                             & 16 & 13 & 21 & 20 \\
+Total rejections & $53.3\%$ & $43.3\%$ & $70\%$ & $66.6\%$ \\
 \hline
 \end{tabular*}
-\caption{H$_0$ rejections for the pairwise Kullback-Leibler tests under $\mathcal G^0_I$ ($\alpha=1\%$; 10 sample pairs per class and polarization).}
+\caption{Rejection of the pairwise similarity null hypothesis for the Kullback-Leibler tests under $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{10}{} sample pairs per class and polarization).}
 \label{tab:kl-rejection}
 \end{table}
 \vspace{0.3cm}
@@ -81,7 +56,7 @@ The results for NISAR and Sentinel-1 indicates that there is no complete similar
 These results indicates a scenario where a single parameterization of the model can not explain the samples distributions in the spatial domain.
 
 Since the $\mathcal G^0_I$ is parameterized in terms of the mean brightness ($\mu$) and roughness ($\alpha$) parameters ($L$ is fixed), we tried to qualify the H$_{0}$ rejections in the $S_{\mathrm{KL}}$ tests.
-We used the scenarios described in \cite{nascimento2010} to understand the cause of H$_{0}$ rejection (Table \ref{tab:kl-causes}).
+Focusing the analysis on the rejected tests, we used the scenarios described in \cite{nascimento2010} to understand the cause of H$_{0}$ rejection in the $S_{\mathrm{KL}}$ tests (Table \ref{tab:kl-causes}).
 
 \begin{table}[htbp]
 \centering
@@ -93,16 +68,16 @@ We used the scenarios described in \cite{nascimento2010} to understand the cause
 \hline
 Cause of H$_{0}$ rejection & HH & HV & VV & VH \\
 \hline
-(i) $\alpha_1=\alpha_2$ and $\mu_1\neq\mu_2$  & 13 & 10 & 20 & 19 \\
-(ii) $\alpha_1\neq\alpha_2$ and $\mu_1=\mu_2$ & 1  & 1  & 0  & 0  \\
-(iii) $\alpha_1<\alpha_2$ and $\mu_1<\mu_2$   & 2  & 2  & 0  & 0  \\
-(iv) $\alpha_1<\alpha_2$ and $\mu_1>\mu_2$    & 0  & 0  & 0  & 1  \\
-Joint effect                                  & 0  & 0  & 1  & 0  \\
+(i) $\alpha_1=\alpha_2$ and $\mu_1\neq\mu_2$  & $81.25\%$ & $76.92\%$ & $95.24\%$ & $95.0\%$ \\
+(ii) $\alpha_1\neq\alpha_2$ and $\mu_1=\mu_2$ & $6.25\%$  & $7.70\%$  & $0\%$  & $0\%$ \\
+(iii) $\alpha_1<\alpha_2$ and $\mu_1<\mu_2$   & $12.50\%$  & $15.38\%$  & $0\%$  & $0\%$  \\
+(iv) $\alpha_1<\alpha_2$ and $\mu_1>\mu_2$    & $0\%$  & $0\%$  & $0\%$  & $5.0\%$  \\
+Joint effect                                  & $0\%$  & $0\%$  & $4.76\%$  & $0\%$  \\
 \hline
-Total rejections                              & 16 & 13 & 21 & 20 \\
+Total rejections                              & $100\%$ & $100\%$ & $100\%$ & $100\%$ \\
 \hline
 \end{tabular*}
-\caption{Causes of rejection of the pairwise Kullback-Leibler tests under $\mathcal G^0_I$.}
+\caption{Causes of rejection of the null hypothesis in the pairwise Kullback-Leibler tests under $\bm{\mathcal G}^{\bm 0}_{\bm I}$.}
 \label{tab:kl-causes}
 \end{table}
 \vspace{0.3cm}
@@ -125,23 +100,23 @@ The results are shown in Table \ref{tab:common-alpha}.
 Mission & Class & Band & Common $\widehat\alpha$ & $-2\log\Lambda$ & $p$-value \\
 \hline
 \multirow[c]{6}{*}{NISAR}
-  & \multirow[c]{2}{*}{Fo} & HH & $-11.066$ & 11.640 & 0.02028 \\
-  &                        & HV & $-8.062$  & 8.227  & 0.08361 \\
-  & \multirow[c]{2}{*}{Sv} & HH & $-37.573$ & 0.487  & 0.97472 \\
-  &                        & HV & $-34.361$ & 0.211  & 0.99480 \\
-  & \multirow[c]{2}{*}{Gl} & HH & $-16.220$ & 17.160 & \textbf{0.00180} \\
-  &                        & HV & $-16.444$ & 15.180 & \textbf{0.00434} \\
+  & \multirow[c]{2}{*}{Fo} & HH & $-11.066$ & $11.640$ & $0.02028$ \\
+  &                        & HV & $-8.062$  & $8.227$  & $0.08361$ \\
+  & \multirow[c]{2}{*}{Sv} & HH & $-37.573$ & $0.487$  & $0.97472$ \\
+  &                        & HV & $-34.361$ & $0.211$  & $0.99480$ \\
+  & \multirow[c]{2}{*}{Gl} & HH & $-16.220$ & $17.160$ & $\textbf{0.00180}$ \\
+  &                        & HV & $-16.444$ & $15.180$ & $\textbf{0.00434}$\\
 \hline\noalign{\vskip 3pt}\hline
 \multirow[c]{6}{*}{Sentinel-1}
-  & \multirow[c]{2}{*}{Fo} & VV & $-23.080$ & 9.305  & 0.0539 \\
-  &                        & VH & $-36.176$ & 9.454  & 0.0507 \\
-  & \multirow[c]{2}{*}{Sv} & VV & $-27.552$ & 10.440 & 0.0336 \\
-  &                        & VH & $-89.886$ & 11.240 & 0.0240 \\
-  & \multirow[c]{2}{*}{Gl} & VV & $-37.294$ & 6.094  & 0.1922 \\
-  &                        & VH & $-16.850$ & 4.221  & 0.3769 \\
+  & \multirow[c]{2}{*}{Fo} & VV & $-23.080$ & $9.305$  & $0.0539$ \\
+  &                        & VH & $-36.176$ & $9.454$  & $0.0507$ \\
+  & \multirow[c]{2}{*}{Sv} & VV & $-27.552$ & $10.440$ & $0.0336$ \\
+  &                        & VH & $-89.886$ & $11.240$ & $0.0240$ \\
+  & \multirow[c]{2}{*}{Gl} & VV & $-37.294$ & $6.094$  & $0.1922$ \\
+  &                        & VH & $-16.850$ & $4.221$  & $0.3769$ \\
 \hline
 \end{tabular*}
-\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\mathcal G^0_I$. Bold: H$_0$ rejected at $\alpha=1\%$.}
+\caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\bm{\mathcal G}^{\bm 0}_{\bm I}$. Bold: H$_0$ rejected at $\bm\alpha=\qty{1}{\percent}$.}
 \label{tab:common-alpha}
 \end{table}
 \vspace{0.3cm}
@@ -152,6 +127,4 @@ Given the missions' frequency, the $\alpha$ parameter is coherent with the expec
 
 The only exception was the NISAR Grassland class in both $HH$ and $HV$ polarizations.
 For this specific class, the results indicates that not a single model is capable to explain the class spatial distributions.
-
-
 

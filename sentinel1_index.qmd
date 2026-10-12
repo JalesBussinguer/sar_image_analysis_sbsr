@@ -767,6 +767,51 @@ tabela_aderencia_G0(subset(resultados_aderencia_G0, p_valor >= 0.01))
 tabela_aderencia_G0(subset(resultados_aderencia_G0, p_valor < 0.01))
 ```
 
+```{r VisualizacaoRejeicoesAderencia, echo=FALSE, fig.width=8, fig.height=4}
+dados_aderencia <- rbind(
+  data.frame(Imagem = resultados_aderencia$Imagem,
+             Banda = resultados_aderencia$Banda,
+             Modelo = "Gamma[SAR]",
+             p_valor = resultados_aderencia$p_valor),
+  data.frame(Imagem = resultados_aderencia_G0$Imagem,
+             Banda = resultados_aderencia_G0$Banda,
+             Modelo = "G[I]^0",
+             p_valor = resultados_aderencia_G0$p_valor)
+)
+dados_aderencia$Classe <- factor(substr(dados_aderencia$Imagem, 1, 2),
+                                 levels = c("Fo", "Sv", "Gl"))
+dados_aderencia$Pol <- factor(
+  ifelse(dados_aderencia$Banda %in% c("HH", "VV"), "Co-pol", "Cross-pol"),
+  levels = c("Co-pol", "Cross-pol")
+)
+dados_aderencia$Rejeitado <- dados_aderencia$p_valor < 0.01
+
+rejeicoes_aderencia <- aggregate(
+  Rejeitado ~ Classe + Pol + Modelo,
+  data = dados_aderencia,
+  FUN = sum
+)
+names(rejeicoes_aderencia)[names(rejeicoes_aderencia) == "Rejeitado"] <- "Count"
+rejeicoes_aderencia$Mission <- "Sentinel-1"
+
+ggplot(rejeicoes_aderencia, aes(Classe, Pol, fill = Count)) +
+  geom_tile(color = "white", linewidth = 1.2) +
+  geom_text(aes(label = paste0(Count, "/5"),
+                color = Count >= 4), size = 3.2, show.legend = FALSE) +
+  scale_color_manual(values = c(`TRUE` = "white", `FALSE` = "grey20")) +
+  scale_fill_gradientn(colors = c("#ffffff", "#f6b89c", "#e0734a", "#b3261e"),
+                       limits = c(0, 5), name = "rejeições / 5") +
+  facet_grid(Mission ~ Modelo, labeller = labeller(Modelo = label_parsed),
+             switch = "y") +
+  labs(title = "Rejeições do ajuste (nível de significância de 1%)",
+       x = NULL, y = NULL) +
+  coord_fixed() +
+  theme_minimal(base_size = 10) +
+  theme(panel.grid = element_blank(),
+        strip.text = element_text(face = "bold"),
+        axis.ticks = element_blank())
+```
+
 # Teste de homogeneidade entre amostras G0 via distância KL
 
 Para comparar duas amostras independentes, sejam $f_1$ e $f_2$ suas densidades $\mathcal G^0_I$, com o mesmo número de looks conhecido $L$ e parâmetros $(\alpha_i,\gamma_i)$, $i=1,2$. A distância KL simetrizada usada por @nascimento2010 é

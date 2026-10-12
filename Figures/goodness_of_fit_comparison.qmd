@@ -1,0 +1,368 @@
+---
+title: "Goodness-of-Fit Rejection Rates"
+format:
+  html:
+    toc: true
+    theme: cosmo
+execute:
+  echo: false
+  warning: false
+  message: false
+---
+
+This report compares parametric-bootstrap goodness-of-fit results for the
+Gamma and $\mathcal{G}^0_I$ distributions using five samples per land-cover
+class. The null hypothesis is rejected when the p-value is below 0.01.
+
+The heatmap shows the percentage of samples rejecting the null hypothesis
+within each mission, polarization, class, and model combination. NISAR uses
+polarizations HH and HV; Sentinel-1 uses VV and VH.
+
+```{r setup}
+library(ggplot2)
+library(readr)
+
+if (.Platform$OS.type == "windows") {
+  windowsFonts(
+    TimesNewRoman = windowsFont("Times New Roman"),
+    CambriaMath = windowsFont("Cambria Math")
+  )
+}
+
+alpha <- 0.01
+sample_ids <- c("B", "R", "W", "U", "G")
+class_names <- c(Fo = "Forest", Sv = "Savanna", Gl = "Grassland")
+input_files <- c(
+  list.files(file.path("Data", "pnb_samples", "nisar", "n_200"),
+             pattern = "\\.csv$", full.names = TRUE),
+  list.files(file.path("Data", "pnb_samples", "sentinel_1"),
+             pattern = "\\.csv$", full.names = TRUE)
+)
+data_signature <- tools::md5sum(input_files)
+```
+
+```{r load-data, cache=TRUE, cache.extra=data_signature}
+load_samples <- function(directory, intensity_columns) {
+  prefixes <- c("Fo", "Sv", "Gl")
+  images <- unlist(lapply(prefixes, function(prefix) {
+    paste0(prefix, sample_ids)
+  }), use.names = FALSE)
+
+  samples <- lapply(images, function(image) {
+    filename <- paste0(substr(image, 1, 2), "_", substring(image, 3), ".csv")
+    read_csv(file.path(directory, filename),
+             show_col_types = FALSE)
+  })
+  names(samples) <- images
+
+  missing_columns <- unique(unlist(lapply(samples, function(sample) {
+    setdiff(intensity_columns, names(sample))
+  })))
+  if (length(missing_columns) > 0) {
+    stop("Missing intensity columns: ", paste(missing_columns, collapse = ", "))
+  }
+  samples
+}
+
+nisar_samples <- load_samples(
+  file.path("Data", "pnb_samples", "nisar", "n_200"),
+  c("IHH", "IHV")
+)
+sentinel_samples <- load_samples(
+  file.path("Data", "pnb_samples", "sentinel_1"),
+  c("IVV", "IVH")
+)
+```
+
+```{r test-functions, cache=TRUE}
+ks_gamma <- function(x, shape, rate, mission) {
+  x <- sort(x)
+  n <- length(x)
+  fitted_cdf <- pgamma(x, shape = shape, rate = rate)
+
+  if (mission == "NISAR") {
+    max(abs(ecdf(x)(x) - fitted_cdf))
+  } else {
+    i_min <- rank(x, ties.method = "min")
+    i_max <- rank(x, ties.method = "max")
+    max(i_max / n - fitted_cdf, fitted_cdf - (i_min - 1) / n)
+  }
+}
+
+fit_gamma <- function(x, mission) {
+  if (mission == "NISAR") {
+    estimates <- MASS::fitdistr(x, densfun = "gamma")$estimate
+    c(shape = unname(estimates[1]),
+      rate = unname(estimates[1]) / unname(estimates[2]))
+  } else {
+    scale <- mean(x)
+    fit <- MASS::fitdistr(x / scale, densfun = "gamma")$estimate
+    c(shape = unname(fit["shape"]), rate = unname(fit["rate"]) / scale)
+  }
+}
+
+test_gamma <- function(x, mission, B) {
+  estimate <- fit_gamma(x, mission)
+  observed <- ks_gamma(x, estimate["shape"], estimate["rate"], mission)
+  simulated <- numeric(B)
+
+  for (b in seq_len(B)) {
+    xb <- rgamma(length(x), shape = estimate["shape"],
+                 rate = estimate["rate"])
+    estimate_b <- fit_gamma(xb, mission)
+    simulated[b] <- ks_gamma(
+      xb, estimate_b["shape"], estimate_b["rate"], mission
+    )
+  }
+
+  (1 + sum(simulated >= observed)) / (B + 1)
+}
+
+loglik_G0 <- function(alpha, gamma, L, z) {
+  n <- length(z)
+  n * (lgamma(L - alpha) - alpha * log(gamma) - lgamma(-alpha)) +
+    L * sum(log(z / (gamma + L * z))) +
+    alpha * sum(log(gamma + L * z))
+}
+
+initial_G0 <- function(z, L) {
+  m1 <- mean(z)
+  m2 <- mean(z^2)
+  cc <- (m2 / m1^2) * L / (L + 1)
+  a <- if (cc > 1) (2 * cc - 1) / (cc - 1) else 100
+  a <- min(max(a, 2.5), 500)
+  c(alpha = -a, gamma = m1 * (a - 1))
+}
+
+fit_G0 <- function(z, L, initial = NULL) {
+  scale <- mean(z)
+  zs <- z / scale
+  if (is.null(initial)) {
+    initial <- initial_G0(zs, L)
+  } else {
+    initial["gamma"] <- initial["gamma"] / scale
+  }
+
+  par0 <- c(log(-initial[["alpha"]]), log(initial[["gamma"]]))
+  if (!all(is.finite(par0))) par0 <- c(log(5), log(5 * L))
+  par0[1] <- min(par0[1], log(500))
+
+  objective <- function(p) {
+    value <- -loglik_G0(-exp(p[1]), exp(p[2]), L, zs)
+    if (is.finite(value)) value else 1e300
+  }
+  optimum <- optim(
+    par0, objective, method = "L-BFGS-B",
+    lower = c(log(1.01), log(1e-6)),
+    upper = c(log(500), log(1e6))
+  )
+  c(alpha = -exp(optimum$par[1]), gamma = exp(optimum$par[2]) * scale)
+}
+
+pG0 <- function(z, alpha, gamma, L) {
+  pbeta(L * z / (gamma + L * z), shape1 = L, shape2 = -alpha)
+}
+
+rG0 <- function(n, alpha, gamma, L) {
+  v <- rbeta(n, shape1 = L, shape2 = -alpha)
+  gamma * v / ((1 - v) * L)
+}
+
+ks_G0 <- function(x, alpha, gamma, L, mission) {
+  x <- sort(x)
+  fitted_cdf <- pG0(x, alpha, gamma, L)
+
+  if (mission == "NISAR") {
+    max(abs(ecdf(x)(x) - fitted_cdf))
+  } else {
+    n <- length(x)
+    i_min <- rank(x, ties.method = "min")
+    i_max <- rank(x, ties.method = "max")
+    max(i_max / n - fitted_cdf, fitted_cdf - (i_min - 1) / n)
+  }
+}
+
+test_G0 <- function(x, L, mission, B) {
+  estimate <- fit_G0(x, L)
+  observed <- ks_G0(x, estimate[["alpha"]], estimate[["gamma"]], L, mission)
+  simulated <- rep(NA_real_, B)
+
+  for (b in seq_len(B)) {
+    xb <- rG0(length(x), estimate[["alpha"]], estimate[["gamma"]], L)
+    estimate_b <- tryCatch(
+      fit_G0(xb, L, initial = estimate),
+      error = function(e) NULL
+    )
+    if (!is.null(estimate_b)) {
+      simulated[b] <- ks_G0(
+        xb, estimate_b[["alpha"]], estimate_b[["gamma"]], L, mission
+      )
+    }
+  }
+
+  if (mission == "Sentinel-1") simulated <- simulated[is.finite(simulated)]
+  (1 + sum(simulated >= observed)) / (length(simulated) + 1)
+}
+```
+
+```{r run-tests, cache=TRUE, dependson=c("load-data", "test-functions"), cache.extra=tools::md5sum(input_files)}
+mission_settings <- list(
+  NISAR = list(
+    samples = nisar_samples,
+    bands = c(HH = "IHH", HV = "IHV"),
+    enl = c(HH = 3.3795, HV = 3.4487),
+    B = 1000
+  ),
+  `Sentinel-1` = list(
+    samples = sentinel_samples,
+    bands = c(VV = "IVV", VH = "IVH"),
+    enl = c(VV = 2.0574, VH = 2.0788),
+    B = 999
+  )
+)
+
+run_mission_tests <- function(mission, settings) {
+  samples <- settings$samples
+  bands <- settings$bands
+  B <- settings$B
+  class_prefixes <- substr(names(samples), 1, 2)
+  classes <- unname(class_names[class_prefixes])
+
+  set.seed(2024)
+  gamma_results <- do.call(rbind, lapply(seq_along(samples), function(i) {
+    do.call(rbind, lapply(names(bands), function(polarization) {
+      data.frame(
+        Mission = mission,
+        Class = classes[i],
+        Polarization = polarization,
+        Model = "Gamma",
+        p_value = test_gamma(
+          samples[[i]][[bands[[polarization]]]], mission, B
+        )
+      )
+    }))
+  }))
+
+  set.seed(2024)
+  g0_results <- do.call(rbind, lapply(seq_along(samples), function(i) {
+    do.call(rbind, lapply(names(bands), function(polarization) {
+      data.frame(
+        Mission = mission,
+        Class = classes[i],
+        Polarization = polarization,
+        Model = "G0",
+        p_value = test_G0(
+          samples[[i]][[bands[[polarization]]]],
+          settings$enl[[polarization]], mission, B
+        )
+      )
+    }))
+  }))
+
+  rbind(gamma_results, g0_results)
+}
+
+results <- do.call(rbind, lapply(names(mission_settings), function(mission) {
+  run_mission_tests(mission, mission_settings[[mission]])
+}))
+results$Rejected <- results$p_value < alpha
+```
+
+```{r rejection_rates}
+rejection_rates <- aggregate(
+  Rejected ~ Mission + Polarization + Class + Model,
+  data = results,
+  FUN = mean
+)
+rejection_rates$Percentage <- 100 * rejection_rates$Rejected
+rejection_rates$Class <- factor(
+  rejection_rates$Class,
+  levels = c("Forest", "Savanna", "Grassland"),
+  labels = c("Fo", "Sv", "Gl")
+)
+rejection_rates$Polarization <- factor(
+  rejection_rates$Polarization,
+  levels = c("VH", "VV", "HV", "HH")
+)
+
+rejection_rates$Model <- factor(
+  rejection_rates$Model,
+  levels = c("Gamma", "G0"),
+  labels = c("Gamma", "G0")
+)
+
+model_labels <- c(
+  Gamma = "<span style='font-family: TimesNewRoman; font-style: italic;'>Γ</span><sub>SAR</sub>",
+  G0 = "<span style='font-family: CambriaMath;'>𝒢</span><sup>0</sup><sub>I</sub>"
+)
+
+p_rejection_rates <- ggplot(
+  rejection_rates,
+  aes(x = Class, y = Polarization, fill = Percentage)
+) +
+  geom_tile(color = "white", linewidth = 1.2) +
+  geom_text(aes(label = paste0(format(Percentage, trim = TRUE), "*'%'"),
+                color = Percentage >= 80),
+            size = 12 / (72.27 / 25.4), parse = TRUE,
+            show.legend = FALSE) +
+  scale_color_manual(values = c(`TRUE` = "white", `FALSE` = "grey20")) +
+  scale_fill_gradientn(
+    colors = c("#ffffff", "#f6b89c", "#e0734a", "#b3261e"),
+    limits = c(0, 100), breaks = seq(0, 100, 20),
+    name = NULL
+  ) +
+  guides(fill = guide_colorbar(
+    title = "Rejected samples (%)",
+    title.position = "right",
+    barheight = grid::unit(6, "cm"),
+    title.theme = element_text(
+      angle = 90, family = "TimesNewRoman", size = 12
+    )
+  )) +
+  scale_y_discrete(position = "right") +
+  facet_grid(Mission ~ Model, scales = "free_y", space = "free_y",
+             labeller = labeller(Model = model_labels),
+             switch = "y") +
+  labs(
+    title = "Goodness-of-fit null hypothesis rejection rates",
+    subtitle = "Parametric bootstrap; significance level = 1%; 5 samples per cell",
+    x = "Class", y = "Polarization"
+  ) +
+  theme_minimal(base_size = 12, base_family = "TimesNewRoman") +
+  theme(
+    panel.grid = element_blank(),
+    plot.title = element_text(size = 12),
+    plot.subtitle = element_text(size = 12),
+    strip.text = ggtext::element_markdown(
+      size = 12, face = "plain", family = "TimesNewRoman"
+    ),
+    axis.text = element_text(size = 12, color = "black"),
+    axis.title = element_text(size = 12, color = "black"),
+    axis.title.y = element_blank(),
+    axis.title.y.right = element_text(size = 12, color = "black"),
+    axis.ticks = element_blank()
+  )
+
+print(p_rejection_rates)
+
+ggsave(
+  filename = "rejection_rates.png",
+  plot = p_rejection_rates +
+    labs(title = NULL, subtitle = NULL) +
+    theme(
+      plot.title = element_blank(),
+      plot.subtitle = element_blank()
+    ),
+  device = "png",
+  width = 178 / 25.4,
+  height = 106.8 / 25.4,
+  units = "in",
+  dpi = 300,
+  bg = "white"
+)
+```
+
+The percentage is the number of rejected sample-level tests divided by five.
+It is therefore reported in increments of 20 percentage points. A lower rate
+means fewer samples rejected the model's goodness-of-fit null hypothesis; it
+does not by itself establish spatial homogeneity.
