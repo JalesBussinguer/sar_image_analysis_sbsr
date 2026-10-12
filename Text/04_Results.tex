@@ -1,3 +1,4 @@
+% !TEX root = 00_Template_SBSR.tex
 \section{Results and Discussion}
 
 We tested the goodness-of-fit of all \qty{5} samples of each class for the $\Gamma_{\text{SAR}}$ and the $\mathcal G^0_I$ models.
@@ -26,18 +27,19 @@ The results of the tests are presented in Table \ref{tab:kl-rejection}.
 \centering
 \small
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}c|cc|cc}
-\hline
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}ccccc}
+\toprule
  & \multicolumn{2}{c}{NISAR} & \multicolumn{2}{c}{Sentinel-1} \\
-\hline
+\cmidrule{2-3}\cmidrule{4-5}
 Class & HH & HV & VV & VH \\
-\hline
+\cmidrule{1-1}\cmidrule{2-2}\cmidrule{3-3}\cmidrule{4-4}\cmidrule{5-5}
+%%% ACF Todas as entradas deveriam ser qty{}{\percent}
 Fo & $30\%$ & $20\%$ & $70\%$ & $70\%$ \\
 Sv & $60\%$ & $70\%$ & $70\%$ & $70\%$ \\
 Gl & $70\%$ & $40\%$ & $70\%$ & $70\%$ \\
-\hline
+\midrule
 Total rejections & $53.3\%$ & $43.3\%$ & $70\%$ & $66.6\%$ \\
-\hline
+\bottomrule
 \end{tabular*}
 \caption{Rejection of the pairwise similarity null hypothesis for the Kullback-Leibler tests under $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{10}{} sample pairs per class and polarization).}
 \label{tab:kl-rejection}
@@ -62,20 +64,21 @@ Focusing the analysis on the rejected tests, we used the scenarios described in 
 \centering
 \footnotesize
 \renewcommand{\arraystretch}{1.15}
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}p{0.40\columnwidth}|cc|cc}
-\hline
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}p{0.40\columnwidth}cccc}
+\toprule
  & \multicolumn{2}{c}{NISAR} & \multicolumn{2}{c}{Sentinel-1} \\
-\hline
+\cmidrule{2-3}\cmidrule{4-5}
 Cause of H$_{0}$ rejection & HH & HV & VV & VH \\
-\hline
+\cmidrule(r){1-1} \cmidrule(lr){2-2} \cmidrule(lr){3-3} \cmidrule(lr){4-4} \cmidrule(lr){5-5}
+%%% ACF Todas as entradas deveriam ser qty{}{\percent}
 (i) $\alpha_1=\alpha_2$ and $\mu_1\neq\mu_2$  & $81.25\%$ & $76.92\%$ & $95.24\%$ & $95.0\%$ \\
 (ii) $\alpha_1\neq\alpha_2$ and $\mu_1=\mu_2$ & $6.25\%$  & $7.70\%$  & $0\%$  & $0\%$ \\
 (iii) $\alpha_1<\alpha_2$ and $\mu_1<\mu_2$   & $12.50\%$  & $15.38\%$  & $0\%$  & $0\%$  \\
 (iv) $\alpha_1<\alpha_2$ and $\mu_1>\mu_2$    & $0\%$  & $0\%$  & $0\%$  & $5.0\%$  \\
 Joint effect                                  & $0\%$  & $0\%$  & $4.76\%$  & $0\%$  \\
-\hline
+\midrule
 Total rejections                              & $100\%$ & $100\%$ & $100\%$ & $100\%$ \\
-\hline
+\bottomrule
 \end{tabular*}
 \caption{Causes of rejection of the null hypothesis in the pairwise Kullback-Leibler tests under $\bm{\mathcal G}^{\bm 0}_{\bm I}$.}
 \label{tab:kl-causes}
@@ -96,9 +99,9 @@ The results are shown in Table \ref{tab:common-alpha}.
 \footnotesize
 \renewcommand{\arraystretch}{1.15}
 \begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cccccc}
-\hline
+\toprule
 Mission & Class & Band & Common $\widehat\alpha$ & $-2\log\Lambda$ & $p$-value \\
-\hline
+\cmidrule(r){1-1}\cmidrule(lr){2-2}\cmidrule(lr){3-3}\cmidrule(lr){4-4}\cmidrule(lr){5-5}\cmidrule(lr){6-6}
 \multirow[c]{6}{*}{NISAR}
   & \multirow[c]{2}{*}{Fo} & HH & $-11.066$ & $11.640$ & $0.02028$ \\
   &                        & HV & $-8.062$  & $8.227$  & $0.08361$ \\
@@ -106,7 +109,7 @@ Mission & Class & Band & Common $\widehat\alpha$ & $-2\log\Lambda$ & $p$-value \
   &                        & HV & $-34.361$ & $0.211$  & $0.99480$ \\
   & \multirow[c]{2}{*}{Gl} & HH & $-16.220$ & $17.160$ & $\textbf{0.00180}$ \\
   &                        & HV & $-16.444$ & $15.180$ & $\textbf{0.00434}$\\
-\hline\noalign{\vskip 3pt}\hline
+\midrule
 \multirow[c]{6}{*}{Sentinel-1}
   & \multirow[c]{2}{*}{Fo} & VV & $-23.080$ & $9.305$  & $0.0539$ \\
   &                        & VH & $-36.176$ & $9.454$  & $0.0507$ \\
@@ -114,17 +117,17 @@ Mission & Class & Band & Common $\widehat\alpha$ & $-2\log\Lambda$ & $p$-value \
   &                        & VH & $-89.886$ & $11.240$ & $0.0240$ \\
   & \multirow[c]{2}{*}{Gl} & VV & $-37.294$ & $6.094$  & $0.1922$ \\
   &                        & VH & $-16.850$ & $4.221$  & $0.3769$ \\
-\hline
+\bottomrule
 \end{tabular*}
 \caption{Likelihood-ratio test of a common roughness $\alpha$ within each class under $\bm{\mathcal G}^{\bm 0}_{\bm I}$. Bold: H$_0$ rejected at $\bm\alpha=\qty{1}{\percent}$.}
 \label{tab:common-alpha}
 \end{table}
 \vspace{0.3cm}
 
-These results indicates that in general, it is possible to characterize an entire class by calculating a common roughness that will be shared for all sample distributions.
+These results indicate that in general, it is possible to characterize an entire class by calculating a common roughness that will be shared for all sample distributions.
 This result is especially valuable, since the roughness parameter is closely related to the number of elementary backscatterers in each pixel \cite{gambini2015}.
 Given the missions' frequency, the $\alpha$ parameter is coherent with the expected number of elementary backscatterers for each class.
 
-The only exception was the NISAR Grassland class in both $HH$ and $HV$ polarizations.
+The only exception was the NISAR Grassland class in both $\text{HH}$ and $\text{HV}$ polarizations.
 For this specific class, the results indicates that not a single model is capable to explain the class spatial distributions.
 
