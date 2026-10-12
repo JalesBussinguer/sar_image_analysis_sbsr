@@ -1,40 +1,44 @@
+% !TEX root = R0-StatisticalChangeDetectionCerrado-2027SBSR.tex
 \section{Results and Discussion}
 
-We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{SAR}$ and the $\mathcal G^0_I$ models.
+We tested the goodness-of-fit of all 5 samples of each class for the $\Gamma_{\text{SAR}}$ and the $\mathcal G^0_I$ models.
 Table \ref{tab:gof-rejection} presents the number of samples that rejects the fit on the tested models, according to its mission, class and band.
 
 \begin{table}[htbp]
 \centering
-\small
-\renewcommand{\arraystretch}{1.15}
-\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cc|cc|cc}
-\hline
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{SAR}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
-\hline
+%\small %%% ACF Era a sua escolha? Se sim, não o faça; caso contrário, reative
+%\renewcommand{\arraystretch}{1.15} %%% ACF Era a sua escolha? Se sim, não o faça; caso contrário, reative
+\begin{tabular*}{\columnwidth}{@{\extracolsep{\fill}}cccccc}
+%%% ACF Repare no uso dos comandos da biblioteca booktabs. Agora, a tabela é mais fácil de ler e ela comunica o que você quer contar
+\toprule
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{\text{SAR}}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
+\cmidrule{3-4}\cmidrule{5-6}
 Mission & Class & HH & HV & HH & HV \\
-\hline
+\cmidrule(lr){1-1}\cmidrule(lr){2-2}\cmidrule{3-3}\cmidrule{4-4}\cmidrule{5-5}\cmidrule{6-6}
 \multirow[c]{3}{*}{NISAR}
+%%% ACF Todas as entradas numéricas devem estar em modo matemático
   & Fo & 0/5 & 5/5 & 0/5 & 0/5 \\
   & Sv & 5/5 & 5/5 & 1/5 & 0/5 \\
   & Gl & 5/5 & 5/5 & 1/5 & 0/5 \\
-\hline\noalign{\vskip 3pt}\hline
-\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{SAR}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
-\hline
+\midrule
+\multicolumn{2}{c}{} & \multicolumn{2}{c}{$\Gamma_{\text{SAR}}$} & \multicolumn{2}{c}{$\mathcal G^0_I$} \\
+\cmidrule{3-4}\cmidrule{5-6}
 Mission & Class & VV & VH & VV & VH \\
-\hline
+\cmidrule(lr){1-1}\cmidrule(lr){2-2}\cmidrule{3-3}\cmidrule{4-4}\cmidrule{5-5}\cmidrule{6-6}
 \multirow[c]{3}{*}{Sentinel-1}
   & Fo & 1/5 & 0/5 & 0/5 & 1/5 \\
   & Sv & 2/5 & 0/5 & 0/5 & 0/5 \\
   & Gl & 1/5 & 1/5 & 1/5 & 1/5 \\
-\hline
+\bottomrule
 \end{tabular*}
-\caption{H$_0$ rejections for the goodness-of-fit tests under $\Gamma_{SAR}$ and $\mathcal G^0_I$ ($\alpha=1\%$; 5 samples per class and polarization).}
+%%% ACF Repare no malabarismo para fazer com que a legenda fique em negrito; replique
+\caption{Number of  rejections of the null hypothesis for the goodness-of-fit tests under $\bm\Gamma_{\text{SAR}}$ and $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{5} samples per class and polarization).}
 \label{tab:gof-rejection}
 \end{table}
 \vspace{0.3cm}
 
 For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples of 30 in total.
-On the other hand, almost all classes rejected the fit for $\Gamma_{SAR}$, except the Forest Class in the HH polarization.
+On the other hand, almost all classes rejected the fit for $\Gamma_{\text{SAR}}$, except the Forest Class in the HH polarization.
 This result indicates that the samples of this specific class and polarization are likely to present a full developed speckle.
 The $\mathcal G^0_I$ was found the best models to characterize the Sentinel-1 sample distributions, since it presented less rejections to the fit.
 Further than adherence to the data, we also considered the tractability and interpretability of the parameters of this model in its adoption as the model that better characterizes the samples distributions.
