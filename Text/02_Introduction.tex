@@ -1,24 +1,29 @@
+% !TEX root = 00_Template_SBSR.tex
 \section{Introduction}
 
 We have already lost about half of Cerrado native vegetation cover.
-According to the Cerrado's land use and land cover (LULC)) map of 2025 produced by MapBiomas \cite{mapbiomas2026}, approximately \qty{49.9}{\percent} of the biome's territory is covered with native vegetation, and other \qty{48}{\percent} is covered with different land use types, mainly related to agriculture and livestock.
+According to the Cerrado's land use and land cover (LULC)) map of 2025 produced by MapBiomas~\cite{mapbiomas2026}, approximately \qty{49.9}{\percent} of the biome's territory is covered with native vegetation, and other \qty{48}{\percent} is covered with different land use types, mainly related to agriculture and livestock.
 
 However, monitoring the Cerrado native vegetation is challenging.
-Its characteristic vegetation is a composition of a mosaic of different proportions of evergreen riparian forests, deciduous and semi-deciduous forests, savanna woodlands, shrublands and grasslands \cite{ribeirowalter2008}.
-The biome also presents well marked dry and wet seasons \cite{sano2021} which increases the complexity of the task for  monitoring strategies such as Brazilian clear-cut deforestation monitoring program on Cerrado (PRODES Cerrado) rely primarily on multispectral data and requires cloud-free scene conditions.
+Its characteristic vegetation comprises a mosaic of evergreen riparian forests, deciduous and semi-deciduous forests, savanna woodlands, shrublands, and grasslands~\cite{ribeirowalter2008}.
+The biome also presents well-marked dry and wet seasons~\cite{sano2021}, further complicating monitoring strategies that rely primarily on multispectral data and require cloud-free scenes, such as the Brazilian clear-cut deforestation monitoring program for the Cerrado (PRODES Cerrado).
 
-Synthetic Aperture Radar (SAR) systems are well suited for mapping and monitoring changes in the vegetation cover since they are able to acquire data regardless of cloud coverage or other climatological conditions on the scene.
+Synthetic Aperture Radar (SAR) systems are well suited for mapping and monitoring changes in the vegetation cover since they are able to acquire data day-and-night regardless of cloud coverage or other climatological conditions on the scene.
 These characteristics make SAR particularly valuable for sistematic and continous environmental monitoring systems.
-In the Cerrado, previous studies have used SAR polarimetric data to map Cerrado vegetation \cite{sano2021}, investigated the seasonal behavior of vegetation indices over preserved areas \cite{bussinguer2024} and proposed approaches for monitoring forest loss on the biome \cite{bottani2025} \cite{bottani2026}.
+Previous studies have used polarimetric SAR data to map Cerrado vegetation~\cite{sano2021}, 
+investigated the seasonal behavior of vegetation indices over preserved areas~\cite{bussinguer2024}, 
+and proposed approaches for monitoring forest loss on the biome~\cite{bottani2025,bottani2026}.
 
 These studies demonstrate the relevance of SAR for Cerrado monitoring, but they do not address a related, distributional question: whether spatially separated areas assigned to the same vegetation class can be represented by a common probability distribution of SAR intensity.
-This distinction matters because a thematic label does not, by itself, guarantee that the associated backscatter is statistically distributed across space under the same model.
+This distinction matters because a thematic label does not, by itself, guarantee that the associated backscatter observations share a common statistical model across space.
 
-In that context, statistical modeling of SAR intensity provides a framework for characterizing the signal’s probability distribution, rather than relying only on derived attributes or classification outcomes.
-Such models can support comparisons among spatial samples and help determine whether observed differences are consistent or not.
-In particular, stochastic-distance methods provide a formal basis for testing hypotheses about speckled data distributions and can furnish methods for assessing segmentation algorithms \cite{nascimento2010}.
+Statistical models provide a framework for characterizing the signal’s behavior, rather than relying on derived attributes or classification outcomes.
+Such models support comparisons among spatial samples and help determine whether observed differences are significant or not.
+In particular, stochastic-distance methods provide a formal basis for testing hypotheses about speckled data distributions and support despeckling, segmentation, and classification methods~\cite{nascimento2010}.
 
-Given this context, this paper focuses on the following scientific question: Can spatially separated samples of the same class be modeled by a common probability distribution of SAR intensity i.e. share the same parameterization?
-We investigate this question using NISAR L-band and Sentinel-1 C-band intensity data for the Forest, Savanna, and Grassland formations of Cerrado.
-For each formation, we test the null hypothesis that the samples share the same probability distribution function (PDF).
-We assess this hypothesis through distribution fitting and statistical comparisons of the samples.
+Given this context, this paper focuses on the following scientific question:
+\begin{quote}
+Can spatially separated samples of the same class be modeled by a common probability distribution of SAR intensity, with the same parameterization?
+\end{quote}
+We investigate this question using NISAR L-band and Sentinel-1 C-band intensity data for the Forest, Savanna, and Grassland formations of the Cerrado.
+For each formation, we test the null hypothesis that spatially separated samples share the same probability distribution function (PDF), using distribution fitting and statistical comparisons.
