@@ -3,14 +3,6 @@
 
 \subsection{Study site and sampling strategy}
 
-\begin{figure}[htbp]
-    \begin{center}
-    \includegraphics[width=\columnwidth]{figures/main_map_rework.png}
-    \caption{Study site location with MapBiomas 2025 LULC map and sample polygons. Basemap: Google Satellite.}
-    \label{fig:main_map}
-    \end{center}
-\end{figure}
-
 The study site is the Brasilia National Park, located in the north-western region of the Federal District of Brazil (Fig.~\ref{fig:main_map}).
 The park is permanently protected and is a relevant research and conservation site~\cite{sano2005}.
 Its vegetation cover has three major Cerrado physiognomies: 
@@ -19,6 +11,14 @@ Savanna,
 and Grasslands (Fig.~\ref{fig:main_map});
 we refer to these physiognomies as ``classes.'' 
 Their spatial extents were extracted from the MapBiomas Collection 11 Land Use and Land Cover map of 2025~\cite{mapbiomas2026}.
+
+\begin{figure}[htbp]
+    \begin{center}
+    \includegraphics[width=\columnwidth]{figures/main_map_rework.png}
+    \caption{Study site location with MapBiomas 2025 LULC map and sample polygons. Basemap: Google Satellite.}
+    \label{fig:main_map}
+    \end{center}
+\end{figure}
 
 We constructed a set of samples for each of the three Cerrado physiognomies.
 The sample sets are composed of \qty{5} sample color-labeled polygons: 
@@ -71,8 +71,8 @@ For Sentinel-1, \qty{20} polygons were used, and the ENL was \qty{2.06} for C11 
 Those values are used as parameters for the tested models and are fixed.
 
 To assess which model describes better the samples intensity distributions, we proceeded to goodness-of-fit tests for the distributions $\Gamma_{\text{SAR}}$ and $\mathcal G^0_I$.
-The $\Gamma_{\text{SAR}}$ model is a reparameterization of the classical gamma law that characterizes fully developed speckle~\cite[Eq.~1]{alpala2025}.
-The $\mathcal G^0_I$ distribution is well recognized for its capacity to describe different levels of heterogeneity~\cite[Eq.~5]{alpala2025}.
+The $\Gamma_{\text{SAR}}$ model is a reparameterization of the classical gamma law that characterizes fully developed speckle~\cite[Eq.~(1)]{alpala2025}.
+The $\mathcal G^0_I$ distribution is well recognized for its capacity to describe different levels of heterogeneity~\cite[Eq.~(5)]{alpala2025}.
 
 To test the goodness-of-fit for both distributions, we used a parametric bootstrap over the Kolmogorov-Smirnov (KS) test statistic $D$.
 Since the parameters are estimated from the sample itself, the null distribution of $D$ is not the one tabulated for KS; therefore, the quantiles are obtained via \qty{1000} repetitions, re-estimating the parameters using maximum likelihood in each replicate.
@@ -80,7 +80,7 @@ After the tests, we adopted the $\mathcal G^0_I$ as the model that better charac
 The decision was based on evidence about the adherence to the data and the tractability and interpretation of its parameters.
 
 We then proceeded to the comparison of the same-class samples' distributions, to verify their similarity/separability.
-Given the absence of tests to verify whether two samples originate from the same distribution with an known exact distribution under the H$_{0}$, we used the symmetrized Kullback-Leibler~(KL) stochastic distance~\cite[item~i.]{nascimento2010} hypothesis test defined by Ref.~\cite[Eq.~9]{nascimento2010}: $S_{\mathrm{KL}}$.
+Given the absence of tests to verify whether two samples originate from the same distribution with an known exact distribution under the H$_{0}$, we used the symmetrized Kullback-Leibler~(KL) stochastic distance~\cite[item~i.]{nascimento2010} hypothesis test defined by Ref.~\cite[Eq.~(9)]{nascimento2010}: $S_{\mathrm{KL}}$.
 The test's H$_{0}$ is the equality between the parameters of the sample distributions.
 The pairs of sample distributions which the H$_{0}$ was rejected were separated, being the focus of this study from this point.
 

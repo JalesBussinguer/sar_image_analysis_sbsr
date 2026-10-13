@@ -2,26 +2,26 @@
 \section{Results and Discussion}
 
 We tested the goodness-of-fit of all \qty{5}{} samples of each class for the $\Gamma_{\text{SAR}}$ and the $\mathcal G^0_I$ models.
-Figure \ref{fig:gof-rejection} presents the percentage of null hypothesis rejection on the tested models, according to its mission, class and band.
+Figure~\ref{fig:gof-rejection} presents the percentage of null hypothesis rejection on the tested models, according to its mission, class and band.
 
+%%% ACF Esse tipo de figura deve ser salvo em PDF
 \begin{figure}[h]
     \begin{center}
     \includegraphics[width=\columnwidth]{figures/rejection_rates.png}
-    \caption{Rejection of the goodness-of-fit null hypothesis under $\bm\Gamma_{\text{SAR}}$ and $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{5}{} samples per class and polarization).}
+    \caption{Rejection of the goodness-of-fit null hypothesis under $\bm\Gamma_{\text{SAR}}$ and $\bm{\mathcal G}^{\bm 0}_{\bm I}$ ($\bm\alpha=\qty{1}{\percent}$; \qty{5} samples per class and polarization).}
     \label{fig:gof-rejection}
     \end{center}
 \end{figure}
 
-
-For NISAR, the majority of the samples show a clear fit to the $\mathcal G^0_I$ distribution, since the rejection of fit is restricted to two samples of \qty{30}{} in total.
-On the other hand, almost all classes rejected the fit for $\Gamma_{\text{SAR}}$, except the Forest Class in the HH polarization.
-This result indicates that the samples of this specific class and polarization are likely to present a full developed speckle.
+For NISAR, the majority of the samples show a clear adherence to the $\mathcal G^0_I$ distribution, since only two out of \qty{30} samples rejected the fit.
+By contrast, almost all classes rejected the fit for $\Gamma_{\text{SAR}}$, except the Forest Class in the HH polarization.
+This result indicates that only samples of this class and polarization are likely to present a full developed speckle.
 The $\mathcal G^0_I$ was also found to be the best model to characterize the Sentinel-1 sample distributions, since it presented less rejections to the fit than $\Gamma_{\text{SAR}}$.
 We also considered the tractability and interpretation of the parameters of $\mathcal G^0_I$ in its adoption.
 
 Under the $\mathcal G^0_I$ distribution, we tested the similarity/separability of the classes' samples pairwise using the $S_{\mathrm{KL}}$ hypothesis test.
 For the sake of conciseness, we only report the rate of H$_{0}$ rejection per class and polarization.
-The results of the tests are presented in Table \ref{tab:kl-rejection}.
+The results of the tests are presented in Table~\ref{tab:kl-rejection}.
 
 \begin{table}[htbp]
 \centering
@@ -49,17 +49,17 @@ $S_{\mathrm{KL}}$ total rejections & $53.3\%$ & $43.3\%$ & $70\%$ & $66.6\%$ \\
 For NISAR, all classes and polarizations had similarity rejections, but in different proportions.
 For the Forest class, both polarizations presented the lowest rates of H$_{0}$ rejection, indicating the highest similarity among all classes.
 This result is directly related to the goodness-of-fit result that points to a fully developed speckle characteristic of the samples.
-At this point, this result indicates that this specific class and polarization can be characterized by a single model in the spatial domain.
+This result indicates that this class and polarization can be characterized by a single model.
 Further investigation is encouraged to test this hypothesis.
-The Savanna and Grassland classes presented higher rates of H$_{0}$ rejection, and thus the least similarity.
+The Savanna and Grassland classes presented higher rates of H$_{0}$ rejection, and, thus, the least similarity.
 The results for Sentinel-1 present an almost uniform H$_{0}$ rejection at high rates.
-All classes in all polarizations presented more than 60$\%$ of similarity rejection.
+All classes in all polarizations presented more than \qty{60}{\percent} of similarity rejection.
 
-The results for NISAR and Sentinel-1 indicates that there is no complete similarity between the classes' samples in the spatial domain in neither polarizations.
+The results for NISAR and Sentinel-1 indicate that there is no complete similarity between the classes' samples in the spatial domain in neither polarizations.
 This leads to a scenario where a single parameterization of the model can not explain the samples distributions in the spatial domain.
 
-Since the $\mathcal G^0_I$ is parameterized in terms of the mean brightness ($\mu$) and roughness ($\alpha$) parameters ($L$ is fixed) \cite{alpala2025}, we tried to qualify the H$_{0}$ rejections in the $S_{\mathrm{KL}}$ tests.
-We used the scenarios described in \cite{nascimento2010} to understand the cause of H$_{0}$ rejections (Table \ref{tab:kl-causes}).
+Since the $\mathcal G^0_I$ model is parameterized by the mean brightness ($\mu$) and roughness ($\alpha$) parameters ($L$ is fixed as in Ref.~\cite{alpala2025}), we tried to qualify the H$_{0}$ rejections in the $S_{\mathrm{KL}}$ tests.
+We used the scenarios described in Ref.~\cite{nascimento2010} to understand the cause of H$_{0}$ rejections; cf.\ Table~\ref{tab:kl-causes}.
 
 \begin{table}[htbp]
 \centering
@@ -86,14 +86,14 @@ Total rejections                              & $100\%$ & $100\%$ & $100\%$ & $1
 \end{table}
 \vspace{0.3cm}
 
-The main cause of H$_{0}$ rejection for both missions was the difference in the mean brightness between the pairs of sample distributions.
-The results show that \qtyrange[range-phrase = \text{--}]{76}{95.24}{\percent} of H$_{0}$ rejection among all classes and polarizations fall within this scenario.
-At this point, in perspective with the results from $S_{\mathrm{KL}}$, this result points that a single parameterization of $\mathcal G^0_I$ is not sufficient to describe an entire class in the spatial domain.
-Instead of a single and monolithic distribution with fixed parameters $\alpha$ and $\mu$, the sample distributions might be characterized by multiple parameterizations of the model where the mean brightness is their key difference and the roughness parameter is shared.
-We call these multiple parameterizations for the same class as a family of distributions.
+The main cause of H$_{0}$ rejection for both missions was the difference in the mean brightness between the pairs of samples.
+The results show that \qtyrange[range-phrase = \text{--}]{76}{95.24}{\percent} of H$_{0}$ rejections among all classes and polarizations fall within this scenario.
+At this point, in perspective with the results from $S_{\mathrm{KL}}$, this result points to the fact that a single parameterization of $\mathcal G^0_I$ is not sufficient to describe an entire class in the spatial domain.
+Instead of a single distribution with fixed parameters $\alpha$ and $\mu$, the sample distributions might be characterized by multiple parameterizations of the model where the mean brightness is their key difference and the roughness parameter is shared.
+We call these multiple parameterizations for the same class a family of distributions.
 
-To verify the hypothesis of multiple parameterizations that characterizes the samples distributions of the same class, we executed another hypothesis test of equality between the distributions with a common $\alpha$.
-The results are shown in Table \ref{tab:common-alpha}.
+To verify the hypothesis of multiple parameterizations, we executed another hypothesis test of equality between models with common $\alpha$.
+The results are shown in Table~\ref{tab:common-alpha}.
 
 \begin{table}[htbp]
 \centering
@@ -125,10 +125,10 @@ Mission & Class & Band & Common $\widehat\alpha$ & $-2\log\Lambda$ & $p$-value \
 \end{table}
 \vspace{0.3cm}
 
-These results indicate that in general, it is possible to characterize an entire class by calculating a common roughness that will be shared for all sample distributions.
-This result is especially valuable, since the roughness parameter is closely related to the number of elementary backscatterers in each pixel \cite{gambini2015}.
+These results indicate that in general, it is possible to characterize an entire class with a common roughness.
+This result is especially valuable, since the roughness parameter is closely related to the number of elementary backscatterers in each pixel~\cite{SARImageStatisticalModelingPartISinglePixelStatisticalModels}.
 Given the missions' frequency, the $\alpha$ parameter is coherent with the expected number of elementary backscatterers for each class.
 
 The only exception was the NISAR Grassland class in both $\text{HH}$ and $\text{HV}$ polarizations.
-For this specific class, the results indicates that not a single model is capable to explain the class spatial distributions.
-Further investigations are encouraged to verify which models best describe this class in NISAR data.
+For this specific class, the results indicate that not a single model is capable of explaining the class's spatial distributions.
+Further investigations are encouraged to verify which models best describe this class.
